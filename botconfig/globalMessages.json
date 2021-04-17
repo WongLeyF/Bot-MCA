@@ -1,4 +1,5 @@
 {
-    "errorDeleteMessage": "Couldn't Delete --> Ignore"
+    "errorDeleteMessage": "Couldn't Delete --> Ignore",
+    "titleError": ":warning: ERROR | Algo salió mal"
 
 }
