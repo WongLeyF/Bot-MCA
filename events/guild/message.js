@@ -4,6 +4,7 @@
 */
 const config = require("../../botconfig/config.json"); //loading config file with token and prefix, and settings
 const ee = require("../../botconfig/embed.json"); //Loading all embed settings like color footertext and icon ...
+const gm = require("../../botconfig/globalMessages.json");
 const Discord = require("discord.js"); //this is the official discord.js wrapper for the Discord Api, which we use!
 const { escapeRegex} = require("../../handlers/functions"); //Loading all needed functions
 //here the event starts
@@ -74,7 +75,7 @@ module.exports = async (client, message) => {
           return message.channel.send(new Discord.MessageEmbed()
             .setColor(ee.wrongcolor)
             .setDescription(`❌ No puedes usar este comando, necesitas estos permisos: \`${command.memberpermissions.join("`, ``")}\``)
-          ).then(msg=>msg.delete({timeout: 15000}).catch(e=>console.log("Couldn't Delete --> Ignore".gray)));
+          ).then(msg=>msg.delete({timeout: 10000}).catch(e=>console.log("Couldn't Delete --> Ignore".gray)));
         }
         //if the Bot has not enough permissions return error
         let required_perms = ["ADD_REACTIONS","PRIORITY_SPEAKER","VIEW_CHANNEL","SEND_MESSAGES",
@@ -103,7 +104,7 @@ module.exports = async (client, message) => {
     return message.channel.send(
     new MessageEmbed()
     .setColor("RED")
-    .setTitle(`:warning: ERROR | Algo salió mal`)
+    .setTitle(gm.titleError)
     .setDescription(`\`\`\`${e.stack}\`\`\``)
   );
   }

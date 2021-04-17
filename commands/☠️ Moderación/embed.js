@@ -1,20 +1,22 @@
 const { MessageEmbed } = require("discord.js");
 const config = require("../../botconfig/config.json");
 const ee = require("../../botconfig/embed.json");
+const gm = require("../../botconfig/globalMessages.json");
 module.exports = {
     name: "embed",
     category: "☠️ Moderación",
     aliases: ["say-embed"],
     cooldown: 2,
     usage: "embed <Título> $$ <Descripción>",
-    description: "Reenvía un mensaje de un como Embed",
+    memberpermissions:["VIEW_AUDIT_LOG"],
+    description: "Reenvía un mensaje enforma de Embed",
     run: async (client, message, args, user, text, prefix) => {
     try{
       if(!args[0])
         return message.channel.send(new MessageEmbed()
             .setColor(ee.wrongcolor)
             .setFooter(ee.footertext, ee.footericon)
-            .setTitle(`:warning: ERROR | No colocaste un título o una descripción`)
+            .setTitle(`:warning: | No colocaste un título o una descripción`)
             .setDescription(`Uso: \`${prefix}embed <Título> $$ <Descripción>\``)
         );
       let userargs = args.join(" ").split("$$");
@@ -31,7 +33,7 @@ module.exports = {
         return message.channel.send(new MessageEmbed()
             .setColor(ee.wrongcolor)
             .setFooter(ee.footertext, ee.footericon)
-            .setTitle(`:warning: ERROR | Algo salió mal`)
+            .setTitle(gm.titleError)
             .setDescription(`\`\`\`${e.stack}\`\`\``)
         );
     }
