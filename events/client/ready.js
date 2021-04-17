@@ -12,19 +12,19 @@ module.exports = client => {
     console.log(`     ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛`.bold.brightGreen)
   }catch{ /* */ }
 
-  try{
-    client.user.setActivity(client.user.username, { type: "PLAYING" });
-  }catch (e) {
-      console.log(String(e.stack).red);
-  }
-  //Change status each 10 minutes
-  setInterval(()=>{
-    try{
-      client.user.setActivity(client.user.username, { type: "PLAYING" });
-    }catch (e) {
-        console.log(String(e.stack).red);
-    }
-  }, 10*60*1000)
+  // try{
+  //   client.user.setActivity(client.user.username, { type: "PLAYING" });
+  // }catch (e) {
+  //     console.log(String(e.stack).red);
+  // }
+  // //Change status each 10 minutes
+  // setInterval(()=>{
+  //   try{
+  //     client.user.setActivity(client.user.username, { type: "PLAYING" });
+  //   }catch (e) {
+  //       console.log(String(e.stack).red);
+  //   }
+  // }, 10*60*1000)
 }
 
 
