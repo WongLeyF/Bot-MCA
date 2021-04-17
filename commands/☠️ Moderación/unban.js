@@ -20,7 +20,7 @@ module.exports = {
             message.channel.send(new MessageEmbed()
                 .setColor(ee.color)
                 .setDescription(`✅ **${toUnban}** ha sido desbaneado del server!`)
-            ).then(msg=>msg.delete({timeout: 15000}).catch(e=>console.log(gm.errorDeleteMessage.gray)));
+            ).then(msg=>msg.delete({timeout: 10000}).catch(e=>console.log(gm.errorDeleteMessage.gray)));
         } catch (e) {
             let errMs= (e.code === Discord.Constants.APIErrors.UNKNOWN_USER ? 
             'Usuario no encontrado o no existe': e.code === Discord.Constants.APIErrors.UNKNOWN_BAN ? 
@@ -29,7 +29,7 @@ module.exports = {
                 .setColor(ee.wrongcolor)
                 .setTitle(`:warning: | Algo salió mal`)
                 .setDescription(errMs)
-            ).then(msg=>msg.delete({timeout: 15000}).catch(e=>console.log(gm.errorDeleteMessage.gray)));;
+            ).then(msg=>msg.delete({timeout: 10000}).catch(e=>console.log(gm.errorDeleteMessage.gray)));
         }
     }
 };

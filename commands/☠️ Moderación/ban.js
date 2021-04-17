@@ -17,19 +17,19 @@ module.exports = {
                 .setColor(ee.wrongcolor)
                 .setTitle(`:warning: | Por favor, especifica al usuario`)
                 .setDescription(`Uso: \`${prefix}kick <Tag/ID> [Razón]\``)
-            ).then(msg=>msg.delete({timeout: 15000}).catch(e=>console.log(gm.errorDeleteMessage.gray)));
+            ).then(msg=>msg.delete({timeout: 10000}).catch(e=>console.log(gm.errorDeleteMessage.gray)));
             if(!member) return message.channel.send(new MessageEmbed()
                 .setColor(ee.wrongcolor)
                 .setDescription('❌ No pude encontrar a este usuario')
-            ).then(msg=>msg.delete({timeout: 15000}).catch(e=>console.log(gm.errorDeleteMessage.gray)));
+            ).then(msg=>msg.delete({timeout: 10000}).catch(e=>console.log(gm.errorDeleteMessage.gray)));
             if(!member.kickable) return message.channel.send(new MessageEmbed()
                 .setColor(ee.wrongcolor)
                 .setDescription('❌ No puedo expulsar a este usuario. Ya que es mod/admin o tiene un rol mas alto que el mio')
-            ).then(msg=>msg.delete({timeout: 15000}).catch(e=>console.log(gm.errorDeleteMessage.gray)));
+            ).then(msg=>msg.delete({timeout: 10000}).catch(e=>console.log(gm.errorDeleteMessage.gray)));
             if(member.id === message.author.id) return message.channel.send(new MessageEmbed()
                 .setColor(ee.wrongcolor)
                 .setDescription('❌ Estem, no puedes expulsarte a ti mismo...')
-            ).then(msg=>msg.delete({timeout: 15000}).catch(e=>console.log(gm.errorDeleteMessage.gray)));
+            ).then(msg=>msg.delete({timeout: 10000}).catch(e=>console.log(gm.errorDeleteMessage.gray)));
             let reason = args.slice(1).join(" ")
             reason = reason.length===0 ? 'Sin especificar': reason;
             await member.ban({reason: reason})
@@ -51,7 +51,7 @@ module.exports = {
             return message.channel.send(new MessageEmbed()
                 .setColor(ee.wrongcolor)
                 .setFooter(ee.footertext, ee.footericon)
-                .setTitle(`:warning: ERROR | Algo salió mal`)
+                .setTitle(gm.titleError)
                 .setDescription(`\`\`\`${e.stack}\`\`\``)
             );
         }
