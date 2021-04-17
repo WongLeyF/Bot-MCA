@@ -1,6 +1,7 @@
 const { MessageEmbed } = require("discord.js");
 const config = require("../../botconfig/config.json");
 const ee = require("../../botconfig/embed.json");
+const gm = require("../../botconfig/globalMessages.json");
 module.exports = {
     name: "help",
     category: "ℹ️ Información",
@@ -66,7 +67,7 @@ module.exports = {
         return message.channel.send(new MessageEmbed()
             .setColor(ee.wrongcolor)
             .setFooter(ee.footertext, ee.footericon)
-            .setTitle(`:warning: ERROR | Algo salió mal`)
+            .setTitle(gm.titleError)
             .setDescription(`\`\`\`${e.stack}\`\`\``)
         );
     }

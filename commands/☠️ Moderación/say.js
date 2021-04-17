@@ -1,21 +1,23 @@
 const { MessageEmbed } = require("discord.js");
 const config = require("../../botconfig/config.json");
 const ee = require("../../botconfig/embed.json");
+const gm = require("../../botconfig/globalMessages.json");
 module.exports = {
     name: "say",
     category: "☠️ Moderación",
     aliases: [""],
     cooldown: 2,
-    usage: "say <TEXT>",
-    description: "Resends your Text",
+    memberpermissions:["VIEW_AUDIT_LOG"],
+    usage: "say <texto>",
+    description: "Reenvía el texto",
     run: async (client, message, args, user, text, prefix) => {
     try{
       if(!args[0])
         return message.channel.send(new MessageEmbed()
             .setColor(ee.wrongcolor)
             .setFooter(ee.footertext, ee.footericon)
-            .setTitle(`:warning: ERROR | You didn't provided a Text`)
-            .setDescription(`Usage: \`${prefix}say <Your Text>\``)
+            .setTitle(`:warning: ERROR | No pusiste ningún texto`)
+            .setDescription(`uso: \`${prefix}say <Tu texto>\``)
         );
       message.channel.send(text);
     } catch (e) {
@@ -23,7 +25,7 @@ module.exports = {
         return message.channel.send(new MessageEmbed()
             .setColor(ee.wrongcolor)
             .setFooter(ee.footertext, ee.footericon)
-            .setTitle(`:warning: ERROR | Algo salió mal`)
+            .setTitle(gm.titleError)
             .setDescription(`\`\`\`${e.stack}\`\`\``)
         );
     }

@@ -1,6 +1,7 @@
 const { MessageEmbed } = require("discord.js");
 const config = require("../../botconfig/config.json");
 const ee = require("../../botconfig/embed.json");
+const gm = require("../../botconfig/globalMessages.json");
 const { duration } = require("../../handlers/functions")
 module.exports = {
     name: "uptime",
@@ -8,7 +9,7 @@ module.exports = {
     aliases: [""],
     cooldown: 10,
     usage: "uptime",
-    description: "Returns the duration on how long the Bot is online",
+    description: "Te dice cuanto tiempo a estado online el bot",
     run: async (client, message, args, user, text, prefix) => {
     try{
       message.channel.send(new MessageEmbed()
@@ -21,7 +22,7 @@ module.exports = {
         return message.channel.send(new MessageEmbed()
             .setColor(ee.wrongcolor)
             .setFooter(ee.footertext, ee.footericon)
-            .setTitle(`:warning: ERROR | Algo salió mal`)
+            .setTitle(gm.titleError)
             .setDescription(`\`\`\`${e.stack}\`\`\``)
         );
     }
