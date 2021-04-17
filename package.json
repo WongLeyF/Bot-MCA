@@ -1,11 +1,11 @@
 {
-  "name": "discord-js-handler-template",
+  "name": "bot-aktest",
   "version": "1.0.0",
   "description": "Discord.js Command and Event Handler Template with example Command usages!",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node index.js"
+    "start": "nodemon index.js"
   },
   "author": "Mrkemey",
   "license": "ISC",
@@ -15,6 +15,7 @@
   },
   "devDependencies": {
     "ascii-table": "0.0.9",
-    "colors": "^1.4.0"
+    "colors": "^1.4.0",
+    "nodemon": "^2.0.7"
   }
 }
