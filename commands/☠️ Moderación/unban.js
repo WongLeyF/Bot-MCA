@@ -5,15 +5,19 @@ const ee = require("../../botconfig/embed.json");
 const gm = require("../../botconfig/globalMessages.json");
 module.exports = {
     name: "unban",
-    aliases: [""],
     description: "Desbanear miembros del servidor",
     category: "☠️ Moderación",
     cooldown: 2,
     memberpermissions:["BAN_MEMBERS"],
     usage: "unban <ID> [Razón de expulsión]",
     run: async (client, message, args, user, text, prefix) => {
-        try {
-            const toUnban = await client.users.fetch(args[0])
+        try {        
+            if(!args[0]) return message.channel.send(new MessageEmbed()
+                .setColor(ee.wrongcolor)
+                .setTitle(`:warning: | Por favor, especifica al usuario`)
+                .setDescription(`Uso: \`${prefix}unban <Tag/ID> [Razón]\``)
+                ).then(msg=>msg.delete({timeout: 10000}).catch(e=>console.log(gm.errorDeleteMessage.gray)));
+            const toUnban = await client.users.fetch(args[0])    
             let reason = args.slice(1).join(" ")
             reason = reason.length===0 ? 'Sin especificar': reason;
             await message.guild.members.unban(toUnban, reason)     

@@ -6,7 +6,6 @@ const { duration } = require("../../handlers/functions")
 module.exports = {
     name: "uptime",
     category: "ℹ️ Información",
-    aliases: [""],
     cooldown: 10,
     usage: "uptime",
     description: "Te dice cuanto tiempo a estado online el bot",
