@@ -59,9 +59,8 @@ module.exports = async (client, message) => {
             const timeLeft = (expirationTime - now) / 1000; //get the lefttime
             return message.channel.send(new Discord.MessageEmbed()
               .setColor(ee.wrongcolor)
-              .setFooter(ee.footertext,ee.footericon)
-              .setTitle(`:warning: Please wait ${timeLeft.toFixed(1)} more second(s) before reusing the \`${command.name}\` command.`)
-            ); //send an information message
+              .setTitle(`:warning: Por favor espera ${timeLeft.toFixed(1)} segundo(s) para volver a usar el comando \`${command.name}\`.`)
+            ).then(msg=>msg.delete({timeout: 8000}).catch(e=>console.log("Couldn't Delete --> Ignore".gray))); //send an information message
           }
         }
         timestamps.set(message.author.id, now); //if he is not on cooldown, set it to the cooldown
@@ -83,7 +82,6 @@ module.exports = async (client, message) => {
         if(!message.guild.me.hasPermission(required_perms)){
           return message.channel.send(new Discord.MessageEmbed()
             .setColor(ee.wrongcolor)
-            .setFooter(ee.footertext, ee.footericon)
             .setTitle(":warning: | ¡No tengo los permisos necesarios! ")
             .setDescription("Por favor, dame solo `ADMINISTRADOR`, porque lo necesito para eliminar mensajes, crear canales y ejecutar todos los comandos de administrador. \n Si no quieres dármelos, entonces esos son los permisos exactos que necesito: \n> `" + required_perms.join("`, `") +"`")
           )
