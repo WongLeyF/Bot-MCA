@@ -7,6 +7,7 @@ const ee = require("../../botconfig/embed.json"); //Loading all embed settings l
 const gm = require("../../botconfig/globalMessages.json");
 const Discord = require("discord.js"); //this is the official discord.js wrapper for the Discord Api, which we use!
 const { escapeRegex} = require("../../handlers/functions"); //Loading all needed functions
+const messageCount = require("../../handlers/messageCounter");
 //here the event starts
 module.exports = async (client, message) => {
   try {
@@ -16,6 +17,8 @@ module.exports = async (client, message) => {
     if (message.author.bot) return;
     //if the channel is on partial fetch it
     if (message.channel.partial) await message.channel.fetch();
+    //funtion to count message of users
+    messageCount(message)
     //if the message is on partial fetch it
     if (message.partial) await message.fetch();
     //get the current prefix from the botconfig/config.json
