@@ -1,5 +1,6 @@
 const fs = require("fs");
 const ascii = require("ascii-table");
+const mongo = require("./mongo");
 let table = new ascii("Events");
 table.setHeading("Events", "Load status");
 const allevents = [];
@@ -23,14 +24,27 @@ module.exports = async (client) => {
         }
     }
     console.log(table.toString().cyan);
+    await mongo().then(mongoose => {
+      try {
+        const templength = 34;
+        console.log("\n")
+        console.log(`┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓`.bold.green)
+        console.log(`┃ `.bold.green + " ".repeat(-1+templength-` ┃ `.length)+ "┃".bold.green)
+        console.log(`┃ `.bold.green + `Connected to mongo!`.bold.green + " ".repeat(-1+templength-` ┃ `.length-`Connected to mongo!`.length)+ "┃".bold.green)
+        console.log(`┃ `.bold.green + " ".repeat(-1+templength-` ┃ `.length)+ "┃".bold.green)
+        console.log(`┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛`.bold.green)
+      } finally {
+        mongoose.connection.close()
+      }
+    })
     try{
-      const stringlength2 = 69;
+      const stringlength2 = 34;
       console.log("\n")
-      console.log(`     ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓`.bold.yellow)
-      console.log(`     ┃ `.bold.yellow + " ".repeat(-1+stringlength2-` ┃ `.length)+ "┃".bold.yellow)
-      console.log(`     ┃ `.bold.yellow + `Logging into the BOT...`.bold.yellow + " ".repeat(-1+stringlength2-` ┃ `.length-`Logging into the BOT...`.length)+ "┃".bold.yellow)
-      console.log(`     ┃ `.bold.yellow + " ".repeat(-1+stringlength2-` ┃ `.length)+ "┃".bold.yellow)
-      console.log(`     ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛`.bold.yellow)
+      console.log(`┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓`.bold.yellow)
+      console.log(`┃ `.bold.yellow + " ".repeat(-1+stringlength2-` ┃ `.length)+ "┃".bold.yellow)
+      console.log(`┃ `.bold.yellow + `Logging into the BOT...`.bold.yellow + " ".repeat(-1+stringlength2-` ┃ `.length-`Logging into the BOT...`.length)+ "┃".bold.yellow)
+      console.log(`┃ `.bold.yellow + " ".repeat(-1+stringlength2-` ┃ `.length)+ "┃".bold.yellow)
+      console.log(`┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛`.bold.yellow)
     }catch{ /* */ }
   }catch (e){
     console.log(String(e.stack).bgRed)
