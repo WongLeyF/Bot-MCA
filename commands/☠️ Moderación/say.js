@@ -3,7 +3,7 @@ const config = require("../../botconfig/config.json");
 const ee = require("../../botconfig/embed.json");
 const gm = require("../../botconfig/globalMessages.json");
 module.exports = {
-    name: "say",
+    name: "Say",
     category: "☠️ Moderación",  
     cooldown: 2,
     memberpermissions:["VIEW_AUDIT_LOG"],

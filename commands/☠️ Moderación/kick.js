@@ -4,7 +4,7 @@ const ee = require("../../botconfig/embed.json");
 const gm = require("../../botconfig/globalMessages.json");
 
 module.exports = {
-    name: "kick",   
+    name: "Kick",   
     description: "Expulsar miembros del servidor",
     category: "☠️ Moderación",
     cooldown: 2,

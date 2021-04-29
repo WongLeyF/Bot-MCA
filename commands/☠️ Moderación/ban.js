@@ -3,7 +3,7 @@ const config = require("../../botconfig/config.json");
 const ee = require("../../botconfig/embed.json");
 const gm = require("../../botconfig/globalMessages.json");
 module.exports = {
-    name: "ban",    
+    name: "Ban",    
     description: "Banear miembros del servidor",
     category: "☠️ Moderación",
     cooldown: 2,

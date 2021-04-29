@@ -4,7 +4,7 @@ const ee = require("../../botconfig/embed.json");
 const gm = require("../../botconfig/globalMessages.json");
 const { duration } = require("../../handlers/functions")
 module.exports = {
-    name: "uptime",
+    name: "Uptime",
     category: "ℹ️ Información",
     cooldown: 10,
     usage: "uptime",

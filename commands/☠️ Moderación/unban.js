@@ -4,7 +4,7 @@ const config = require("../../botconfig/config.json");
 const ee = require("../../botconfig/embed.json");
 const gm = require("../../botconfig/globalMessages.json");
 module.exports = {
-    name: "unban",
+    name: "Unban",
     description: "Desbanear miembros del servidor",
     category: "☠️ Moderación",
     cooldown: 2,

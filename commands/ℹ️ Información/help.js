@@ -3,10 +3,10 @@ const config = require("../../botconfig/config.json");
 const ee = require("../../botconfig/embed.json");
 const gm = require("../../botconfig/globalMessages.json");
 module.exports = {
-    name: "help",
+    name: "Help",
     category: "ℹ️ Información",
     aliases: ["h", "commandinfo", "cmds", "cmd"],
-    cooldown: 4,
+    cooldown: 5,
     usage: "help [Command]",
     description: "Devuelve todos los comandos o un comando específico ",
     run: async (client, message, args, user, text, prefix) => {
@@ -17,11 +17,12 @@ module.exports = {
           if (!cmd) {
               return message.channel.send(embed.setColor(ee.wrongcolor).setDescription(`No se encontró información para el comando  **${args[0].toLowerCase()}**`));
           }
+          if (cmd.name) embed.setTitle(`Información detallada sobre: ${cmd.name.toUpperCase()}`);
           if (cmd.name) embed.addField("**Nombre del comando**", `\`${cmd.name}\``);
-          if (cmd.name) embed.setTitle(`Información detallada sobre:\`${cmd.name}\``);
-          if (cmd.description) embed.addField("**Descripción**", `\`${cmd.description}\``);
+          if (cmd.description) embed.addField("**Descripción**", `${cmd.description}`);
           if (cmd.aliases) embed.addField("**Aliases**", `\`${cmd.aliases.map((a) => `${a}`).join("`, `")}\``);
-          if (cmd.cooldown) embed.addField("**Tiempo de espera**", `\`${cmd.cooldown} Segundos\``);
+          if (cmd.memberpermissions) embed.addField("**Permisos necesarios**", `${cmd.memberpermissions}`);
+          if (cmd.cooldown) embed.addField("**Tiempo de espera**", `${cmd.cooldown} segundo(s)`);
           else embed.addField("**Tiempo de espera**", `\`1 Tiempo de espera\``);
           if (cmd.usage) {
               embed.addField("**Uso**", `\`${config.prefix}${cmd.usage}\``);
@@ -32,8 +33,8 @@ module.exports = {
           const embed = new MessageEmbed()
               .setColor(ee.color)
               .setThumbnail(client.user.displayAvatarURL())
-              .setTitle("» Menú Help | Comandos de "+ client.user.username)
-              .setFooter(`Para ver la descripcion e información de los comandos, escriba: ${config.prefix}help <comando>`, client.user.displayAvatarURL());
+              .setTitle("📢 Menú Help | Comandos de "+ client.user.username)
+              .setFooter(`Para ver la descripción e información de los comandos, escriba: ${config.prefix}help <comando>`);
           const commands = (category) => {
               return client.commands.filter((cmd) => cmd.category === category).map((cmd) => `${cmd.name}`);
           };
@@ -55,7 +56,7 @@ module.exports = {
               embed.addField(`**${current.charAt(0).toUpperCase()+ current.slice(1)} **`, ` ${result[0].join("\n")}`, true);
               embed.addField(`\u200b`, `${result[1].join("\n") ? result[1].join("\n") : "\u200b"}`, true);
               embed.addField(`\u200b`, `${result[2].join("\n") ? result[2].join("\n") : "\u200b"}`, true);
-              console.log(embed)
+              //console.log(embed)
             }
           } catch (e) {
               console.log(String(e.stack).red);
