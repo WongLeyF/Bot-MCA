@@ -1,5 +1,5 @@
-const mongo = require("../handlers/mongo");
-const messageCountSchema = require("../schemas/messageCount_schema");
+const mongo = require("../../handlers/mongo");
+const messageCountSchema = require("../../schemas/messageCount_schema");
 
 module.exports = async (message) => {
   const { author } = message;

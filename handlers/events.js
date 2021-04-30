@@ -15,7 +15,7 @@ module.exports = async (client) => {
         client.on(eventName, event.bind(null, client));
       }
     }
-    await ["client", "guild"].forEach(e=>load_dir(e));
+    await ["client", "guild", "listeners"].forEach(e=>load_dir(e));
     for (let i = 0; i < allevents.length; i++) {
         try {
             table.addRow(allevents[i], "Ready");
