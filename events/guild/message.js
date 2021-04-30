@@ -7,20 +7,18 @@ const ee = require("../../botconfig/embed.json"); //Loading all embed settings l
 const gm = require("../../botconfig/globalMessages.json");
 const Discord = require("discord.js"); //this is the official discord.js wrapper for the Discord Api, which we use!
 const { escapeRegex} = require("../../handlers/functions"); //Loading all needed functions
-const messageCount = require("../../handlers/messageCounter");
+const messageCount = require("../listeners/messageCounter");
 //here the event starts
 module.exports = async (client, message) => {
   try {
-    //if the message is not in a guild (aka in dms), return aka ignore the inputs
-    if (!message.guild) return;
-    // if the message  author is a bot, return aka ignore the inputs
-    if (message.author.bot) return;
+    //if the message is not in a guild (aka in dms),if the message  author is a bot, return aka ignore the inputs
+    if (!message.guild || message.author.bot) return;
     //if the channel is on partial fetch it
     if (message.channel.partial) await message.channel.fetch();
-    //funtion to count message of users
-    messageCount(message)
     //if the message is on partial fetch it
     if (message.partial) await message.fetch();
+    //funtion to count message of users
+    messageCount(message)
     //get the current prefix from the botconfig/config.json
     let prefix = config.prefix
     //the prefix can be a Mention of the Bot / The defined Prefix of the Bot
