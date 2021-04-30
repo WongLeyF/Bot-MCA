@@ -8,6 +8,8 @@ const gm = require("../../botconfig/globalMessages.json");
 const Discord = require("discord.js"); //this is the official discord.js wrapper for the Discord Api, which we use!
 const { escapeRegex} = require("../../handlers/functions"); //Loading all needed functions
 const messageCount = require("../listeners/messageCounter");
+const getPrefix = require("../listeners/loadPrefix");
+const loadPrefix = require("../listeners/loadPrefix");
 //here the event starts
 module.exports = async (client, message) => {
   try {
@@ -20,7 +22,7 @@ module.exports = async (client, message) => {
     //funtion to count message of users
     messageCount(message)
     //get the current prefix from the botconfig/config.json
-    let prefix = config.prefix
+    let prefix = await loadPrefix(message) || config.prefix
     //the prefix can be a Mention of the Bot / The defined Prefix of the Bot
     const prefixRegex = new RegExp(`^(<@!?${client.user.id}>|${escapeRegex(prefix)})\\s*`);
     //if its not that then return
