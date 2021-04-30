@@ -7,7 +7,7 @@ const channelPollID = ['831738824639905812',]
 
 module.exports = {
 name: "Poll",
-aliases: ["encuesta, sug"],
+aliases: ["encuesta", "sug"],
 description: "Agrega automáticamente reacciones para votar al último mensaje enviado o al mensaje con el ID asignado.",
 category: "🧰 Utilidades",
 cooldown: 5,
@@ -19,10 +19,8 @@ run: async (client, message, args, user, text, prefix) => {
         await message.delete()
         if (args.length===0) {
             fetched = await message.channel.messages.fetch({limit: 1})
-            console.log("entro 1")
         } else {
             fetched = await message.channel.messages.fetch(args[0])
-            console.log("entro 2")
         }
         const addReactions = (message) => {message.react('✔')
             setTimeout(() => {
