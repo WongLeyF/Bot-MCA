@@ -13,7 +13,7 @@ module.exports = {
       try{
         if (args[0]) {
           const embed = new MessageEmbed();
-          const cmd = client.commands.get(args[0].toLowerCase()) || client.commands.get(client.aliases.get(args[0].toLowerCase()));
+          const cmd = client.commands.get(args[0]) || client.commands.get(!client.aliases.get(args[0]) ? undefined : client.aliases.get(args[0]).toLowerCase());
           if (!cmd) {
               return message.channel.send(embed.setColor(ee.wrongcolor).setDescription(`No se encontró información para el comando  **${args[0].toLowerCase()}**`));
           }
