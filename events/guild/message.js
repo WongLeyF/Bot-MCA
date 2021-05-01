@@ -19,7 +19,7 @@ module.exports = async (client, message) => {
     if (message.channel.partial) await message.channel.fetch();
     //if the message is on partial fetch it
     if (message.partial) await message.fetch();
-    //funtion to count message of users
+    //function to count message of users
     let status = await getMessageCount(message);
     if(status == null ? true : status)messageCount(message)
     //get the current prefix from the botconfig/config.json
