@@ -17,7 +17,7 @@ module.exports = {
           if (!cmd) {
               return message.channel.send(embed.setColor(ee.wrongcolor).setDescription(`No se encontró información para el comando  **${args[0].toLowerCase()}**`));
           }
-          if (cmd.name) embed.setTitle(`Información detallada sobre: ${cmd.name.toUpperCase()}`);
+          if (cmd.name) embed.setAuthor(`Información detallada sobre: ${cmd.name.toUpperCase()}`,client.user.displayAvatarURL());
           if (cmd.name) embed.addField("**Nombre del comando**", `\`${cmd.name}\``);
           if (cmd.description) embed.addField("**Descripción**", `${cmd.description}`);
           if (cmd.aliases) embed.addField("**Aliases**", `\`${cmd.aliases.map((a) => `${a}`).join("`, `")}\``);
@@ -32,8 +32,8 @@ module.exports = {
         } else {
           const embed = new MessageEmbed()
               .setColor(ee.color)
-              .setThumbnail(client.user.displayAvatarURL())
-              .setTitle("📢 Menú Help | Comandos de "+ client.user.username)
+              .setThumbnail(ee.helpicon)
+              .setAuthor(" Comandos de "+ client.user.username, client.user.displayAvatarURL())
               .setFooter(`Para ver la descripción e información de los comandos, escriba: ${config.prefix}help <comando>`);
           const commands = (category) => {
               return client.commands.filter((cmd) => cmd.category === category).map((cmd) => `${cmd.name}`);
