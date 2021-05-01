@@ -47,7 +47,7 @@ module.exports = async (client, message) => {
     //get the command from the collection
     let command = client.commands.get(cmd);
     //if the command does not exist, try to get it by his alias
-    if (!command) command = client.commands.get(client.aliases.get(cmd).toLowerCase());
+    if (!command) command = client.commands.get(!client.aliases.get(cmd) ? undefined : client.aliases.get(cmd).toLowerCase() );
     //if the command is now valid
     if (command){
         if (!client.cooldowns.has(command.name)) { //if its not in the cooldown, set it too there
