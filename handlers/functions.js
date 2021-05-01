@@ -6,10 +6,10 @@ module.exports = {
   getMember: function(message, toFind = "") {
     try{
       toFind = toFind.toLowerCase();
-      let target = message.guild.members.get(toFind);
+      let target = message.guild.members.cache.get(toFind);
       if (!target && message.mentions.members) target = message.mentions.members.first();
       if (!target && toFind) {
-        target = message.guild.members.find((member) => {
+        target = message.guild.members.fetch((member) => {
           return member.displayName.toLowerCase().includes(toFind) || member.user.tag.toLowerCase().includes(toFind);
         });
       }
@@ -19,6 +19,7 @@ module.exports = {
       console.log(String(e.stack).bgRed)
     }
   },
+  //return string with the id of confession channel 
   getChannelConfession: async function (message) {
     const guildID = message.guild.id
     let channelID
@@ -32,6 +33,7 @@ module.exports = {
     });
     return channelID
   },
+  //return boolean with the status of message counter
   getMessageCount: async function (message) {
     const guildID = message.guild.id
     await mongo().then(async (mongoose) => {
@@ -44,6 +46,7 @@ module.exports = {
     });
     return status
   },
+  //return string with the prefix of guild
   getPrefix: async function (message) {
     const guildID = message.guild.id
     await mongo().then(async (mongoose) => {
