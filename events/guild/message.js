@@ -6,10 +6,9 @@ const config = require("../../botconfig/config.json"); //loading config file wit
 const ee = require("../../botconfig/embed.json"); //Loading all embed settings like color footertext and icon ...
 const gm = require("../../botconfig/globalMessages.json");
 const Discord = require("discord.js"); //this is the official discord.js wrapper for the Discord Api, which we use!
-const { escapeRegex} = require("../../handlers/functions"); //Loading all needed functions
+const { escapeRegex, getPrefix, getMessageCount } = require("../../handlers/functions"); //Loading all needed functions
 const messageCount = require("../listeners/messageCounter");
-const getPrefix = require("../listeners/getPrefix");
-const getMessCount = require("../listeners/getMessCount");
+
 
 //here the event starts
 module.exports = async (client, message) => {
@@ -21,7 +20,7 @@ module.exports = async (client, message) => {
     //if the message is on partial fetch it
     if (message.partial) await message.fetch();
     //funtion to count message of users
-    let status = await getMessCount(message);
+    let status = await getMessageCount(message);
     if(status == null ? true : status)messageCount(message)
     //get the current prefix from the botconfig/config.json
     let prefix = await getPrefix(message) || config.prefix

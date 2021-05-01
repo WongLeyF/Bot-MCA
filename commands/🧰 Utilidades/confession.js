@@ -2,7 +2,7 @@ const { MessageEmbed } = require("discord.js");
 const config = require("../../botconfig/config.json");
 const ee = require("../../botconfig/embed.json");
 const gm = require("../../botconfig/globalMessages.json");
-const getChannelConfession = require("../../events/listeners/getChannelConfession");
+const { getChannelConfession } = require("../../handlers/functions");
 
 module.exports = {
     name: "Confession",

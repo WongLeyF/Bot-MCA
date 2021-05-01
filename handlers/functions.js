@@ -1,3 +1,6 @@
+const mongo = require("../handlers/mongo");
+const settingSchema = require("../schemas/setting_schema");
+
 module.exports = {
   //get a member lol
   getMember: function(message, toFind = "") {
@@ -15,6 +18,43 @@ module.exports = {
     }catch (e){
       console.log(String(e.stack).bgRed)
     }
+  },
+  getChannelConfession: async function (message) {
+    const guildID = message.guild.id
+    let channelID
+    await mongo().then(async (mongoose) => {
+      try {
+        let data = await settingSchema.findOne({ _id: guildID });
+        channelID = data ? data.confessionChannel : null
+      } finally {
+        mongoose.connection.close;
+      }
+    });
+    return channelID
+  },
+  getMessageCount: async function (message) {
+    const guildID = message.guild.id
+    await mongo().then(async (mongoose) => {
+      try {
+        let data = await settingSchema.findOne({ _id: guildID });
+        status = data ? data.messageCounter : null
+      } finally {
+        mongoose.connection.close;
+      }
+    });
+    return status
+  },
+  getPrefix: async function (message) {
+    const guildID = message.guild.id
+    await mongo().then(async (mongoose) => {
+      try {
+        let data = await settingSchema.findOne({ _id: guildID });
+        guildPrefixes = data ? data.prefix : null
+      } finally {
+        mongoose.connection.close;
+      }
+    });
+    return guildPrefixes
   },
   //changeging the duration from ms to a date
   duration: function(ms) {
