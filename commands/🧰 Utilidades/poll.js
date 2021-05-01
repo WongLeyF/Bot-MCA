@@ -14,7 +14,6 @@ cooldown: 5,
 usage: "poll [ID del mensaje]",
 run: async (client, message, args, user, text, prefix) => {
     try {
-        console.log(args[0])
         let fetched
         await message.delete()
         if (args.length===0) {
