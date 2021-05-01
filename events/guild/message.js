@@ -9,6 +9,7 @@ const Discord = require("discord.js"); //this is the official discord.js wrapper
 const { escapeRegex} = require("../../handlers/functions"); //Loading all needed functions
 const messageCount = require("../listeners/messageCounter");
 const getPrefix = require("../listeners/getPrefix");
+const getMessCount = require("../listeners/getMessCount");
 
 //here the event starts
 module.exports = async (client, message) => {
@@ -20,7 +21,8 @@ module.exports = async (client, message) => {
     //if the message is on partial fetch it
     if (message.partial) await message.fetch();
     //funtion to count message of users
-    messageCount(message)
+    let status = await getMessCount(message);
+    if(status == null ? true : status)messageCount(message)
     //get the current prefix from the botconfig/config.json
     let prefix = await getPrefix(message) || config.prefix
     //the prefix can be a Mention of the Bot / The defined Prefix of the Bot
