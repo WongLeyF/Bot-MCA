@@ -1,12 +1,12 @@
 const mongo = require("../../handlers/mongo");
-const commandPrefixSchema = require("../../schemas/prefix_schema");
+const settingPrefixSchema = require("../../schemas/setting_schema");
 let guildPrefixes
 
 module.exports = async (message) => {
   const guildID = message.guild.id
   await mongo().then(async (mongoose) => {
     try {      
-        let dataPrefix = await commandPrefixSchema.findOne({ _id: guildID });
+        let dataPrefix = await settingPrefixSchema.findOne({ _id: guildID });
         guildPrefixes= dataPrefix ? dataPrefix.prefix : null 
     } finally {
       mongoose.connection.close;

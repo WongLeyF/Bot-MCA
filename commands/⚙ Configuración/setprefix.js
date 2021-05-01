@@ -3,7 +3,7 @@ const config = require("../../botconfig/config.json");
 const ee = require("../../botconfig/embed.json");
 const gm = require("../../botconfig/globalMessages.json");
 const mongo =  require('../../handlers/mongo')
-const commandPrefixSchema = require('../../schemas/prefix_schema')
+const settingsPrefixSchema = require('../../schemas/setting_schema')
 
 module.exports = {
 name: "setPrefix",
@@ -22,12 +22,12 @@ run: async (client, message, args, user, text, prefix) => {
         await mongo().then(async mongoose =>{
             try {
                 const guildID = message.guild.id
-                let dataPrefix = await commandPrefixSchema.findOne({ _id: guildID });
+                let dataPrefix = await settingsPrefixSchema.findOne({ _id: guildID });
                 if (dataPrefix){
                   dataPrefix.prefix = args[0]
                   await dataPrefix.save()
                 }else{
-                  let newData = new commandPrefixSchema({
+                  let newData = new settingsPrefixSchema({
                     _id: guildID,
                     prefix: args[0],
                   });
