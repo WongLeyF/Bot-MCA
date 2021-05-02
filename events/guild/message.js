@@ -2,24 +2,27 @@
   * @INFO
   * Loading all needed File Information Parameters
 */
-const config = require("../../botconfig/config.json"); //loading config file with token and prefix, and settings
 const ee = require("../../botconfig/embed.json"); //Loading all embed settings like color footertext and icon ...
 const gm = require("../../botconfig/globalMessages.json");
 const Discord = require("discord.js"); //this is the official discord.js wrapper for the Discord Api, which we use!
-const { escapeRegex} = require("../../handlers/functions"); //Loading all needed functions
+const { escapeRegex, getPrefix, getMessageCount } = require("../../handlers/functions"); //Loading all needed functions
+const messageCount = require("../listeners/messageCounter");
+
+
 //here the event starts
 module.exports = async (client, message) => {
   try {
-    //if the message is not in a guild (aka in dms), return aka ignore the inputs
-    if (!message.guild) return;
-    // if the message  author is a bot, return aka ignore the inputs
-    if (message.author.bot) return;
+    //if the message is not in a guild (aka in dms),if the message  author is a bot, return aka ignore the inputs
+    if (!message.guild || message.author.bot) return;
     //if the channel is on partial fetch it
     if (message.channel.partial) await message.channel.fetch();
     //if the message is on partial fetch it
     if (message.partial) await message.fetch();
-    //get the current prefix from the botconfig/config.json
-    let prefix = config.prefix
+    //function to count message of users
+    let status = await getMessageCount(message);
+    if(status == null ? true : status)messageCount(message)
+    //get the current prefix from the env.prefix or mongodb
+    let prefix = await getPrefix(message) || process.env.prefix
     //the prefix can be a Mention of the Bot / The defined Prefix of the Bot
     const prefixRegex = new RegExp(`^(<@!?${client.user.id}>|${escapeRegex(prefix)})\\s*`);
     //if its not that then return
@@ -44,7 +47,7 @@ module.exports = async (client, message) => {
     //get the command from the collection
     let command = client.commands.get(cmd);
     //if the command does not exist, try to get it by his alias
-    if (!command) command = client.commands.get(client.aliases.get(cmd));
+    if (!command) command = client.commands.get(!client.aliases.get(cmd) ? undefined : client.aliases.get(cmd).toLowerCase() );
     //if the command is now valid
     if (command){
         if (!client.cooldowns.has(command.name)) { //if its not in the cooldown, set it too there
@@ -59,9 +62,8 @@ module.exports = async (client, message) => {
             const timeLeft = (expirationTime - now) / 1000; //get the lefttime
             return message.channel.send(new Discord.MessageEmbed()
               .setColor(ee.wrongcolor)
-              .setFooter(ee.footertext,ee.footericon)
-              .setTitle(`:warning: Please wait ${timeLeft.toFixed(1)} more second(s) before reusing the \`${command.name}\` command.`)
-            ); //send an information message
+              .setTitle(`:warning: Por favor espera ${timeLeft.toFixed(1)} segundo(s) para volver a usar el comando \`${command.name}\`.`)
+            ).then(msg=>msg.delete({timeout: 8000}).catch(e=>console.log("Couldn't Delete --> Ignore".gray))); //send an information message
           }
         }
         timestamps.set(message.author.id, now); //if he is not on cooldown, set it to the cooldown
@@ -83,7 +85,6 @@ module.exports = async (client, message) => {
         if(!message.guild.me.hasPermission(required_perms)){
           return message.channel.send(new Discord.MessageEmbed()
             .setColor(ee.wrongcolor)
-            .setFooter(ee.footertext, ee.footericon)
             .setTitle(":warning: | ¡No tengo los permisos necesarios! ")
             .setDescription("Por favor, dame solo `ADMINISTRADOR`, porque lo necesito para eliminar mensajes, crear canales y ejecutar todos los comandos de administrador. \n Si no quieres dármelos, entonces esos son los permisos exactos que necesito: \n> `" + required_perms.join("`, `") +"`")
           )

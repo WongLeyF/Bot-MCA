@@ -1,14 +1,13 @@
 const { MessageEmbed } = require("discord.js");
-const config = require("../../botconfig/config.json");
 const ee = require("../../botconfig/embed.json");
 const gm = require("../../botconfig/globalMessages.json");
 module.exports = {
-    name: "ping",
+    name: "Ping",
     category: "ℹ️ Información",
     aliases: ["latency"],
     cooldown: 2,
     usage: "ping",
-    description: "Te dice que tan rápido el Bot puede responderte ",
+    description: "Te muestra el tiempo de respuesta de "+ ee.footertext,
     run: async (client, message, args, user, text, prefix) => {
     try{
       message.channel.send(new MessageEmbed()

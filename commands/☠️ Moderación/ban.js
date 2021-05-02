@@ -1,10 +1,8 @@
 const { MessageEmbed } = require("discord.js");
-const config = require("../../botconfig/config.json");
 const ee = require("../../botconfig/embed.json");
 const gm = require("../../botconfig/globalMessages.json");
 module.exports = {
-    name: "ban",
-    aliases: [""],
+    name: "Ban",    
     description: "Banear miembros del servidor",
     category: "☠️ Moderación",
     cooldown: 2,
@@ -42,7 +40,7 @@ module.exports = {
             .addField('ID', member.id, true)
             .addField('Expulsado por', message.author)
             .addField('Razon', reason)
-            .setImage('https://i.imgur.com/yRL8W7T.gif')
+            .setImage('https://media1.tenor.com/images/0be06cf168b1fa90572791419407f679/tenor.gif')
             .setFooter(ee.footertext, ee.footericon)
             .setTimestamp()
             );

@@ -1,11 +1,9 @@
 const { MessageEmbed } = require("discord.js");
-const config = require("../../botconfig/config.json");
 const ee = require("../../botconfig/embed.json");
 const gm = require("../../botconfig/globalMessages.json");
 
 module.exports = {
-    name: "kick",
-    aliases: [""],
+    name: "Kick",   
     description: "Expulsar miembros del servidor",
     category: "☠️ Moderación",
     cooldown: 2,
@@ -43,7 +41,7 @@ module.exports = {
             .addField('ID', member.id, true)
             .addField('Expulsado por', message.author)
             .addField('Razon', reason)
-            .setImage('https://i.imgur.com/yRL8W7T.gif')
+            .setImage('https://media1.tenor.com/images/ca1bad80a757fa8b87dacd9c051f2670/tenor.gif')
             .setFooter(ee.footertext, ee.footericon)
             .setTimestamp()
             );

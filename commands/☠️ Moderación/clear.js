@@ -1,10 +1,9 @@
 const { MessageEmbed } = require("discord.js");
-const config = require("../../botconfig/config.json");
 const ee = require("../../botconfig/embed.json");
 const gm = require("../../botconfig/globalMessages.json");
 
 module.exports = {
-    name: "clear",
+    name: "Clear",
     aliases: ["purge"],
     description: "Borrar mensajes",
     category: "☠️ Moderación",

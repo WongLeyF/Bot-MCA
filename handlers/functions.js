@@ -1,12 +1,15 @@
+const mongo = require("../handlers/mongo");
+const settingSchema = require("../schemas/setting_schema");
+
 module.exports = {
   //get a member lol
   getMember: function(message, toFind = "") {
     try{
       toFind = toFind.toLowerCase();
-      let target = message.guild.members.get(toFind);
+      let target = message.guild.members.cache.get(toFind);
       if (!target && message.mentions.members) target = message.mentions.members.first();
       if (!target && toFind) {
-        target = message.guild.members.find((member) => {
+        target = message.guild.members.fetch((member) => {
           return member.displayName.toLowerCase().includes(toFind) || member.user.tag.toLowerCase().includes(toFind);
         });
       }
@@ -15,6 +18,46 @@ module.exports = {
     }catch (e){
       console.log(String(e.stack).bgRed)
     }
+  },
+  //return string with the id of confession channel 
+  getChannelConfession: async function (message) {
+    const guildID = message.guild.id
+    let channelID
+    await mongo().then(async (mongoose) => {
+      try {
+        let data = await settingSchema.findOne({ _id: guildID });
+        channelID = data ? data.confessionChannel : null
+      } finally {
+        mongoose.connection.close;
+      }
+    });
+    return channelID
+  },
+  //return boolean with the status of message counter
+  getMessageCount: async function (message) {
+    const guildID = message.guild.id
+    await mongo().then(async (mongoose) => {
+      try {
+        let data = await settingSchema.findOne({ _id: guildID });
+        status = data ? data.messageCounter : null
+      } finally {
+        mongoose.connection.close;
+      }
+    });
+    return status
+  },
+  //return string with the prefix of guild
+  getPrefix: async function (message) {
+    const guildID = message.guild.id
+    await mongo().then(async (mongoose) => {
+      try {
+        let data = await settingSchema.findOne({ _id: guildID });
+        guildPrefixes = data ? data.prefix : null
+      } finally {
+        mongoose.connection.close;
+      }
+    });
+    return guildPrefixes
   },
   //changeging the duration from ms to a date
   duration: function(ms) {

@@ -9,7 +9,7 @@ module.exports = (client) => {
         for (let file of commands) {
             let pull = require(`../commands/${dir}/${file}`);
             if (pull.name) {
-                client.commands.set(pull.name, pull);
+                client.commands.set(pull.name.toLowerCase(), pull);
                 table.addRow(file, "Ready");
             } else {
                 table.addRow(file, `error->missing a help.name,or help.name is not a string.`);

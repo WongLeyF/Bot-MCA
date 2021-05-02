@@ -1,12 +1,10 @@
 const { MessageEmbed } = require("discord.js");
-const config = require("../../botconfig/config.json");
 const ee = require("../../botconfig/embed.json");
 const gm = require("../../botconfig/globalMessages.json");
 const { duration } = require("../../handlers/functions")
 module.exports = {
-    name: "uptime",
+    name: "Uptime",
     category: "ℹ️ Información",
-    aliases: [""],
     cooldown: 10,
     usage: "uptime",
     description: "Te dice cuanto tiempo a estado online el bot",
