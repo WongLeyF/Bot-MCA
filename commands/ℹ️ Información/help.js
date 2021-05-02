@@ -1,5 +1,4 @@
 const { MessageEmbed } = require("discord.js");
-const config = require("../../botconfig/config.json");
 const ee = require("../../botconfig/embed.json");
 const gm = require("../../botconfig/globalMessages.json");
 module.exports = {
@@ -25,7 +24,7 @@ module.exports = {
           if (cmd.cooldown) embed.addField("**Tiempo de espera**", `${cmd.cooldown} segundo(s)`);
           else embed.addField("**Tiempo de espera**", `\`1 Tiempo de espera\``);
           if (cmd.usage) {
-              embed.addField("**Uso**", `\`${config.prefix}${cmd.usage}\``);
+              embed.addField("**Uso**", `\`${prefix}${cmd.usage}\``);
               embed.setFooter("Sintaxis : <> = requerida, [] = opcional");
           }
           return message.channel.send(embed.setColor(ee.color));
@@ -34,7 +33,7 @@ module.exports = {
               .setColor(ee.color)
               .setThumbnail(ee.helpicon)
               .setAuthor(" Comandos de "+ client.user.username, client.user.displayAvatarURL())
-              .setFooter(`Para ver la descripción e información de los comandos, escriba: ${config.prefix}help <comando>`);
+              .setFooter(`Para ver la descripción e información de los comandos, escriba: ${prefix}help <comando>`);
           const commands = (category) => {
               return client.commands.filter((cmd) => cmd.category === category).map((cmd) => `${cmd.name}`);
           };
