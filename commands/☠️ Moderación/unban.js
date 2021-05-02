@@ -1,6 +1,5 @@
 const { MessageEmbed } = require("discord.js");
 const Discord = require("discord.js");
-const config = require("../../botconfig/config.json");
 const ee = require("../../botconfig/embed.json");
 const gm = require("../../botconfig/globalMessages.json");
 module.exports = {

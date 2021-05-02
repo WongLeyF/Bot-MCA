@@ -1,5 +1,4 @@
 //here the event starts
-const config = require("../../botconfig/config.json")
 module.exports = client => {
   try{
     const templength = 34;
