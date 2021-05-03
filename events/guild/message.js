@@ -5,6 +5,7 @@
 const ee = require("../../botconfig/embed.json"); //Loading all embed settings like color footertext and icon ...
 const gm = require("../../botconfig/globalMessages.json");
 const Discord = require("discord.js"); //this is the official discord.js wrapper for the Discord Api, which we use!
+const {MessageEmbed} = require("discord.js"); //this is the official discord.js wrapper for the Discord Api, which we use!
 const { escapeRegex, getPrefix, getMessageCount } = require("../../handlers/functions"); //Loading all needed functions
 const messageCount = require("../listeners/messageCounter");
 
@@ -102,8 +103,7 @@ module.exports = async (client, message) => {
       }
     }
   }catch (e){
-    return message.channel.send(
-    new MessageEmbed()
+    return message.channel.send(new MessageEmbed()
     .setColor("RED")
     .setTitle(gm.titleError)
     .setDescription(`\`\`\`${e.stack}\`\`\``)
