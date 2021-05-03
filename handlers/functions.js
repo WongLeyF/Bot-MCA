@@ -1,5 +1,5 @@
 const mongo = require("../handlers/mongo");
-const settingSchema = require("../schemas/setting_schema");
+const settingSchema = require("../models/setting_schema");
 
 module.exports = {
   //get a member lol

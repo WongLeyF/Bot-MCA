@@ -2,7 +2,7 @@ const { MessageEmbed } = require("discord.js");
 const ee = require("../../botconfig/embed.json");
 const gm = require("../../botconfig/globalMessages.json");
 const mongo =  require('../../handlers/mongo')
-const settingsPrefixSchema = require('../../schemas/setting_schema')
+const settingsPrefixSchema = require('../../models/setting_schema')
 
 module.exports = {
 name: "setPrefix",
