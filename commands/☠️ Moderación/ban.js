@@ -28,8 +28,7 @@ module.exports = {
                 .setColor(ee.wrongcolor)
                 .setDescription('❌ Estem, no puedes expulsarte a ti mismo...')
             ).then(msg=>msg.delete({timeout: 10000}).catch(e=>console.log(gm.errorDeleteMessage.gray)));
-            let reason = args.slice(1).join(" ")
-            reason = reason.length===0 ? 'Sin especificar': reason;
+            let reason = !args.slice(1).join(" ") ? 'Sin especificar': args.slice(1).join(" ");
             await member.ban({reason: reason})
             
             message.channel.send( new MessageEmbed()

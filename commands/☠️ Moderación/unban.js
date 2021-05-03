@@ -17,8 +17,7 @@ module.exports = {
                 .setDescription(`Uso: \`${prefix}unban <Tag/ID> [Razón]\``)
                 ).then(msg=>msg.delete({timeout: 10000}).catch(e=>console.log(gm.errorDeleteMessage.gray)));
             const toUnban = await client.users.fetch(args[0])    
-            let reason = args.slice(1).join(" ")
-            reason = reason.length===0 ? 'Sin especificar': reason;
+            let reason = !args.slice(1).join(" ") ? 'Sin especificar': args.slice(1).join(" ");
             await message.guild.members.unban(toUnban, reason)     
             message.channel.send(new MessageEmbed()
                 .setColor(ee.color)
