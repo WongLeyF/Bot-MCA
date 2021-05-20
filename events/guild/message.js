@@ -6,8 +6,9 @@ const ee = require("../../botconfig/embed.json"); //Loading all embed settings l
 const gm = require("../../botconfig/globalMessages.json");
 const Discord = require("discord.js"); //this is the official discord.js wrapper for the Discord Api, which we use!
 const {MessageEmbed} = require("discord.js"); //this is the official discord.js wrapper for the Discord Api, which we use!
-const { escapeRegex, getPrefix, getMessageCount } = require("../../handlers/functions"); //Loading all needed functions
+const { escapeRegex, getPrefix, getMessageCount, getLevelSystem } = require("../../handlers/functions"); //Loading all needed functions
 const messageCount = require("../listeners/messageCounter");
+const randomXp = require("../listeners/randomXp");
 
 
 //here the event starts
@@ -22,6 +23,9 @@ module.exports = async (client, message) => {
     //function to count message of users
     let status = await getMessageCount(message);
     if(status == null ? true : status)messageCount(message)
+    //function to level system of users
+    status = await getLevelSystem(message)
+    if(status == null ? true : status)randomXp(client, message)
     //get the current prefix from the env.prefix or mongodb
     let prefix = await getPrefix(message) || process.env.prefix
     //the prefix can be a Mention of the Bot / The defined Prefix of the Bot
