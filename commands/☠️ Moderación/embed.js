@@ -38,7 +38,7 @@ module.exports = {
       message.delete()
     } catch (e) {
       console.log(String(e.stack).bgRed)
-      return client.users.get("275407251127140352").send(new MessageEmbed()
+      return message.channel.send(new MessageEmbed()
         .setColor(ee.wrongcolor)
         .setFooter(ee.footertext, ee.footericon)
         .setTitle(gm.titleError)
