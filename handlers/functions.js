@@ -1,5 +1,6 @@
 const mongo = require("../handlers/mongo");
 const { MessageEmbed } = require("discord.js")
+const ee = require("../botconfig/embed.json")
 const settingSchema = require("../models/setting_schema");
 const settingsXP = require("../models/settingsxp");
 const userSettings = require("../models/usersettings");
@@ -129,7 +130,10 @@ module.exports = {
   },
   getLeaderboard: async function (client, message) {
     const rawLeaderboard = await Levels.fetchLeaderboard(message.guild.id, 10); // We grab top 10 users with most xp in the current server.
-    if (rawLeaderboard.length < 1) return reply("Nobody's in leaderboard yet.");
+    if (rawLeaderboard.length < 1)  return message.reply(new MessageEmbed()
+    .setColor(ee.wrongcolor)
+    .setDescription('❌ Nadie está en el leaderboard todavía.')
+  ).then(msg => msg.delete({ timeout: 5000 }).catch(e => console.log(gm.errorDeleteMessage.gray)));
     const leaderboard = await Levels.computeLeaderboard(client, rawLeaderboard, true); // We process the leaderboard.
     const lb = leaderboard.map(e => `**${e.position}. ${e.username}#${e.discriminator}**\nLevel: ${e.level}  -  XP: ${e.xp.toLocaleString()}`); // We map the outputs.
     //message.channel.send(`**Leaderboard**:\n\n${lb.join("\n\n")}`);
@@ -138,7 +142,7 @@ module.exports = {
       .setDescription(`\n${lb.join("\n\n")}`)
     )
   },
-  getLeaderboard: async function (client, message, init) {
+  getLeaderboardRange: async function (client, message, init) {
     const rawLeaderboard = await Levels.fetchLeaderboard(message.guild.id, init + 10); // We grab top 10 users with most xp in the current server.
     if (rawLeaderboard.length < 1) return message.reply(new MessageEmbed()
       .setColor(ee.wrongcolor)
@@ -147,10 +151,13 @@ module.exports = {
     const leaderboard = await Levels.computeLeaderboard(client, rawLeaderboard, true); // We process the leaderboard.
     const lb = leaderboard.map(e => `**${e.position}. ${e.username}#${e.discriminator}**\nLevel: ${e.level}  -  XP: ${e.xp.toLocaleString()}`); // We map the outputs.
     //message.channel.send(`**Leaderboard**:\n\n${lb.join("\n\n")}`);
-    if(lb[init] != null)message.channel.send(new MessageEmbed()
+    if (lb[init-1] != null) message.channel.send(new MessageEmbed()
       .setTitle("**Leaderboard**:")
-      .setDescription(`\n${lb.slice(init-1).join("\n\n")}`)
-    )
+      .setDescription(`\n${lb.slice(init - 1).join("\n\n")}`)
+    ); else return message.channel.send(new MessageEmbed()
+      .setColor(ee.wrongcolor)
+      .setDescription('❌ Nadie está en el leaderboard todavía.')
+    ).then(msg => msg.delete({ timeout: 5000 }).catch(e => console.log(gm.errorDeleteMessage.gray)));
   },
   getLeaderboardSpecific: async function (client, guildID, userID) {
     const rawLeaderboard = await Levels.fetchLeaderboard(guildID, 999999);
