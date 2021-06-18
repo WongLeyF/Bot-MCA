@@ -11,7 +11,7 @@ module.exports = {
     category: "⚙ Configuración",
     cooldown: 10,
     memberpermissions: ["MANAGE_CHANNELS", "MANAGE_GUILD"],
-    usage: "setconfession [Caracter]",
+    usage: "setconfession [Canal/ID]",
     run: async (client, message, args, user, text, prefix) => {
         try {
             await mongo().then(async mongoose => {
