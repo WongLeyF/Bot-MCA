@@ -13,8 +13,9 @@ module.exports = {
     usage: "setlevel <add/set/sub> <mencion/ID> <nivel>",
     run: async (client, message, args, user, text, prefix) => {
         try {
+            const options = ["add", "set", "sub"]
             const member = message.mentions.members.first() || message.guild.members.cache.get(args[1]);
-            if (!args[0]) return message.channel.send(new MessageEmbed()
+            if (!args[0] || !options.includes(args[0])) return message.channel.send(new MessageEmbed()
                 .setColor(ee.wrongcolor)
                 .setTitle(`⚠ Por favor, dime que realizar hacer`)
                 .setDescription(`Uso: \`${prefix}setlevel <add/set/sub> <mencion/ID> <nivel>\``))
@@ -22,13 +23,17 @@ module.exports = {
                 .setColor(ee.wrongcolor)
                 .setTitle(`⚠ Por favor, especifica al usuario`)
             ).then(msg => msg.delete({ timeout: 10000 }).catch(e => console.log(gm.errorDeleteMessage.gray)));
+            if (!member) return message.channel.send(new MessageEmbed()
+                .setColor(ee.wrongcolor)
+                .setTitle(`⚠ Por favor, especifica un usuario valido`)
+            ).then(msg => msg.delete({ timeout: 10000 }).catch(e => console.log(gm.errorDeleteMessage.gray)));
             if (!args[2]) return message.channel.send(new MessageEmbed()
                 .setColor(ee.wrongcolor)
                 .setTitle(`⚠ Por favor, especifica el nivel`)
             ).then(msg => msg.delete({ timeout: 10000 }).catch(e => console.log(gm.errorDeleteMessage.gray)));
             if (isNaN(args[2])) return message.channel.send(new MessageEmbed()
                 .setColor(ee.wrongcolor)
-                .setTitle(`⚠ Por favor, especifica el nivel`)
+                .setTitle(`⚠ Por favor, escribe un numero valido para el nivel`)
             ).then(msg => msg.delete({ timeout: 10000 }).catch(e => console.log(gm.errorDeleteMessage.gray)));
 
             switch (args[0]) {
