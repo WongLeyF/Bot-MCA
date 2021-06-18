@@ -5,11 +5,11 @@ const userSettings = require("../../models/usersettings")
 const mongo = require('../../handlers/mongo')
 
 module.exports = {
-    name: "RankSettings",
+    name: "RankSetting",
     description: "Este comando te permite cambiar ciertos aspectos a la tarjeta del rango.\nPara mas info coloca solo ranksettings <img|bar|status|color>",
     category: "🔮 Niveles",
     cooldown: 5,
-    usage: "ranksettings <img|bar|status|color> [URL|HEX|STATUS]",
+    usage: "ranksetting <img|bar|status|color> [URL|HEX|STATUS]",
     run: async (client, message, args, user, text, prefix) => {
         try {
             await mongo().then(async mongoose => {
@@ -22,7 +22,7 @@ module.exports = {
                             if (!args[1]) return message.reply(new MessageEmbed()
                                 .setColor(ee.color)
                                 .setTitle("⚠ Info IMG")
-                                .setDescription(`Coloca el link de la imagen que deseas, debe terminar en formato de imagen (png, jpg, jpeg, etc.)\n Ejemplo del comando \`${prefix}ranksettings img https://i.imgur.com/B7oECZe.jpeg\``)
+                                .setDescription(`Coloca el link de la imagen que deseas, debe terminar en formato de imagen (png, jpg, jpeg, etc.)\n Ejemplo del comando \`${prefix}ranksetting img https://i.imgur.com/B7oECZe.jpeg\``)
                             ).then(msg => msg.delete({ timeout: 50000 }).catch(e => console.log(gm.errorDeleteMessage.gray)));
                             if (data) {
                                 data.imgRank = args[1]
@@ -32,7 +32,7 @@ module.exports = {
                                     userId: member.id,
                                     guildId: guildID,
                                     imgRank: args[1],
-                                    colorStatus: "#0"
+                                    colorBackground: "#000"
                                 })
                                 await newData.save()
                             }
@@ -41,7 +41,7 @@ module.exports = {
                             if (!args[1]) return message.reply(new MessageEmbed()
                                 .setColor(ee.color)
                                 .setTitle("⚠ Info BAR")
-                                .setDescription(`Coloca el color que deseas en HEX, debe tener minimo las tres primeros caracteres "#ABC"\n Ejemplo del comando \`${prefix}ranksettings bar "#ABC"\``)
+                                .setDescription(`Coloca el color que deseas en HEX, debe tener minimo las tres primeros caracteres "#ABC"\n Ejemplo del comando \`${prefix}ranksetting bar "#ABC"\``)
                             ).then(msg => msg.delete({ timeout: 50000 }).catch(e => console.log(gm.errorDeleteMessage.gray)));
                             if (!/^#([0-9A-F]{3}){1,2}$/i.test(args[1])) return message.reply(new MessageEmbed()
                                 .setColor(ee.wrongcolor)
@@ -65,7 +65,7 @@ module.exports = {
                             if (!args[1]) return message.reply(new MessageEmbed()
                                 .setColor(ee.color)
                                 .setTitle("⚠ Info STATUS")
-                                .setDescription(`Coloca el estado de discord, solo se se pueden asignar: online, idle, dnd, offline y streaming \n Ejemplo del comando \`${prefix}ranksettings status online\``)
+                                .setDescription(`Coloca el estado de discord, solo se se pueden asignar: online, idle, dnd, offline y streaming \n Ejemplo del comando \`${prefix}ranksetting status online\``)
                             ).then(msg => msg.delete({ timeout: 50000 }).catch(e => console.log(gm.errorDeleteMessage.gray)));
                             let status = "online"
                             switch (args[1]) {
@@ -102,7 +102,7 @@ module.exports = {
                             if (!args[1]) return message.reply(new MessageEmbed()
                                 .setColor(ee.color)
                                 .setTitle("⚠ Info COLOR")
-                                .setDescription(`Coloca el color que deseas en HEX, debe tener minimo las tres primeros caracteres "#ABC"\n Ejemplo del comando \`${prefix}ranksettings color "#ABC"\``)
+                                .setDescription(`Coloca el color que deseas en HEX, debe tener minimo las tres primeros caracteres "#ABC"\n Ejemplo del comando \`${prefix}ranksetting color "#ABC"\``)
                             ).then(msg => msg.delete({ timeout: 50000 }).catch(e => console.log(gm.errorDeleteMessage.gray)));
                             if (!/^#([0-9A-F]{3}){1,2}$/i.test(args[1])) return message.reply(new MessageEmbed()
                                 .setColor(ee.wrongcolor)
@@ -127,7 +127,7 @@ module.exports = {
                             return message.channel.send(new MessageEmbed()
                                 .setColor(ee.wrongcolor)
                                 .setTitle(`⚠ Por favor, dime que realizar hacer, ${args[0] == undefined ? "": `\`${args[0]}\``} no lo reconozco como accion`)
-                                .setDescription(`Uso: \`${prefix}ranksettings <img|bar|status|color> [URL|HEX|STATUS]\``))
+                                .setDescription(`Uso: \`${prefix}ranksetting <img|bar|status|color> [URL|HEX|STATUS]\``))
                     }
                     message.channel.send(new MessageEmbed()
                         .setColor(ee.checkcolor)
