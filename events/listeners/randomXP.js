@@ -29,24 +29,36 @@ module.exports = async (client, message) => {
     const channelID = await getChannelLevels(message)
     if (hasLeveledUp) {
         const member = message.author;
-        const rankpos = await getLeaderboardSpecific(client,message.guild.id,member.id)
         const user = await Levels.fetch(member.id, message.guild.id);
-        if(await db.exists(`${message.guild.id}.${user.level}`)){
-            const rolereward = await db.get(`${message.guild.id}.${user.level}`)
-            for (let i = user.level-1; i >= 0; i--) {
-                if(await db.exists(`${message.guild.id}.${i}`)){
-                    const x = await db.get(`${message.guild.id}.${i}`)
-                    const p = x.map(r => String(r.roleid))
-                    const role = message.guild.roles.cache.get(p[0]);
-                    message.guild.member(message.member).roles.remove(role);
-                    break;
+        if (await db.exists(`${message.guild.id}.${user.level}`)) {
+            try {
+                const rolereward = await db.get(`${message.guild.id}.${user.level}`)
+                for (let i = user.level - 1; i >= 0; i--) {
+                    if (await db.exists(`${message.guild.id}.${i}`)) {
+                        const rolerw = await db.get(`${message.guild.id}.${i}`)
+                        const rolesid = rolerw.map(r => String(r.roleid))
+                        if (rolesid[0] != 0) {
+                            const role = message.guild.roles.cache.get(rolesid[0]);
+                            message.guild.member(message.member).roles.remove(role);
+                        }
+                        break;
+                    }
                 }
+                const rolesid = rolereward.map(r => String(r.roleid))
+                if (rolesid[0] != 0) {
+                    const role = message.guild.roles.cache.get(rolesid[0]);
+                    message.guild.member(message.member).roles.add(role);
+                }
+            } catch (error) {
+                return message.reply(new MessageEmbed()
+                    .setColor(ee.color)
+                    .setTitle("⚠ Info STATUS")
+                    .setDescription(`No pude asignar el rol`)
+                ).then(msg => msg.delete({ timeout: 50000 }).catch(e => console.log(gm.errorDeleteMessage.gray)));
             }
-            const p = rolereward.map(r => String(r.roleid))
-            const role = message.guild.roles.cache.get(p[0]);
-            message.guild.member(message.member).roles.add(role);
+
         }
-        message.channel.send(`Has subido de nivel a ${user.level} y  ${Levels.xpFor(parseInt(user.level)+1)}\n${member}$`)
+       // client.channels.cache.get(channelID).send(`Has subido de nivel a ${user.level} y  ${Levels.xpFor(parseInt(user.level) + 1)}\n${member}$`)
         // const rank = new canvacord.Rank()
         //     .setAvatar(member.displayAvatarURL({dynamic: false, format: 'png'}))
         //     .setCurrentXP(user.xp-Levels.xpFor(parseInt(user.level)))
@@ -61,5 +73,5 @@ module.exports = async (client, message) => {
         //         const attachment = new Discord.MessageAttachment(data, "RankCard.png");
         //         message.channel.send(attachment);
         //     });
-     }
+    }
 }
