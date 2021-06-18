@@ -18,6 +18,7 @@ module.exports = {
             .setDescription(`uso: \`${prefix}say <Tu texto>\``)
         );
       message.channel.send(text);
+      message.delete()
     } catch (e) {
         console.log(String(e.stack).bgRed)
         return message.channel.send(new MessageEmbed()
