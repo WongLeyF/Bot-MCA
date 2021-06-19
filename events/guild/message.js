@@ -5,7 +5,7 @@
 const ee = require("../../botconfig/embed.json"); //Loading all embed settings like color footertext and icon ...
 const gm = require("../../botconfig/globalMessages.json");
 const Discord = require("discord.js"); //this is the official discord.js wrapper for the Discord Api, which we use!
-const {MessageEmbed} = require("discord.js"); //this is the official discord.js wrapper for the Discord Api, which we use!
+const { MessageEmbed, WebhookClient } = require("discord.js"); //this is the official discord.js wrapper for the Discord Api, which we use!
 const { escapeRegex, getPrefix, getMessageCount, getLevelSystem } = require("../../handlers/functions"); //Loading all needed functions
 const messageCount = require("../listeners/messageCounter");
 const randomXp = require("../listeners/randomXp");
@@ -22,10 +22,10 @@ module.exports = async (client, message) => {
     if (message.partial) await message.fetch();
     //function to count message of users
     let status = await getMessageCount(message);
-    if(status == null ? true : status)messageCount(message)
+    if (status == null ? true : status) messageCount(message)
     //function to level system of users
     status = await getLevelSystem(message)
-    if(status == null ? true : status)randomXp(client, message)
+    if (status == null ? true : status) randomXp(client, message)
     //get the current prefix from the env.prefix or mongodb
     let prefix = await getPrefix(message) || process.env.prefix
     //the prefix can be a Mention of the Bot / The defined Prefix of the Bot
@@ -39,78 +39,83 @@ module.exports = async (client, message) => {
     //creating the cmd argument by shifting the args by 1
     const cmd = args.shift().toLowerCase();
     //if no cmd added return error
-     if (cmd.length === 0){
-      if(matchedPrefix.includes(client.user.id))
+    if (cmd.length === 0) {
+      if (matchedPrefix.includes(client.user.id))
         return message.channel.send(new Discord.MessageEmbed()
           .setColor(ee.color)
-          .setFooter(ee.footertext,ee.footericon)
+          .setFooter(ee.footertext, ee.footericon)
           .setTitle(`Hugh? I got pinged? Imma give you some help`)
           .setDescription(`To see all Commands type: \`${prefix}help\``)
         );
       return;
-      }
+    }
     //get the command from the collection
     let command = client.commands.get(cmd);
     //if the command does not exist, try to get it by his alias
-    if (!command) command = client.commands.get(!client.aliases.get(cmd) ? undefined : client.aliases.get(cmd).toLowerCase() );
+    if (!command) command = client.commands.get(!client.aliases.get(cmd) ? undefined : client.aliases.get(cmd).toLowerCase());
     //if the command is now valid
-    if (command){
-        if (!client.cooldowns.has(command.name)) { //if its not in the cooldown, set it too there
-            client.cooldowns.set(command.name, new Discord.Collection());
+    if (command) {
+      if (!client.cooldowns.has(command.name)) { //if its not in the cooldown, set it too there
+        client.cooldowns.set(command.name, new Discord.Collection());
+      }
+      const now = Date.now(); //get the current time
+      const timestamps = client.cooldowns.get(command.name); //get the timestamp of the last used commands
+      const cooldownAmount = (command.cooldown || 1.5) * 1000; //get the cooldownamount of the command, if there is no cooldown there will be automatically 1 sec cooldown, so you cannot spam it^^
+      if (timestamps.has(message.author.id)) { //if the user is on cooldown
+        const expirationTime = timestamps.get(message.author.id) + cooldownAmount; //get the amount of time he needs to wait until he can run the cmd again
+        if (now < expirationTime) { //if he is still on cooldonw
+          const timeLeft = (expirationTime - now) / 1000; //get the lefttime
+          return message.channel.send(new Discord.MessageEmbed()
+            .setColor(ee.wrongcolor)
+            .setTitle(`:warning: Por favor espera ${timeLeft.toFixed(1)} segundo(s) para volver a usar el comando \`${command.name}\`.`)
+          ).then(msg => msg.delete({ timeout: 8000 }).catch(e => console.log("Couldn't Delete --> Ignore".gray))); //send an information message
         }
-        const now = Date.now(); //get the current time
-        const timestamps = client.cooldowns.get(command.name); //get the timestamp of the last used commands
-        const cooldownAmount = (command.cooldown || 1.5) * 1000; //get the cooldownamount of the command, if there is no cooldown there will be automatically 1 sec cooldown, so you cannot spam it^^
-        if (timestamps.has(message.author.id)) { //if the user is on cooldown
-          const expirationTime = timestamps.get(message.author.id) + cooldownAmount; //get the amount of time he needs to wait until he can run the cmd again
-          if (now < expirationTime) { //if he is still on cooldonw
-            const timeLeft = (expirationTime - now) / 1000; //get the lefttime
-            return message.channel.send(new Discord.MessageEmbed()
-              .setColor(ee.wrongcolor)
-              .setTitle(`:warning: Por favor espera ${timeLeft.toFixed(1)} segundo(s) para volver a usar el comando \`${command.name}\`.`)
-            ).then(msg=>msg.delete({timeout: 8000}).catch(e=>console.log("Couldn't Delete --> Ignore".gray))); //send an information message
-          }
-        }
-        timestamps.set(message.author.id, now); //if he is not on cooldown, set it to the cooldown
-        setTimeout(() => timestamps.delete(message.author.id), cooldownAmount); //set a timeout function with the cooldown, so it gets deleted later on again
-      try{
+      }
+      timestamps.set(message.author.id, now); //if he is not on cooldown, set it to the cooldown
+      setTimeout(() => timestamps.delete(message.author.id), cooldownAmount); //set a timeout function with the cooldown, so it gets deleted later on again
+      try {
         //try to delete the message of the user who ran the cmd
         //try{  message.delete();   }catch{}
         //if Command has specific permission return error
-        if(command.memberpermissions && !message.member.hasPermission(command.memberpermissions)) {
-          try{  message.delete();   }catch{}
+        if (command.memberpermissions && !message.member.hasPermission(command.memberpermissions)) {
+          try { message.delete(); } catch { }
           return message.channel.send(new Discord.MessageEmbed()
             .setColor(ee.wrongcolor)
             .setDescription(`❌ No puedes usar este comando, necesitas estos permisos: \`${command.memberpermissions.join("`, ``")}\``)
-          ).then(msg=>msg.delete({timeout: 10000}).catch(e=>console.log("Couldn't Delete --> Ignore".gray)));
+          ).then(msg => msg.delete({ timeout: 10000 }).catch(e => console.log("Couldn't Delete --> Ignore".gray)));
         }
         //if the Bot has not enough permissions return error
-        let required_perms = ["ADD_REACTIONS","PRIORITY_SPEAKER","VIEW_CHANNEL","SEND_MESSAGES",
-        "EMBED_LINKS","CONNECT","SPEAK","DEAFEN_MEMBERS"]
-        if(!message.guild.me.hasPermission(required_perms)){
+        let required_perms = ["ADD_REACTIONS", "PRIORITY_SPEAKER", "VIEW_CHANNEL", "SEND_MESSAGES",
+          "EMBED_LINKS", "CONNECT", "SPEAK", "DEAFEN_MEMBERS"]
+        if (!message.guild.me.hasPermission(required_perms)) {
           return message.channel.send(new Discord.MessageEmbed()
             .setColor(ee.wrongcolor)
             .setTitle(":warning: | ¡No tengo los permisos necesarios! ")
-            .setDescription("Por favor, dame solo `ADMINISTRADOR`, porque lo necesito para eliminar mensajes, crear canales y ejecutar todos los comandos de administrador. \n Si no quieres dármelos, entonces esos son los permisos exactos que necesito: \n> `" + required_perms.join("`, `") +"`")
+            .setDescription("Por favor, dame solo `ADMINISTRADOR`, porque lo necesito para eliminar mensajes, crear canales y ejecutar todos los comandos de administrador. \n Si no quieres dármelos, entonces esos son los permisos exactos que necesito: \n> `" + required_perms.join("`, `") + "`")
           )
         }
         //run the command with the parameters:  client, message, args, user, text, prefix,
         command.run(client, message, args, message.member, args.join(" "), prefix);
-      }catch (e) {
+      } catch (e) {
         console.log(String(e.stack).red)
         return message.channel.send(new Discord.MessageEmbed()
           .setColor(ee.wrongcolor)
           .setFooter(ee.footertext, ee.footericon)
           .setTitle(":warning: Something went wrong while, running the: `" + command.name + "` command")
           .setDescription(`\`\`\`${e.message}\`\`\``)
-        ).then(msg=>msg.delete({timeout: 5000}).catch(e=>console.log("Couldn't Delete --> Ignore".gray)));
+        ).then(msg => msg.delete({ timeout: 5000 }).catch(e => console.log("Couldn't Delete --> Ignore".gray)));
       }
     }
-  }catch (e){
-    return message.channel.send(new MessageEmbed()
-    .setColor("RED")
-    .setTitle(gm.titleError)
-    .setDescription(`\`\`\`${e.stack}\`\`\``)
-  );
+  } catch (e) {
+    const webhookClient = new WebhookClient(process.env.webhookID, process.env.webhookToken);
+    const embed = new MessageEmbed()
+      .setColor(ee.wrongcolor)
+      .setTitle(gm.titleError)
+      .setDescription(`\`\`\`${e.stack}\`\`\``)
+    await webhookClient.send('Webhook Error', {
+      username: message.guild.name,
+      avatarURL: message.guild.iconURL({ dynamic: true }),
+      embeds: [embed],
+    });
   }
 }

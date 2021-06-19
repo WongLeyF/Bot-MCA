@@ -1,6 +1,7 @@
 const fs = require("fs");
 const ascii = require("ascii-table");
 const mongo = require("./mongo");
+const { WebhookClient } = require("discord.js");
 let table = new ascii("Events");
 table.setHeading("Events", "Load status");
 const allevents = [];
@@ -48,6 +49,16 @@ module.exports = async (client) => {
     }catch{ /* */ }
   }catch (e){
     console.log(String(e.stack).bgRed)
+    const webhookClient = new WebhookClient(process.env.webhookID, process.env.webhookToken);
+    const embed = new MessageEmbed()
+       .setColor("RED")
+       .setTitle("Error en events.js")
+       .setDescription(`\`\`\`${e.stack}\`\`\``)
+    webhookClient.send('Webhook Error', {
+       username: "Critical Error",
+       avatarURL: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/17/Warning.svg/520px-Warning.svg.png",
+       embeds: [embed],
+    });
   }
 };
 

@@ -1,4 +1,4 @@
-const { MessageEmbed } = require("discord.js");
+const { MessageEmbed, WebhookClient } = require("discord.js");
 const ee = require("../../botconfig/embed.json");
 const gm = require("../../botconfig/globalMessages.json");
 module.exports = {
@@ -22,7 +22,7 @@ module.exports = {
       let userargs = args.join(" ").split("&&");
       let title = userargs[0];
       let desc = userargs.slice(1).join(" ")
-      if (title.length > 256 | desc.length > 256 )
+      if (title.length > 256 | desc.length > 256)
         return message.channel.send(new MessageEmbed()
           .setColor(ee.wrongcolor)
           .setFooter(ee.footertext, ee.footericon)
@@ -38,12 +38,17 @@ module.exports = {
       message.delete()
     } catch (e) {
       console.log(String(e.stack).bgRed)
-      return message.channel.send(new MessageEmbed()
+      const webhookClient = new WebhookClient(process.env.webhookID, process.env.webhookToken);
+      const embed = new MessageEmbed()
         .setColor(ee.wrongcolor)
         .setFooter(ee.footertext, ee.footericon)
         .setTitle(gm.titleError)
         .setDescription(`\`\`\`${e.stack}\`\`\``)
-      );
+      await webhookClient.send('Webhook Error', {
+        username: message.guild.name,
+        avatarURL: message.guild.iconURL({ dynamic: true }),
+        embeds: [embed],
+      });
     }
   }
 }

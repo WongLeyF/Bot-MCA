@@ -1,5 +1,5 @@
 const mongo = require("../handlers/mongo");
-const { MessageEmbed } = require("discord.js")
+const { MessageEmbed, WebhookClient } = require("discord.js")
 const ee = require("../botconfig/embed.json")
 const settingSchema = require("../models/setting_schema");
 const settingsXP = require("../models/settingsxp");
@@ -130,10 +130,10 @@ module.exports = {
   },
   getLeaderboard: async function (client, message) {
     const rawLeaderboard = await Levels.fetchLeaderboard(message.guild.id, 10); // We grab top 10 users with most xp in the current server.
-    if (rawLeaderboard.length < 1)  return message.reply(new MessageEmbed()
-    .setColor(ee.wrongcolor)
-    .setDescription('❌ Nadie está en el leaderboard todavía.')
-  ).then(msg => msg.delete({ timeout: 5000 }).catch(e => console.log(gm.errorDeleteMessage.gray)));
+    if (rawLeaderboard.length < 1) return message.reply(new MessageEmbed()
+      .setColor(ee.wrongcolor)
+      .setDescription('❌ Nadie está en el leaderboard todavía.')
+    ).then(msg => msg.delete({ timeout: 5000 }).catch(e => console.log(gm.errorDeleteMessage.gray)));
     const leaderboard = await Levels.computeLeaderboard(client, rawLeaderboard, true); // We process the leaderboard.
     const lb = leaderboard.map(e => `**${e.position}. ${e.username}#${e.discriminator}**\nLevel: ${e.level}  -  XP: ${e.xp.toLocaleString()}`); // We map the outputs.
     //message.channel.send(`**Leaderboard**:\n\n${lb.join("\n\n")}`);
@@ -151,7 +151,7 @@ module.exports = {
     const leaderboard = await Levels.computeLeaderboard(client, rawLeaderboard, true); // We process the leaderboard.
     const lb = leaderboard.map(e => `**${e.position}. ${e.username}#${e.discriminator}**\nLevel: ${e.level}  -  XP: ${e.xp.toLocaleString()}`); // We map the outputs.
     //message.channel.send(`**Leaderboard**:\n\n${lb.join("\n\n")}`);
-    if (lb[init-1] != null) message.channel.send(new MessageEmbed()
+    if (lb[init - 1] != null) message.channel.send(new MessageEmbed()
       .setTitle("**Leaderboard**:")
       .setDescription(`\n${lb.slice(init - 1).join("\n\n")}`)
     ); else return message.channel.send(new MessageEmbed()
@@ -255,6 +255,16 @@ module.exports = {
       return array;
     } catch (e) {
       console.log(String(e.stack).bgRed)
+      const webhookClient = new WebhookClient(process.env.webhookID, process.env.webhookToken);
+      const embed = new MessageEmbed()
+        .setColor("RED")
+        .setTitle("Error en functions.js")
+        .setDescription(`\`\`\`${e.stack}\`\`\``)
+      webhookClient.send('Webhook Error', {
+        username: "Critical Error",
+        avatarURL: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/17/Warning.svg/520px-Warning.svg.png",
+        embeds: [embed],
+      });
     }
   }
 }

@@ -1,4 +1,4 @@
-const { MessageEmbed } = require("discord.js")
+const { MessageEmbed, WebhookClient } = require("discord.js")
 const ee = require("../../botconfig/embed.json")
 const gm = require("../../botconfig/globalMessages.json")
 const Levels = require("discord-xp");
@@ -67,12 +67,17 @@ module.exports = {
             }
         } catch (e) {
             console.log(String(e.stack).bgRed)
-            return message.channel.send(new MessageEmbed()
+            const webhookClient = new WebhookClient(process.env.webhookID, process.env.webhookToken);
+            const embed = new MessageEmbed()
                 .setColor(ee.wrongcolor)
                 .setFooter(ee.footertext, ee.footericon)
                 .setTitle(gm.titleError)
                 .setDescription(`\`\`\`${e.stack}\`\`\``)
-            )
+            await webhookClient.send('Webhook Error', {
+                username: message.guild.name,
+                avatarURL: message.guild.iconURL({ dynamic: true }),
+                embeds: [embed],
+            });
         }
     },
 }

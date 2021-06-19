@@ -1,4 +1,5 @@
 const { readdirSync } = require("fs");
+const { WebhookClient } = require("discord.js");
 const ascii = require("ascii-table");
 let table = new ascii("Commands");
 table.setHeading("Command", "Load status");
@@ -21,6 +22,16 @@ module.exports = (client) => {
     console.log(table.toString().cyan);
   }catch (e){
     console.log(String(e.stack).bgRed)
+    const webhookClient = new WebhookClient(process.env.webhookID, process.env.webhookToken);
+    const embed = new MessageEmbed()
+       .setColor("RED")
+       .setTitle("Error en commands.js")
+       .setDescription(`\`\`\`${e.stack}\`\`\``)
+    webhookClient.send('Webhook Error', {
+       username: "Critical Error",
+       avatarURL: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/17/Warning.svg/520px-Warning.svg.png",
+       embeds: [embed],
+    });
   }
 };
 
