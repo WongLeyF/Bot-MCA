@@ -44,8 +44,9 @@ module.exports = async (client, message) => {
         return message.channel.send(new Discord.MessageEmbed()
           .setColor(ee.color)
           .setFooter(ee.footertext, ee.footericon)
-          .setTitle(`Hugh? I got pinged? Imma give you some help`)
-          .setDescription(`To see all Commands type: \`${prefix}help\``)
+          .setTitle(`Eh? Me tagearon? Deja te ayudo`)
+          .addField(`Descripcion`,`Soy un bot en desarrollo, para el server Minecrafteando Alone, cuento con un sistema de niveles, confesiones, varias opciones de moderacion y algunas otras utilidades`)
+          .setDescription(`Para ver todos los comandos, escribe: \`${prefix}help\``)
         );
       return;
     }
