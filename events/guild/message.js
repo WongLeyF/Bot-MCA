@@ -29,7 +29,7 @@ module.exports = async (client, message) => {
     //get the current prefix from the env.prefix or mongodb
     let prefix = await getPrefix(message) || process.env.prefix
     //the prefix can be a Mention of the Bot / The defined Prefix of the Bot
-    const prefixRegex = new RegExp(`^(<@!?${client.user.id}>|${escapeRegex(prefix)})\\s*`);
+    const prefixRegex = new RegExp(`^(<@!?${client.user.id}>|${escapeRegex(prefix)}|${escapeRegex(prefix).toUpperCase()})\\s*`);
     //if its not that then return
     if (!prefixRegex.test(message.content)) return;
     //now define the right prefix either ping or not ping
