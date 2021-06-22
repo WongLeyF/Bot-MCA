@@ -23,7 +23,7 @@ module.exports = {
                                 .setColor(ee.color)
                                 .setTitle("⚠ Info IMG")
                                 .setDescription(`Coloca el link de la imagen que deseas, debe terminar en formato de imagen (png, jpg, jpeg, etc.)\n Ejemplo del comando \`${prefix}ranksetting img https://i.imgur.com/B7oECZe.jpeg\``)
-                            ).then(msg => msg.delete({ timeout: 50000 }).catch(e => console.log(gm.errorDeleteMessage.gray)));
+                            ).then(msg => msg.delete({ timeout: 20000 }).catch(e => console.log(gm.errorDeleteMessage.gray)));
                             if (data) {
                                 data.imgRank = args[1]
                                 await data.save()
@@ -42,7 +42,7 @@ module.exports = {
                                 .setColor(ee.color)
                                 .setTitle("⚠ Info BAR")
                                 .setDescription(`Coloca el color que deseas en HEX, debe tener minimo las tres primeros caracteres "#ABC"\n Ejemplo del comando \`${prefix}ranksetting bar "#ABC"\``)
-                            ).then(msg => msg.delete({ timeout: 50000 }).catch(e => console.log(gm.errorDeleteMessage.gray)));
+                            ).then(msg => msg.delete({ timeout: 20000 }).catch(e => console.log(gm.errorDeleteMessage.gray)));
                             if (!/^#([0-9A-F]{3}){1,2}$/i.test(args[1])) return message.reply(new MessageEmbed()
                                 .setColor(ee.wrongcolor)
                                 .setTitle("⚠ Color invalido")
@@ -66,7 +66,7 @@ module.exports = {
                                 .setColor(ee.color)
                                 .setTitle("⚠ Info STATUS")
                                 .setDescription(`Coloca el estado de discord, solo se se pueden asignar: online, idle, dnd, offline y streaming \n Ejemplo del comando \`${prefix}ranksetting status online\``)
-                            ).then(msg => msg.delete({ timeout: 50000 }).catch(e => console.log(gm.errorDeleteMessage.gray)));
+                            ).then(msg => msg.delete({ timeout: 20000 }).catch(e => console.log(gm.errorDeleteMessage.gray)));
                             let status = "online"
                             switch (args[1]) {
                                 case "idle":
@@ -103,7 +103,7 @@ module.exports = {
                                 .setColor(ee.color)
                                 .setTitle("⚠ Info COLOR")
                                 .setDescription(`Coloca el color que deseas en HEX, debe tener minimo las tres primeros caracteres "#ABC"\n Ejemplo del comando \`${prefix}ranksetting color "#ABC"\``)
-                            ).then(msg => msg.delete({ timeout: 50000 }).catch(e => console.log(gm.errorDeleteMessage.gray)));
+                            ).then(msg => msg.delete({ timeout: 20000 }).catch(e => console.log(gm.errorDeleteMessage.gray)));
                             if (!/^#([0-9A-F]{3}){1,2}$/i.test(args[1])) return message.reply(new MessageEmbed()
                                 .setColor(ee.wrongcolor)
                                 .setTitle("⚠ Color invalido")

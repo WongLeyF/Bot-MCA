@@ -54,7 +54,7 @@ module.exports = async (client, message) => {
                     .setColor(ee.color)
                     .setTitle("⚠ Info STATUS")
                     .setDescription(`No pude asignar el rol`)
-                ).then(msg => msg.delete({ timeout: 50000 }).catch(e => console.log(gm.errorDeleteMessage.gray)));
+                ).then(msg => msg.delete({ timeout: 5000 }).catch(e => console.log(gm.errorDeleteMessage.gray)));
             }
 
         }
