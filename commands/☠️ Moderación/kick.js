@@ -12,22 +12,17 @@ module.exports = {
     run: async (client, message, args, user, text, prefix) => {
         try {
             const member = message.mentions.members.first() || message.guild.members.cache.get(args[0]);
-            if (!args[0]) return message.channel.send(new MessageEmbed()
-                .setColor(ee.wrongcolor)
-                .setTitle(`:warning: | Por favor, especifica al usuario`)
-                .setDescription(`Uso: \`${prefix}kick <Tag/ID> [Razón]\``)
-            ).then(msg => msg.delete({ timeout: 10000 }).catch(e => console.log(gm.errorDeleteMessage.gray)));
             if (!member) return message.channel.send(new MessageEmbed()
                 .setColor(ee.wrongcolor)
-                .setDescription('❌ No pude encontrar a este usuario')
-            ).then(msg => msg.delete({ timeout: 10000 }).catch(e => console.log(gm.errorDeleteMessage.gray)));
-            if (!member.kickable) return message.channel.send(new MessageEmbed()
-                .setColor(ee.wrongcolor)
-                .setDescription('❌ No puedo expulsar a este usuario. Ya que es mod/admin o tiene un rol mas alto que el mio')
+                .addField(`❌ Por favor, especifica al usuario`, `Uso: \`${prefix}kick <Tag/ID> [Razón]\``)
             ).then(msg => msg.delete({ timeout: 10000 }).catch(e => console.log(gm.errorDeleteMessage.gray)));
             if (member.id === message.author.id) return message.channel.send(new MessageEmbed()
                 .setColor(ee.wrongcolor)
                 .setDescription('❌ Estem, no puedes expulsarte a ti mismo...')
+            ).then(msg => msg.delete({ timeout: 10000 }).catch(e => console.log(gm.errorDeleteMessage.gray)));
+            if (!member.kickable) return message.channel.send(new MessageEmbed()
+                .setColor(ee.wrongcolor)
+                .setDescription('❌ No puedo expulsar a este usuario. Ya que es mod/admin o tiene un rol mas alto que el mio')
             ).then(msg => msg.delete({ timeout: 10000 }).catch(e => console.log(gm.errorDeleteMessage.gray)));
 
             let reason = !args.slice(1).join(" ") ? 'Sin especificar' : args.slice(1).join(" ");
