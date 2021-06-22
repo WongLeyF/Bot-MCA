@@ -23,7 +23,7 @@ client.cooldowns = new Discord.Collection(); //an collection for cooldown comman
 client.cooldownXP = new Discord.Collection(); //an collection for cooldown XP of each user
 require("discord-xp").setURL(process.env.mongoPath);
 //Loading files, with the client variable like Command Handler, Event Handler, ...
-["command", "events"].forEach(handler => {
+["command", "events"].map(handler => {
     require(`./handlers/${handler}`)(client);
 });
 
