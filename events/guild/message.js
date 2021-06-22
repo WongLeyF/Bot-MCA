@@ -8,7 +8,7 @@ const Discord = require("discord.js"); //this is the official discord.js wrapper
 const { MessageEmbed, WebhookClient } = require("discord.js"); //this is the official discord.js wrapper for the Discord Api, which we use!
 const { escapeRegex, getPrefix, getMessageCount, getLevelSystem } = require("../../handlers/functions"); //Loading all needed functions
 const messageCount = require("../listeners/messageCounter");
-const randomXp = require("../listeners/randomXp");
+const randomXp = require("../listeners/randomXP");
 
 
 //here the event starts

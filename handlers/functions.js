@@ -2,7 +2,7 @@ const mongo = require("../handlers/mongo");
 const { MessageEmbed, WebhookClient } = require("discord.js")
 const ee = require("../botconfig/embed.json")
 const settingSchema = require("../models/setting_schema");
-const settingsXP = require("../models/settingsxp");
+const settingsXP = require("../models/settingsXp");
 const userSettings = require("../models/usersettings");
 const Levels = require("discord-xp");
 

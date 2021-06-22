@@ -1,7 +1,7 @@
 const { MessageEmbed, WebhookClient } = require("discord.js")
 const ee = require("../../botconfig/embed.json")
 const gm = require("../../botconfig/globalMessages.json")
-const settingsXP = require("../../models/settingsxp")
+const settingsXP = require("../../models/settingsXp")
 const mongo = require('../../handlers/mongo')
 
 module.exports = {

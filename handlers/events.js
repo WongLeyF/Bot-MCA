@@ -1,7 +1,7 @@
 const fs = require("fs");
 const ascii = require("ascii-table");
 const mongo = require("./mongo");
-const { WebhookClient } = require("discord.js");
+const { WebhookClient, MessageEmbed } = require("discord.js");
 let table = new ascii("Events");
 table.setHeading("Events", "Load status");
 const allevents = [];

@@ -1,5 +1,5 @@
 const { readdirSync } = require("fs");
-const { WebhookClient } = require("discord.js");
+const { WebhookClient, MessageEmbed } = require("discord.js");
 const ascii = require("ascii-table");
 let table = new ascii("Commands");
 table.setHeading("Command", "Load status");
