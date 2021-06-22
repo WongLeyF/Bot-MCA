@@ -18,22 +18,21 @@ module.exports = {
             let role
             if (args[0] == "list") {
                 const rolerewardRaw = await db.get(`${message.guild.id}`)
-                let rrString = "", temp = ""
-                for (let i in rolerewardRaw) {
-                    const rrObjects = await db.get(`${message.guild.id}.${i}`)
-                    temp = rrObjects.filter(r => r.roleid != 0).map(r => String(`Nivel: ` + r.lvl + `\nRole: <@&` + r.roleid + `>\n\n`))
-                    console.log(temp[0])
-                    rrString += temp[0]!=undefined ? temp[0] : ""
-                }
-                message.channel.send(new MessageEmbed()
-                    .setTitle("**Role Rewards**:")
-                    .setDescription(`\n${rrString}`)
-                )
-                //console.log(cad)
-                return message.reply(new MessageEmbed()
+                if (rolerewardRaw) {
+                    let rrString = "", temp = ""
+                    for (let i in rolerewardRaw) {
+                        const rrObjects = await db.get(`${message.guild.id}.${i}`)
+                        temp = rrObjects.filter(r => r.roleid != 0).map(r => String(`Nivel: ` + r.lvl + `\nRole: <@&` + r.roleid + `>\n\n`))
+                        rrString += temp[0] != undefined ? temp[0] : ""
+                    }
+                     return message.channel.send(new MessageEmbed()
+                        .setTitle("**Role Rewards**:")
+                        .setDescription(`\n${rrString}`)
+                    )
+                } else return message.reply(new MessageEmbed()
                     .setColor(ee.wrongcolor)
-                    .setTitle(`⚠ Por favor, dime que realizar hacer`)
-                    .setDescription(`Uso: \`${prefix}rolereward <Role> <Nivel>\`\n ${rolerewardRaw}`)
+                    .setTitle(`⚠ No hay ningun registro de este server`)
+                    .setDescription(`Uso: \`${prefix}rolereward <Role> <Nivel>\`\n`)
                 ).then(msg => msg.delete({ timeout: 5000 }).catch(e => console.log(gm.errorDeleteMessage.gray)));
             }
             if (args[0] == "remove") {
@@ -71,7 +70,7 @@ module.exports = {
                         roleid: 0
                     }]
                     const rolLVL = await db.get(`${guildID}.${args[2]}`)
-                    console.log(rolLVL.find(e => e.roleid == role))
+                    //console.log(rolLVL.find(e => e.roleid == role))
                     if (rolLVL.find(e => e.roleid == role) != undefined) {
                         Object.assign(rolLVL, inputRolLVL)
                         await db.set(`${guildID}.${args[2]}`, rolLVL).then(console.log);
@@ -108,7 +107,6 @@ module.exports = {
                 .setTitle("⚠ Role Rewards")
                 .setDescription(`Por favor escribe el rol a asignar`)
             ).then(msg => msg.delete({ timeout: 30000 }).catch(e => console.log(gm.errorDeleteMessage.gray)));
-            console.log(role)
             const data = await db.exists(`${guildID}.${args[1]}`)
             if (!role) return message.reply(new MessageEmbed()
                 .setColor(ee.wrongcolor)
