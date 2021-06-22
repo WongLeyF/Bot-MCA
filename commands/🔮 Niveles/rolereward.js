@@ -32,7 +32,7 @@ module.exports = {
                 } else return message.reply(new MessageEmbed()
                     .setColor(ee.wrongcolor)
                     .setTitle(`⚠ No hay ningun registro de este server`)
-                    .setDescription(`Uso: \`${prefix}rolereward <Role> <Nivel>\`\n`)
+                    .setDescription(`Uso: \`${prefix}rolereward [remove/list] <Role> <Nivel>\`\n`)
                 ).then(msg => msg.delete({ timeout: 5000 }).catch(e => console.log(gm.errorDeleteMessage.gray)));
             }
             if (args[0] == "remove") {
@@ -88,7 +88,7 @@ module.exports = {
                 return message.reply(new MessageEmbed()
                     .setColor(ee.wrongcolor)
                     .setTitle(`⚠ Por favor, dime que realizar hacer`)
-                    .setDescription(`Uso: \`${prefix}rolereward <Role> <Nivel>\``)
+                    .setDescription(`Uso: \`${prefix}rolereward [remove/list] <Role> <Nivel>\``)
                 ).then(msg => msg.delete({ timeout: 5000 }).catch(e => console.log(gm.errorDeleteMessage.gray)));
 
             }
