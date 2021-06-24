@@ -41,8 +41,7 @@ module.exports = {
                         .setColor(ee.wrongcolor)
                         .setDescription('❌ La XP minima debe ser mayor a 0')
                     ).then(msg => msg.delete({ timeout: 5000 }).catch(e => console.log(gm.errorDeleteMessage.gray)));
-                    console.log(args[0] +` ${parseInt(args[0], 10) >= parseInt(args[1], 10)} `+ args[1])
-                    if (parseInt(args[0], 10) >= parseInt(args[1], 10)) return message.reply(new MessageEmbed()
+                    if (parseInt(args[0], 10) > parseInt(args[1], 10)) return message.reply(new MessageEmbed()
                         .setColor(ee.wrongcolor)
                         .setDescription('❌ La XP minima debe ser menor que la maxima')
                     ).then(msg => msg.delete({ timeout: 5000 }).catch(e => console.log(gm.errorDeleteMessage.gray)));
