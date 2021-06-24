@@ -165,6 +165,11 @@ module.exports = {
     const lb = leaderboard.find(e => e.userID == userID);
     return Number(lb.position ? lb.position : null)
   },
+  removeItemFromArr: function (arr, item) {
+    return arr.filter(function (e) {
+      return e !== item;
+    });
+  },
   //changeging the duration from ms to a date
   duration: function (ms) {
     const sec = Math.floor((ms / 1000) % 60).toString();
