@@ -25,9 +25,9 @@ module.exports = {
                         temp = rrObjects.filter(r => r.roleid != 0).map(r => String(`Nivel: ` + r.lvl + `\nRole: <@&` + r.roleid + `>\n\n`))
                         rrString += temp[0] != undefined ? temp[0] : ""
                     }
-                     return message.channel.send(new MessageEmbed()
+                    return message.channel.send(new MessageEmbed()
                         .setTitle("**Role Rewards**:")
-                        .setDescription(`\n${rrString}`)
+                        .setDescription(`\n${rrString == "" ? "**No hay ningun role**" : rrString}`)
                     )
                 } else return message.reply(new MessageEmbed()
                     .setColor(ee.wrongcolor)
@@ -36,12 +36,13 @@ module.exports = {
                 ).then(msg => msg.delete({ timeout: 5000 }).catch(e => console.log(gm.errorDeleteMessage.gray)));
             }
             if (args[0] == "remove") {
+
                 if (!args[1]) return message.reply(new MessageEmbed()
                     .setColor(ee.wrongcolor)
                     .setTitle(`⚠ Por favor, dime que realizar hacer`)
                     .setDescription(`Uso: \`${prefix}rolereward remove <Role> <Nivel>\``)
                 ).then(msg => msg.delete({ timeout: 5000 }).catch(e => console.log(gm.errorDeleteMessage.gray)));
-                if (args[1].slice(0, -args[1].length + 1) == `@`) return await message.reply(new MessageEmbed()
+                if (!args[1].includes(`@&`)) return await message.reply(new MessageEmbed()
                     .setColor(ee.wrongcolor)
                     .setTitle("⚠ Role Rewards")
                     .setDescription(`Por favor escribe un rol valido`)
@@ -70,10 +71,14 @@ module.exports = {
                         roleid: 0
                     }]
                     const rolLVL = await db.get(`${guildID}.${args[2]}`)
-                    //console.log(rolLVL.find(e => e.roleid == role))
                     if (rolLVL.find(e => e.roleid == role) != undefined) {
                         Object.assign(rolLVL, inputRolLVL)
                         await db.set(`${guildID}.${args[2]}`, rolLVL).then(console.log);
+                        return message.channel.send(new MessageEmbed()
+                            .setColor(ee.checkcolor)
+                            .setTitle("⚠ Role Reward")
+                            .setDescription(`El rol: ${args[1]} se ha eliminado para el nivel: ${args[2]}`)
+                        )
                     } else return message.channel.send(new MessageEmbed()
                         .setColor(ee.wrongcolor)
                         .setDescription('❌ No tengo registros de ese rol con tal nivel')
@@ -92,7 +97,7 @@ module.exports = {
                 ).then(msg => msg.delete({ timeout: 5000 }).catch(e => console.log(gm.errorDeleteMessage.gray)));
 
             }
-            if (args[0].slice(0, -args[0].length + 1) == `@`) return await message.reply(new MessageEmbed()
+            if (!args[0].includes(`@&`)) return await message.reply(new MessageEmbed()
                 .setColor(ee.wrongcolor)
                 .setTitle("⚠ Role Rewards")
                 .setDescription(`Por favor escribe un rol valido`)
@@ -113,6 +118,10 @@ module.exports = {
                 .setDescription('❌ No puede encontrar este rol, intenta de nuevo'));
             // message.member.guild.roles.add(role);
 
+            if (!args[1]) return message.reply(new MessageEmbed()
+                .setColor(ee.wrongcolor)
+                .setDescription('❌ El nivel minimo debe ser mayor a 0')
+            ).then(msg => msg.delete({ timeout: 5000 }).catch(e => console.log(gm.errorDeleteMessage.gray)));
             if (args[1] < 0) return message.reply(new MessageEmbed()
                 .setColor(ee.wrongcolor)
                 .setDescription('❌ El nivel minimo debe ser mayor a 0')
