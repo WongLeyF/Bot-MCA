@@ -8,6 +8,8 @@ const db = new Database(process.env.mongoPath);
 module.exports = async (client, message) => {
     //if its not in the cooldownXP, set it too there
     const lvlsettings = await getlvlsettings(message)
+    if (lvlsettings.noChannels.includes(message.channel.id)) return;
+    if(message.member.roles.cache.map(r => r.id).some(s => lvlsettings.noRoles.includes(s))) return;
     if (!client.cooldownXP.has("XP")) client.cooldownXP.set("XP", new Discord.Collection())
     const now = Date.now()
     const timestamps = client.cooldownXP.get("XP"); //get the timestamp of the last used commands
@@ -58,7 +60,7 @@ module.exports = async (client, message) => {
             }
 
         }
-       // client.channels.cache.get(channelID).send(`Has subido de nivel a ${user.level} y  ${Levels.xpFor(parseInt(user.level) + 1)}\n${member}$`)
+        client.channels.cache.get(channelID).send(`Felicidades ${member}, ahora eres mas activo y has llegado al nivel **${user.level}**.`)
         // const rank = new canvacord.Rank()
         //     .setAvatar(member.displayAvatarURL({dynamic: false, format: 'png'}))
         //     .setCurrentXP(user.xp-Levels.xpFor(parseInt(user.level)))
