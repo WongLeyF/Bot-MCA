@@ -7,11 +7,11 @@ const { removeItemFromArr } = require("../../handlers/functions")
 
 module.exports = {
     name: "noXPchannel",
-    description: "Muestra el cooldown por mensaje, asigna un cooldown o establecelo por defecto",
+    description: "Agrega canales para que no reciban exp y como tambien ver la lista de canales que no reciben exp",
     category: "🔮 Niveles",
     cooldown: 5,
     memberpermissions: ["MANAGE_CHANNELS", "MANAGE_GUILD"],
-    usage: "levels <enable/disable>",
+    usage: "noxpchannel <list/add/remove> <Canal>",
     run: async (client, message, args, user, text, prefix) => {
         try {
             await mongo().then(async mongoose => {

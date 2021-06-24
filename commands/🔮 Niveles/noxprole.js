@@ -7,11 +7,11 @@ const { removeItemFromArr } = require("../../handlers/functions")
 
 module.exports = {
     name: "noXProle",
-    description: "Muestra el cooldown por mensaje, asigna un cooldown o establecelo por defecto",
+    description: "Agrega roles para que no reciban exp y como tambien ver la lista de reoles que no reciben exp",
     category: "🔮 Niveles",
     cooldown: 5,
     memberpermissions: ["MANAGE_ROLES", "MANAGE_GUILD"],
-    usage: "levels <enable/disable>",
+    usage: "noxprole <list/add/remove> <Role>",
     run: async (client, message, args, user, text, prefix) => {
         try {
             await mongo().then(async mongoose => {
