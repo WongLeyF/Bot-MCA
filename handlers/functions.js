@@ -155,8 +155,8 @@ module.exports = {
     message.channel.send(embed)
   },
   getLeaderboardSpecific: async function (client, guildID, userID) {
-    const rawLeaderboard = await Levels.fetchLeaderboard(guildID, 999999);
-    const leaderboard = await Levels.computeLeaderboard(client, rawLeaderboard, true); // We process the leaderboard.
+    const rawLeaderboard = await Levels.fetchLeaderboard(guildID, 9999);
+    const leaderboard = await Levels.computeLeaderboard(client, rawLeaderboard); // We process the leaderboard.
     const lb = leaderboard.find(e => e.userID == userID);
     return Number(lb.position ? lb.position : null)
   },
