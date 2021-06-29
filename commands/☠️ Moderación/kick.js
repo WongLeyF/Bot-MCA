@@ -26,7 +26,7 @@ module.exports = {
             ).then(msg => msg.delete({ timeout: 10000 }).catch(e => console.log(gm.errorDeleteMessage.gray)));
 
             let reason = !args.slice(1).join(" ") ? 'Sin especificar' : args.slice(1).join(" ");
-            await member.kick({ reason })
+            await member.kick( reason )
             message.channel.send(new MessageEmbed()
                 .setColor(ee.color)
                 .setTitle('Miembro Expulsado')
