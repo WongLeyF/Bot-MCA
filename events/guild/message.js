@@ -5,8 +5,8 @@
 const ee = require("../../botconfig/embed.json"); //Loading all embed settings like color footertext and icon ...
 const gm = require("../../botconfig/globalMessages.json");
 const Discord = require("discord.js"); //this is the official discord.js wrapper for the Discord Api, which we use!
-const { MessageEmbed, WebhookClient } = require("discord.js"); //this is the official discord.js wrapper for the Discord Api, which we use!
-const { escapeRegex, getPrefix, getMessageCount, getLevelSystem } = require("../../handlers/functions"); //Loading all needed functions
+const { MessageEmbed } = require("discord.js");
+const { escapeRegex, getPrefix, getMessageCount, getLevelSystem, errorMessageEmbed } = require("../../handlers/functions"); //Loading all needed functions
 const messageCount = require("../listeners/messageCounter");
 const randomXp = require("../listeners/randomXP");
 
@@ -108,15 +108,6 @@ module.exports = async (client, message) => {
       }
     }
   } catch (e) {
-    const webhookClient = new WebhookClient(process.env.webhookID, process.env.webhookToken);
-    const embed = new MessageEmbed()
-      .setColor(ee.wrongcolor)
-      .setTitle(gm.titleError)
-      .setDescription(`\`\`\`${e.stack}\`\`\``)
-    await webhookClient.send('Webhook Error', {
-      username: message.guild.name,
-      avatarURL: message.guild.iconURL({ dynamic: true }),
-      embeds: [embed],
-    });
+    errorMessageEmbed(e, message)
   }
 }

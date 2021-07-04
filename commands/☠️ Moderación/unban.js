@@ -1,4 +1,5 @@
-const { MessageEmbed, WebhookClient } = require("discord.js");
+const { MessageEmbed } = require("discord.js");
+const { errorMessageEmbed } = require("../../handlers/functions")
 const Discord = require("discord.js");
 const ee = require("../../botconfig/embed.json");
 const gm = require("../../botconfig/globalMessages.json");
@@ -34,17 +35,7 @@ module.exports = {
                     .setDescription(errMs)
                 ).then(msg => msg.delete({ timeout: 10000 }).catch(e => console.log(gm.errorDeleteMessage.gray)));
             else {
-                const webhookClient = new WebhookClient(process.env.webhookID, process.env.webhookToken);
-                const embed = new MessageEmbed()
-                    .setColor(ee.wrongcolor)
-                    .setFooter(ee.footertext, ee.footericon)
-                    .setTitle(gm.titleError)
-                    .setDescription(`\`\`\`${e.stack}\`\`\``)
-                await webhookClient.send('Webhook Error', {
-                    username: message.guild.name,
-                    avatarURL: message.guild.iconURL({ dynamic: true }),
-                    embeds: [embed],
-                });
+                errorMessageEmbed(e, message)
             }
         }
     }

@@ -1,6 +1,7 @@
 const mongo = require("../handlers/mongo");
 const { MessageEmbed, WebhookClient } = require("discord.js")
 const ee = require("../botconfig/embed.json")
+const gm = require("../botconfig/globalMessages.json")
 const settingSchema = require("../models/setting_schema");
 const settingsXP = require("../models/settingsXp");
 const userSettings = require("../models/usersettings");
@@ -242,6 +243,19 @@ module.exports = {
     } catch (e) {
       console.log(String(e.stack).bgRed)
     }
+  },
+  errorMessageEmbed: function (e, message){
+    const webhookClient = new WebhookClient(process.env.webhookID, process.env.webhookToken);
+    const embed = new MessageEmbed()
+      .setColor(ee.wrongcolor)
+      .setFooter(ee.footertext, ee.footericon)
+      .setTitle(gm.titleError)
+      .setDescription(`\`\`\`${e.stack}\`\`\``);
+    webhookClient.send('Webhook Error', {
+      username: message.guild.name,
+      avatarURL: message.guild.iconURL({ dynamic: true }),
+      embeds: [embed],
+    });
   },
   arrayMove: function (array, from, to) {
     try {
