@@ -29,3 +29,7 @@ require("discord-xp").setURL(process.env.mongoPath);
 
 //login into the bot
 client.login(process.env.token);
+
+process.on('SIGINT', function () {
+  console.log(`You have been disconnected at ${new Date()}.`.red)
+});

@@ -18,7 +18,7 @@ module.exports = async (client, message) => {
         const expirationTime = timestamps.get(message.author.id) + cooldownAmount; //get the amount of time he needs to wait until he can run the cmd again
         if (now < expirationTime) { //if he is still on cooldonw
             const timeLeft = (expirationTime - now) / 1000; //get the lefttime
-            return console.log(`Tiempo para mas xp: ${timeLeft.toFixed(1)}`)
+            return //console.log(`Tiempo para mas xp: ${timeLeft.toFixed(1)}`)
         }
     }
     const minXP = lvlsettings ? lvlsettings.min_xp ? lvlsettings.min_xp : 1 : 1
@@ -26,7 +26,7 @@ module.exports = async (client, message) => {
     timestamps.set(message.author.id, now); //if he is not on cooldown, set it to the cooldown
     setTimeout(() => timestamps.delete(message.author.id), cooldownAmount)
     const randomAmountOfXp = getRandomNum(minXP, maxXP); // Min 1, Max 30
-    console.log(randomAmountOfXp)///////////////
+    //console.log(randomAmountOfXp)///////////////
     const hasLeveledUp = await Levels.appendXp(message.author.id, message.guild.id, randomAmountOfXp);
     const channelID = await getChannelLevels(message)
     if (hasLeveledUp) {
