@@ -144,16 +144,22 @@ module.exports = {
   getLeaderboardRange: async function (client, message, init) {
     const start = parseInt(init)
     const rawLeaderboard = await Levels.fetchLeaderboard(message.guild.id, start + 10); // We grab top 10 users with most xp in the current server.
-    if (rawLeaderboard.length+10 <= 0) return message.reply(new MessageEmbed()
+    if (rawLeaderboard.length + 10 <= 0) return message.reply(new MessageEmbed()
       .setColor(ee.wrongcolor)
       .setDescription('❌ Nadie está en el leaderboard todavía.')
     ).then(msg => msg.delete({ timeout: 5000 }).catch(e => console.log(gm.errorDeleteMessage.gray)));
     const leaderboard = await Levels.computeLeaderboard(client, rawLeaderboard, true); // We process the leaderboard.
     const embed = new MessageEmbed().setTitle("**Leaderboard**:")
-    const lb = leaderboard.filter(e => e.position>=init).map(e => embed.addField(`**${e.position}. ${e.username}#${e.discriminator}**`,`Level: ${e.level}  -  XP: ${e.xp.toLocaleString()}`)); // We map the outputs.
+    const lb = leaderboard.filter(e => e.position >= init).map(e => embed.addField(`**${e.position}. ${e.username}#${e.discriminator}**`, `Level: ${e.level}  -  XP: ${e.xp.toLocaleString()}`)); // We map the outputs.
     //message.channel.send(`**Leaderboard**:\n\n${lb.join("\n\n")}`);
-    console.log(lb)
-    message.channel.send(embed)
+    if (lb.length > 0) {
+      message.channel.send(embed)
+    } else {
+      return message.reply(new MessageEmbed()
+        .setColor(ee.wrongcolor)
+        .setDescription('❌ Nadie está en esta leaderboard todavía.')
+      ).then(msg => msg.delete({ timeout: 5000 }).catch(e => console.log(gm.errorDeleteMessage.gray)));
+    }
   },
   getLeaderboardSpecific: async function (client, guildID, userID) {
     const rawLeaderboard = await Levels.fetchLeaderboard(guildID, 9999);
@@ -244,7 +250,7 @@ module.exports = {
       console.log(String(e.stack).bgRed)
     }
   },
-  errorMessageEmbed: function (e, message){
+  errorMessageEmbed: function (e, message) {
     const webhookClient = new WebhookClient(process.env.webhookID, process.env.webhookToken);
     const embed = new MessageEmbed()
       .setColor(ee.wrongcolor)
@@ -256,6 +262,33 @@ module.exports = {
       avatarURL: message.guild.iconURL({ dynamic: true }),
       embeds: [embed],
     });
+  },
+  simpleEmbedField: function (message, color, time, title, description) {
+    if (time) {
+      message.channel.send(new MessageEmbed()
+        .setColor(color)
+        .addField(`${title}`, `${description}`)
+      ).then(msg => msg.delete({ timeout: time }).catch(e => console.log(gm.errorDeleteMessage.gray)));
+    } else {
+      message.channel.send(new MessageEmbed()
+        .setColor(color)
+        .addField(`${title}`, `${description}`)
+      );
+    }
+
+  },
+  simpleEmbedDescription: function (message, color, time, description) {
+    if (time) {
+      message.channel.send(new MessageEmbed()
+        .setColor(color)
+        .setDescription(`${description}`)
+      ).then(msg => msg.delete({ timeout: time }).catch(e => console.log(gm.errorDeleteMessage.gray)));
+    } else {
+      message.channel.send(new MessageEmbed()
+        .setColor(color)
+        .setDescription(`${description}`)
+      );
+    }
   },
   arrayMove: function (array, from, to) {
     try {

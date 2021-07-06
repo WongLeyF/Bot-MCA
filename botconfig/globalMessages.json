@@ -1,5 +1,11 @@
 {
     "errorDeleteMessage": "Couldn't Delete --> Ignore",
-    "titleError": ":warning: ERROR | Algo salió mal"
+    "titleError": ":warning: ERROR | Algo salió mal",
+    "tinyTime": 5000,
+    "shortTime": 5000,
+    "fastTime": 8000,
+    "longTime": 10000,
+    "largeTime": 20000,
+    "slowTime": 30000
 
 }
