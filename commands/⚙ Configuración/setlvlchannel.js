@@ -1,5 +1,5 @@
 const { MessageEmbed } = require("discord.js");
-const { errorMessageEmbed } = require("../../handlers/functions")
+const { errorMessageEmbed, simpleEmbedDescription } = require("../../handlers/functions")
 const ee = require("../../botconfig/embed.json");
 const gm = require("../../botconfig/globalMessages.json");
 const mongo = require('../../handlers/mongo')
@@ -21,34 +21,31 @@ module.exports = {
                     const channelID = args[0] ? args[0].replace('<#', '').replace('>', '') : ""
                     const channel = client.channels.cache.get(channelID)
                     let data = await settingslevelSchema.findOne({ _id: guildID });
+                    let descEmbed = '❌ Se ha desactivado el canal de niveles.'
+
                     if (!args[0]) {
                         if (data) {
                             data.levelChannel = ""
                             await data.save()
                         }
-                        return message.reply(new MessageEmbed()
-                            .setColor(ee.wrongcolor)
-                            .setDescription('❌ Se ha desactivado el canal de niveles.')
-                        ).then(msg => msg.delete({ timeout: 5000 }).catch(e => console.log(gm.errorDeleteMessage.gray)));
+                        return simpleEmbedDescription(message, ee.wrongcolor, gm.shortTime, descEmbed)
                     }
-                    if (!channel) return message.reply(new MessageEmbed()
-                        .setColor(ee.wrongcolor)
-                        .setDescription('❌ No puedo reconocer este canal')
-                    ).then(msg => msg.delete({ timeout: 5000 }).catch(e => console.log(gm.errorDeleteMessage.gray)));
+                    if (!channel) {
+                        descEmbed = '❌ No puedo reconocer este canal'
+                        return simpleEmbedDescription(message, ee.wrongcolor, gm.shortTime, descEmbed)
+                    }
                     if (data) {
                         data.levelChannel = channelID
                         await data.save()
                     } else {
-                        let newData = new settingslevelSchema({
+                        const newData = new settingslevelSchema({
                             _id: guildID,
                             levelChannel: channelID,
                         });
                         await newData.save()
                     }
-                    message.channel.send(new MessageEmbed()
-                        .setColor(ee.color)
-                        .setDescription(`:white_check_mark: Las mensajes de niveles se enviarán al canal: \`${channel.name}\` `)
-                    );
+                    descEmbed = `:white_check_mark: Las mensajes de niveles se enviarán al canal: \`${channel.name}\` `
+                    simpleEmbedDescription(message, ee.color, null, descEmbed)
                 } finally {
                     mongoose.connection.close()
                 }

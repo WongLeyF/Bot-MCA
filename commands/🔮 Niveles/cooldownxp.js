@@ -1,5 +1,5 @@
 const { MessageEmbed } = require("discord.js");
-const { errorMessageEmbed } = require("../../handlers/functions")
+const { errorMessageEmbed, simpleEmbedDescription, simpleEmbedField } = require("../../handlers/functions")
 const ee = require("../../botconfig/embed.json")
 const gm = require("../../botconfig/globalMessages.json")
 const settingsXP = require("../../models/settingsXp")
@@ -18,29 +18,33 @@ module.exports = {
                 try {
                     const guildID = message.guild.id
                     let data = await settingsXP.findOne({ _id: guildID })
+                    let titleEmbed, descEmbed
+                    
                     if (args[0] == 'default') {
                         if (data) {
                             data.cooldown = 60
                             await data.save()
                         }
-                        return await message.reply(new MessageEmbed()
-                            .setColor(ee.color)
-                            .setDescription(':white_check_mark: Se han puesto en default el tiempo para conseguir experiencia por mensaje.')
-                        ).then(msg => msg.delete({ timeout: 5000 }).catch(e => console.log(gm.errorDeleteMessage.gray)));
+                        descEmbed = ':white_check_mark: Se han puesto en default el tiempo para conseguir experiencia por mensaje.'
+                        return simpleEmbedDescription(message, ee.color, gm.shortTime, descEmbed);
                     }
-                    if (!args[0]) return await message.reply(new MessageEmbed()
-                        .setColor(ee.color)
-                        .setTitle("⚠ Tiempo para experiencia por mensaje")
-                        .setDescription(`El tiempo de espera esta asignado en: ${data ? data.cooldown : 60} segundo(s)`)
-                    ).then(msg => msg.delete({ timeout: 30000 }).catch(e => console.log(gm.errorDeleteMessage.gray)));
-                    if (isNaN(args[0])) return message.reply(new MessageEmbed()
-                        .setColor(ee.wrongcolor)
-                        .setDescription('❌ No puedo asignar esto, coloca numeros')
-                    ).then(msg => msg.delete({ timeout: 5000 }).catch(e => console.log(gm.errorDeleteMessage.gray)));
-                    if (args[0] <= 0) return message.reply(new MessageEmbed()
-                        .setColor(ee.wrongcolor)
-                        .setDescription('❌ El tiempo debe ser mayor a 0')
-                    ).then(msg => msg.delete({ timeout: 5000 }).catch(e => console.log(gm.errorDeleteMessage.gray)));
+                    
+                    if (!args[0]) {
+                        titleEmbed =`⚠ Tiempo para experiencia por mensaje`
+                        descEmbed = `El tiempo de espera esta asignado en: ${data ? data.cooldown : 60} segundo(s)`
+                        return simpleEmbedField(message, ee.color, gm.largeTime, titleEmbed, descEmbed)
+                    }
+                    
+                    if (isNaN(args[0])) {
+                        descEmbed = '❌ No puedo asignar esto, coloca numeros'
+                        return simpleEmbedDescription(message, ee.wrongcolor, gm.shortTime, descEmbed)
+                    } 
+                    
+                    if (args[0] <= 0){
+                        descEmbed = '❌ El tiempo debe ser mayor a 0'
+                        simpleEmbedDescription(message, ee.wrongcolor, gm.shortTime, descEmbed)
+                    }
+                    
                     if (data) {
                         data.cooldown = args[0]
                         await data.save()
@@ -51,11 +55,11 @@ module.exports = {
                         })
                         await newData.save()
                     }
-                    message.channel.send(new MessageEmbed()
-                        .setColor(ee.checkcolor)
-                        .setTitle("⚠ Tiempo para experiencia por mensaje")
-                        .setDescription(`El tiempo de espera se asigno en: ${args[0]} segundo(s)`)
-                    )
+                    
+                    titleEmbed = `⚠ Tiempo para experiencia por mensaje`
+                    descEmbed = `El tiempo de espera se asigno en: ${args[0]} segundo(s)`
+                    simpleEmbedField(message, ee.checkcolor, null, titleEmbed, descEmbed)
+
                 } finally {
                     mongoose.connection.close()
                 }

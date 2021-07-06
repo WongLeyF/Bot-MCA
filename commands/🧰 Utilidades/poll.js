@@ -1,5 +1,5 @@
 const { MessageEmbed } = require("discord.js");
-const { errorMessageEmbed } = require("../../handlers/functions")
+const { errorMessageEmbed, simpleEmbedDescription } = require("../../handlers/functions")
 const ee = require("../../botconfig/embed.json");
 const gm = require("../../botconfig/globalMessages.json");
 
@@ -33,16 +33,16 @@ module.exports = {
                 if (fetched && fetched.first()) addReactions(fetched.first())
             }
 
-            //if (channelPollID.includes(message.channel.id)) addReactions(message)
         } catch (e) {
-            if (e.code === 50035) return message.channel.send(new MessageEmbed()
-                .setColor(ee.wrongcolor)
-                .setDescription("❌ Necesitas darme un ID de mensaje")
-            ).then(msg => msg.delete({ timeout: 10000 }).catch(e => console.log(gm.errorDeleteMessage.gray)));
-            if (e.code === 10008) return message.channel.send(new MessageEmbed()
-                .setColor(ee.wrongcolor)
-                .setDescription("❌ No pude reconocer ese ID, ¿Seguro que es del mensaje?")
-            ).then(msg => msg.delete({ timeout: 10000 }).catch(e => console.log(gm.errorDeleteMessage.gray)));
+            let descEmbed
+            if (e.code === 50035) {
+                descEmbed = `❌ Necesitas darme un ID de mensaje`
+                return simpleEmbedDescription(message, ee.wrongcolor, gm.longTime, descEmbed)
+            }
+            if (e.code === 10008) {
+                descEmbed = `❌ No pude reconocer ese ID, ¿Seguro que es del mensaje?`
+                return simpleEmbedDescription(message, ee.wrongcolor, gm.longTime, descEmbed)
+            }
             console.log(String(e.stack).bgRed);
             errorMessageEmbed(e, message)
         }

@@ -1,7 +1,7 @@
 const { MessageEmbed } = require("discord.js");
 const ee = require("../../botconfig/embed.json");
 const gm = require("../../botconfig/globalMessages.json");
-const { getChannelConfession, errorMessageEmbed } = require("../../handlers/functions");
+const { getChannelConfession, errorMessageEmbed, simpleEmbedDescription, simpleEmbedField } = require("../../handlers/functions");
 
 module.exports = {
     name: "Confession",
@@ -13,23 +13,20 @@ module.exports = {
     run: async (client, message, args, user, text, prefix) => {
         try {
             const channelID = await getChannelConfession(message)
+            let titleEmbed, descEmbed
             if (!channelID) {
                 message.delete()
-                message.channel.send(new MessageEmbed()
-                    .setColor(ee.wrongcolor)
-                    .setDescription('❌ El canal para recibir confesiones no ha sido establecido en este servidor.')
-                ).then(msg => msg.delete({ timeout: 10000 }).catch(e => console.log(gm.errorDeleteMessage.gray)));
-                return message.channel.send(new MessageEmbed()
-                    .setColor(ee.wrongcolor)
-                    .setDescription(`🔎 Usa el comando \`${prefix}setconfessions <channel>\`.`)
-                ).then(msg => msg.delete({ timeout: 10000 }).catch(e => console.log(gm.errorDeleteMessage.gray)));
+                descEmbed = `❌ El canal para recibir confesiones no ha sido establecido en este servidor.`
+                simpleEmbedDescription(message, ee.wrongcolor, gm.longTime, descEmbed);
+                descEmbed =`🔎 Usa el comando \`${prefix}setconfessions <channel>\`.`
+                return simpleEmbedDescription(message,ee.wrongcolor,gm.longTimem,descEmbed)
             }
-            if (!args[0] || (args[0] == "-n")) return message.channel.send(new MessageEmbed()
-                .setColor(ee.wrongcolor)
-                .setTitle(`:warning: | Debes ingresar algo que confesar.`)
-                .setDescription(`Uso: \`${prefix}confession <texto> [-n]\``)
-            ).then(msg => msg.delete({ timeout: 10000 }).catch(e => console.log(gm.errorDeleteMessage.gray)));
-            let text = args[args.length - 1] == "-n" ? args.slice(0, -1).join(" ") : args.slice(0).join(" ")
+            if (!args[0] || (args[0] == "-n")) {
+                titleEmbed = `:warning: | Debes ingresar algo que confesar.`
+                descEmbed = `Uso: \`${prefix}confession <texto> [-n]\``
+                return simpleEmbedField(message, ee.wrongcolor, gm.longTime, titleEmbed, descEmbed)
+            }
+            const text = args[args.length - 1] == "-n" ? args.slice(0, -1).join(" ") : args.slice(0).join(" ")
             if (args[args.length - 1] == "-n") {
                 message.delete()
                 return client.channels.cache.get(channelID).send(new MessageEmbed()

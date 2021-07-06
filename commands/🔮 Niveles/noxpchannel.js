@@ -3,7 +3,7 @@ const ee = require("../../botconfig/embed.json")
 const gm = require("../../botconfig/globalMessages.json")
 const settingsXP = require("../../models/settingsXp")
 const mongo = require('../../handlers/mongo')
-const { removeItemFromArr, errorMessageEmbed } = require("../../handlers/functions")
+const { removeItemFromArr, errorMessageEmbed, simpleEmbedDescription, simpleEmbedField } = require("../../handlers/functions")
 
 module.exports = {
     name: "noXPchannel",
@@ -18,14 +18,14 @@ module.exports = {
                 try {
                     const guildID = message.guild.id
                     let channel, data = await settingsXP.findOne({ _id: guildID })
+                    let titleEmbed = `⚠ No XP Channels`, descEmbed
                     switch (args[0]) {
                         case "add":
                             if (args[1]) {
-                                if (args[1].includes(`@`)) return await message.reply(new MessageEmbed()
-                                    .setColor(ee.wrongcolor)
-                                    .setTitle("⚠ No XP Channels")
-                                    .setDescription(`Por favor escribe un canal valido`)
-                                ).then(msg => msg.delete({ timeout: 30000 }).catch(e => console.log(gm.errorDeleteMessage.gray)));
+                                if (args[1].includes(`@`)) {
+                                    descEmbed = `Por favor escribe un canal valido`
+                                    return simpleEmbedField(message, ee.wrongcolor, gm.slowTime, titleEmbed, descEmbed)
+                                }
                                 if (isNaN(args[1])) channel = await message.guild.channels.cache.find(c => c.id === args[1].slice(2, -1))
                                 if (!isNaN(args[1])) channel = await message.guild.channels.cache.find(c => c.id === args[1])
                                 if (channel == undefined) channel = message.guild.channels.cache.find(c => c.name === args[1])
@@ -33,43 +33,40 @@ module.exports = {
                                     const newArray = message.guild.channels.cache.filter(r => r.type == "text").map(r => r.id)
                                     data.noChannels = newArray
                                     await data.save()
-                                    return message.channel.send(new MessageEmbed()
-                                        .setColor(ee.checkcolor)
-                                        .setTitle("⚠ No XP Channels")
-                                        .setDescription(`Se agregaron correctamente todos los canales de la lista`)
-                                    )
+
+                                    descEmbed = `Se agregaron correctamente todos los canales de la lista`
+                                    return simpleEmbedDescription(message, ee.checkcolor, null, titleEmbed, descEmbed)
+
                                 }
-                                if (!channel) return await message.reply(new MessageEmbed()
-                                    .setColor(ee.wrongcolor)
-                                    .setTitle("⚠ No XP Channels")
-                                    .setDescription(`Por favor escribe un canal valido para asignar`)
-                                ).then(msg => msg.delete({ timeout: 30000 }).catch(e => console.log(gm.errorDeleteMessage.gray)));
+
+                                if (!channel) {
+                                    descEmbed = `Por favor escribe un canal valido para asignar`
+                                    return simpleEmbedDescription(message, ee.wrongcolor, gm.longTime, descEmbed)
+                                }
+
                                 if (data) {
                                     if (!data.noChannels.includes(channel.id))
                                         data.noChannels.push(channel.id)
                                     await data.save()
-                                    return message.channel.send(new MessageEmbed()
-                                        .setColor(ee.checkcolor)
-                                        .setTitle("⚠ No XP Channels")
-                                        .setDescription(`Se agrego correctamente a la lista el canal: ${args[1]}`)
-                                    )
+
+                                    descEmbed = `Se agrego correctamente a la lista el canal: ${args[1]}`
+                                    return simpleEmbedField(message, ee.checkcolor, null, descEmbed)
+
                                 } else {
                                     const newData = new settingsXP({
                                         _id: guildID,
                                         noChannels: [channel.id]
                                     })
                                     await newData.save()
-                                    return message.channel.send(new MessageEmbed()
-                                        .setColor(ee.checkcolor)
-                                        .setTitle("⚠ No XP Channels")
-                                        .setDescription(`Se agrego correctamente a la lista el canal: ${args[1]}`)
-                                    )
+                                    descEmbed = `Se agrego correctamente a la lista el canal: ${args[1]}`
+                                    return simpleEmbedField(message, ee.checkcolor, null, titleEmbed, descEmbed)
+
                                 }
-                            } else return await message.reply(new MessageEmbed()
-                                .setColor(ee.color)
-                                .setTitle(`⚠ Por favor, dime que realizar`)
-                                .setDescription(`Uso: \`${prefix}noXPchannel <list/add/remove> <Canal>\``)
-                            ).then(msg => msg.delete({ timeout: 30000 }).catch(e => console.log(gm.errorDeleteMessage.gray)));
+                            } else {
+                                titleEmbed = `⚠ Por favor, dime que realizar`
+                                descEmbed = `Uso: \`${prefix}noXPchannel <list/add/remove> <Canal>\``
+                                return simpleEmbedField(message, ee.color, gm.longTime, titleEmbed, descEmbed)
+                            }
                         case "remove":
                             if (args[1]) {
                                 if (isNaN(args[1])) channel = await message.guild.channels.cache.find(c => c.id === args[1].slice(2, -1))
@@ -79,41 +76,33 @@ module.exports = {
                                     const newArray = []
                                     data.noChannels = newArray
                                     await data.save()
-                                    return message.channel.send(new MessageEmbed()
-                                        .setColor(ee.checkcolor)
-                                        .setTitle("⚠ No XP Channels")
-                                        .setDescription(`Se borro correctamente todos los canales de la lista`)
-                                    )
+
+                                    descEmbed = `Se borro correctamente todos los canales de la lista`
+                                    return simpleEmbedDescription(message, ee.checkcolor, null, titleEmbed, descEmbed)
                                 }
-                                if (!channel) return await message.reply(new MessageEmbed()
-                                    .setColor(ee.wrongcolor)
-                                    .setTitle("⚠ No XP Channels")
-                                    .setDescription(`Por favor escribe un canal valido para eliminar`)
-                                ).then(msg => msg.delete({ timeout: 30000 }).catch(e => console.log(gm.errorDeleteMessage.gray)));
+                                if (!channel) {
+                                    descEmbed = `Por favor escribe un canal valido para eliminar`
+                                    return simpleEmbedDescription(message, ee.wrongcolor, gm.longTime, titleEmbed, descEmbed)
+                                }
                                 if (data) {
                                     if (data.noChannels.includes(channel.id)) {
                                         const newArray = removeItemFromArr(data.noChannels, channel.id)
                                         data.noChannels = newArray
                                         await data.save()
-                                        return message.channel.send(new MessageEmbed()
-                                            .setColor(ee.checkcolor)
-                                            .setTitle("⚠ No XP Channels")
-                                            .setDescription(`Se borro correctamente de la lista el canal: ${args[1]}`)
-                                        )
-                                    } else {
 
-                                        return message.channel.send(new MessageEmbed()
-                                            .setColor(ee.wrongcolor)
-                                            .setTitle("⚠ No XP Channels")
-                                            .setDescription(`No encontre ningun canal que se llame asi: ${args[1]}`)
-                                        )
+                                        descEmbed = `Se borro correctamente de la lista el canal: ${args[1]}`
+                                        return simpleEmbedDescription(message, ee.checkcolor, null, titleEmbed, descEmbed)
+
+                                    } else {
+                                        descEmbed = `No encontre ningun canal que se llame asi: ${args[1]}`
+                                        return simpleEmbedDescription(message, ee.wrongcolor, gm.longTime, titleEmbed, descEmbed)
                                     }
                                 }
-                            } else return await message.reply(new MessageEmbed()
-                                .setColor(ee.color)
-                                .setTitle(`⚠ Por favor, dime que realizar`)
-                                .setDescription(`Uso: \`${prefix}noXPchannel <list/add/remove> <Canal>\``)
-                            ).then(msg => msg.delete({ timeout: 30000 }).catch(e => console.log(gm.errorDeleteMessage.gray)));
+                            } else {
+                                titleEmbed = `⚠ Por favor, dime que realizar`
+                                descEmbed = `Uso: \`${prefix}noXPchannel <list/add/remove> <Canal>\``
+                                return simpleEmbedDescription(message, ee.wrongcolor, gm.slowTime, titleEmbed, descEmbed)
+                            }
                         case "list":
                             if (data) {
                                 channel = await message.guild.channels.cache.map(c => c.id)
@@ -125,11 +114,9 @@ module.exports = {
                             }
                             break;
                         default:
-                            return await message.reply(new MessageEmbed()
-                                .setColor(ee.color)
-                                .setTitle(`⚠ Por favor, dime que realizar`)
-                                .setDescription(`Uso: \`${prefix}noXPchannel <list/add/remove> <Canal>\``)
-                            ).then(msg => msg.delete({ timeout: 30000 }).catch(e => console.log(gm.errorDeleteMessage.gray)));
+                            titleEmbed = `⚠ Por favor, dime que realizar`
+                            descEmbed = `Uso: \`${prefix}noXPchannel <list/add/remove> <Canal>\``
+                            return simpleEmbedDescription(message, ee.wrongcolor, gm.slowTime, titleEmbed, descEmbed)
                     }
                 } finally {
                     mongoose.connection.close()

@@ -1,5 +1,7 @@
 const { MessageEmbed } = require("discord.js");
 const ee = require("../../botconfig/embed.json");
+const gm = require("../../botconfig/globalMessages.json");
+const { simpleEmbedField } = require("../../handlers/functions");
 
 module.exports = {
   name: "Say",
@@ -10,13 +12,11 @@ module.exports = {
   description: "Reenvía el texto",
   run: async (client, message, args, user, text, prefix) => {
     try {
-      if (!args[0])
-        return message.channel.send(new MessageEmbed()
-          .setColor(ee.wrongcolor)
-          .setFooter(ee.footertext, ee.footericon)
-          .setTitle(`:warning: ERROR | No pusiste ningún texto`)
-          .setDescription(`uso: \`${prefix}say <Tu texto>\``)
-        );
+      if (!args[0]) {
+        const title = `:warning: No pusiste ningún texto`
+        const desc = `Uso: \`${prefix}say <Tu texto>\``
+        return simpleEmbedField(message, ee.wrongcolor, gm.longTime, title, desc)
+      }
       message.channel.send(text);
       message.delete()
     } catch (e) {

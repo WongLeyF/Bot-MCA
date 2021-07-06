@@ -1,5 +1,5 @@
 const { MessageEmbed } = require("discord.js");
-const { errorMessageEmbed } = require("../../handlers/functions")
+const { errorMessageEmbed, simpleEmbedDescription } = require("../../handlers/functions")
 const ee = require("../../botconfig/embed.json");
 const gm = require("../../botconfig/globalMessages.json");
 const mongo = require('../../handlers/mongo');
@@ -19,11 +19,11 @@ module.exports = {
             await mongo().then(async mongoose => {
                 try {
                     const guildID = message.guild.id
-                    let data = await settingsMessCountSchema.findOne({ _id: guildID });
+                    let data = await settingsMessCountSchema.findOne({ _id: guildID })
+                    let descEmbed
                     if (!args[0]) {
                         if (data) {
-                            data.messageCounter = !data.messageCounter
-                            status = data.messageCounter
+                            status = !data.messageCounter
                             await data.save()
                         } else {
                             let newData = new settingsMessCountSchema({
@@ -36,21 +36,21 @@ module.exports = {
                     } else {
                         if (data) {
                             data.messageCounter = args[0].toLowerCase() == 'on' ? true : args[0].toLowerCase() == 'off' ? false : null;
-                            if (!data.messageCounter) return message.reply(new MessageEmbed()
-                                .setColor(ee.wrongcolor)
-                                .setDescription('❌ Dame un argumento valido (on/off) ')
-                            ).then(msg => msg.delete({ timeout: 5000 }).catch(e => console.log(gm.errorDeleteMessage.gray)));
+                            if (!data.messageCounter) {
+                                descEmbed = '❌ Dame un argumento valido (on/off) '
+                                return simpleEmbedDescription(message, ee.wrongcolor, gm.shortTime, descEmbed)
+                            }
                             status = data.messageCounter
                             await data.save()
                         } else {
-                            let newData = new settingsMessCountSchema({
+                            const newData = new settingsMessCountSchema({
                                 _id: guildID,
                                 messageCounter: args[0].toLowerCase() == 'on' ? true : args[0].toLowerCase() == 'off' ? false : null,
                             });
-                            if (!newData.messageCounter) return message.reply(new MessageEmbed()
-                                .setColor(ee.wrongcolor)
-                                .setDescription('❌ Dame un argumento valido (on/off) ')
-                            ).then(msg => msg.delete({ timeout: 5000 }).catch(e => console.log(gm.errorDeleteMessage.gray)));
+                            if (!newData.messageCounter){
+                                descEmbed = '❌ Dame un argumento valido (on/off) '
+                                return simpleEmbedDescription(message, ee.wrongcolor, gm.shortTime, descEmbed)
+                            }
                             status = newData.messageCounter
                             await newData.save()
                         }
@@ -59,10 +59,8 @@ module.exports = {
                     mongoose.connection.close()
                 }
             })
-            message.channel.send(new MessageEmbed()
-                .setColor(ee.color)
-                .setDescription(`:white_check_mark: El cambio se realizo correctamente, estado: ${status == true ? "on" : "off"}`)
-            ).then(msg => msg.delete({ timeout: 5000 }).catch(e => console.log(gm.errorDeleteMessage.gray)));
+            descEmbed = `:white_check_mark: El cambio se realizo correctamente, estado: ${status == true ? "on" : "off"}`
+            simpleEmbedDescription(message, ee.color, gm.shortTime, descEmbed)
         } catch (e) {
             console.log(String(e.stack).bgRed);
             errorMessageEmbed(e, message)

@@ -1,5 +1,5 @@
 const { MessageEmbed } = require("discord.js");
-const { errorMessageEmbed } = require("../../handlers/functions")
+const { errorMessageEmbed, simpleEmbedField, simpleEmbedDescription } = require("../../handlers/functions")
 const ee = require("../../botconfig/embed.json")
 const gm = require("../../botconfig/globalMessages.json")
 const Levels = require("discord-xp");
@@ -15,55 +15,61 @@ module.exports = {
         try {
             const options = ["add", "set", "sub"]
             const member = message.mentions.members.first() || message.guild.members.cache.get(args[1]);
-            if (!args[0] || !options.includes(args[0])) return message.channel.send(new MessageEmbed()
-                .setColor(ee.wrongcolor)
-                .setTitle(`⚠ Por favor, dime que realizar hacer`)
-                .setDescription(`Uso: \`${prefix}setxp <add/set/sub> <mencion/ID> <nivel>\``))
-            if (!args[1]) return message.channel.send(new MessageEmbed()
-                .setColor(ee.wrongcolor)
-                .setTitle(`⚠ Por favor, especifica al usuario`)
-            ).then(msg => msg.delete({ timeout: 10000 }).catch(e => console.log(gm.errorDeleteMessage.gray)));
-            if (!member) return message.channel.send(new MessageEmbed()
-                .setColor(ee.wrongcolor)
-                .setTitle(`⚠ Por favor, especifica un usuario valido`)
-            ).then(msg => msg.delete({ timeout: 10000 }).catch(e => console.log(gm.errorDeleteMessage.gray)));
-            if (!args[2]) return message.channel.send(new MessageEmbed()
-                .setColor(ee.wrongcolor)
-                .setTitle(`⚠ Por favor, especifica la cantidad de experiencia`)
-            ).then(msg => msg.delete({ timeout: 10000 }).catch(e => console.log(gm.errorDeleteMessage.gray)));
-            if (isNaN(args[2])) return message.channel.send(new MessageEmbed()
-                .setColor(ee.wrongcolor)
-                .setTitle(`⚠ Por favor, especifica una cantidad de experiencia valida`)
-            ).then(msg => msg.delete({ timeout: 10000 }).catch(e => console.log(gm.errorDeleteMessage.gray)));
+            let titleEmbed, descEmbed
+            if (!args[0] || !options.includes(args[0])) {
+                titleEmbed = `⚠ Por favor, dime que realizar hacer`
+                descEmbed = `Uso: \`${prefix}setxp <add/set/sub> <mencion/ID> <nivel>\``
+                return simpleEmbedField(message, ee.wrongcolor, gm.longTime, titleEmbed, descEmbed)
+            }
+            if (!args[1]) {
+                descEmbed = `⚠ Por favor, especifica al usuario`
+                return simpleEmbedDescription(message, ee.wrongcolor, gm.longTime, descEmbed)
+            }
+            if (!member) {
+                descEmbed = `⚠ Por favor, especifica un usuario valido`
+                return simpleEmbedDescription(message, ee.wrongcolor, gm.longTime, descEmbed)
+            }
+            if (!args[2]) {
+                descEmbed = `⚠ Por favor, especifica la cantidad de experiencia`
+                return simpleEmbedDescription(message, ee.wrongcolor, gm.longTime, descEmbed)
+            }
+            if (isNaN(args[2])) {
+                descEmbed = `⚠ Por favor, especifica una cantidad de experiencia valida`
+                return simpleEmbedDescription(message, ee.wrongcolor, gm.longTime, descEmbed)
+            }
 
             switch (args[0]) {
                 case 'add':
-
-                    if (await Levels.appendXp(member.id, message.guild.id, args[2])) return message.channel.send(new MessageEmbed()
-                        .setColor(ee.color)
-                        .setDescription(`Se agregaron a ${member} esta cantidad de xp: ${args[2]}`)
-                    )
-                    break;
-
+                    if (await Levels.appendXp(member.id, message.guild.id, args[2])) {
+                        descEmbed = `Se agregaron a ${member} esta cantidad de xp: ${args[2]}`
+                        return simpleEmbedDescription(message, ee.color, null, descEmbed)
+                    } else {
+                        descEmbed = `❌ No pude realizar la operacion, intentalo de nuevo`
+                        return simpleEmbedDescription(message, ee.wrongcolor, shortTime, descEmbed)
+                    }
+                    
                 case 'set':
-                    if (await Levels.setXp(member.id, message.guild.id, args[2])) return message.channel.send(new MessageEmbed()
-                        .setColor(ee.color)
-                        .setDescription(`La nueva experiencia de ${member} es: ${args[2]}`)
-                    )
-                    break;
-
+                    if (await Levels.setXp(member.id, message.guild.id, args[2])) {
+                        descEmbed = `La nueva experiencia de ${member} es: ${args[2]}`
+                        return simpleEmbedDescription(message, ee.color, null, descEmbed)
+                    } else {
+                        descEmbed = `❌ No pude realizar la operacion, intentalo de nuevo`
+                        return simpleEmbedDescription(message, ee.wrongcolor, shortTime, descEmbed)
+                    }
+                    
                 case 'sub':
-                    if (await Levels.subtractXp(member.id, message.guild.id, args[2])) return message.channel.send(new MessageEmbed()
-                        .setColor(ee.color)
-                        .setDescription(`Se restaron a ${member} esta cantidad de xp: ${args[2]}`)
-                    )
-                    break;
-
+                    if (await Levels.subtractXp(member.id, message.guild.id, args[2])) {
+                        descEmbed = `Se restaron a ${member} esta cantidad de xp: ${args[2]}`
+                        return simpleEmbedDescription(message, ee.color, null, descEmbed)
+                    } else {
+                        descEmbed = `❌ No pude realizar la operacion, intentalo de nuevo`
+                        return simpleEmbedDescription(message, ee.wrongcolor, shortTime, descEmbed)
+                    }
+                    
                 default:
-                    return message.channel.send(new MessageEmbed()
-                        .setColor(ee.wrongcolor)
-                        .setTitle(`⚠ Por favor, dime que realizar hacer, \`${args[0]}\` no lo reconozco como accion`)
-                        .setDescription(`Uso: \`${prefix}setxp <add/set/sub> <mencion/ID> <nivel>\``))
+                    titleEmbed = `⚠ Por favor, dime que realizar hacer, \`${args[0]}\` no lo reconozco como accion`
+                    descEmbed = `Uso: \`${prefix}setxp <add/set/sub> <mencion/ID> <nivel>\``
+                    return simpleEmbedField(message, ee.wrongcolor, gm.slowTime, titleEmbed, descEmbed)
             }
         } catch (e) {
             console.log(String(e.stack).bgRed)

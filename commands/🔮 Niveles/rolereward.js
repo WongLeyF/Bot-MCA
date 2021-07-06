@@ -1,5 +1,5 @@
 const { MessageEmbed } = require("discord.js");
-const { errorMessageEmbed } = require("../../handlers/functions")
+const { errorMessageEmbed, simpleEmbedField, simpleEmbedDescription } = require("../../handlers/functions")
 const ee = require("../../botconfig/embed.json")
 const gm = require("../../botconfig/globalMessages.json")
 const { Database } = require("quickmongo");
@@ -16,7 +16,7 @@ module.exports = {
     run: async (client, message, args, user, text, prefix) => {
         try {
             const guildID = message.guild.id
-            let role
+            let role, titleEmbed, descEmbed
             if (args[0] == "list") {
                 const rolerewardRaw = await db.get(`${message.guild.id}`)
                 if (rolerewardRaw) {
@@ -26,46 +26,47 @@ module.exports = {
                         temp = rrObjects.filter(r => r.roleid != 0).map(r => String(`Nivel: ` + r.lvl + `\nRole: <@&` + r.roleid + `>\n\n`))
                         rrString += temp[0] != undefined ? temp[0] : ""
                     }
-                    return message.channel.send(new MessageEmbed()
-                        .setTitle("**Role Rewards**:")
-                        .setDescription(`\n${rrString == "" ? "**No hay ningun role**" : rrString}`)
-                    )
-                } else return message.reply(new MessageEmbed()
-                    .setColor(ee.wrongcolor)
-                    .setTitle(`⚠ No hay ningun registro de este server`)
-                    .setDescription(`Uso: \`${prefix}rolereward [remove/list] <Role> <Nivel>\`\n`)
-                ).then(msg => msg.delete({ timeout: 5000 }).catch(e => console.log(gm.errorDeleteMessage.gray)));
+
+                    titleEmbed = `**Role Rewards**:`
+                    descEmbed = `\n${rrString == "" ? "**No hay ningun role**" : rrString}`
+                    return simpleEmbedField(message, null, null, titleEmbed, descEmbed)
+
+                } else {
+                    titleEmbed = `⚠ No hay ningun registro de este server`
+                    descEmbed = `Uso: \`${prefix}rolereward [remove/list] <Role> <Nivel>\`\n`
+                    return simpleEmbedField(message, ee.wrongcolor, gm.shortTime, titleEmbed, descEmbed)
+                }
             }
             if (args[0] == "remove") {
 
-                if (!args[1]) return message.reply(new MessageEmbed()
-                    .setColor(ee.wrongcolor)
-                    .setTitle(`⚠ Por favor, dime que realizar hacer`)
-                    .setDescription(`Uso: \`${prefix}rolereward remove <Role> <Nivel>\``)
-                ).then(msg => msg.delete({ timeout: 5000 }).catch(e => console.log(gm.errorDeleteMessage.gray)));
-                if (!args[1].includes(`@&`)) return await message.reply(new MessageEmbed()
-                    .setColor(ee.wrongcolor)
-                    .setTitle("⚠ Role Rewards")
-                    .setDescription(`Por favor escribe un rol valido`)
-                ).then(msg => msg.delete({ timeout: 30000 }).catch(e => console.log(gm.errorDeleteMessage.gray)));
-
+                if (!args[1]) {
+                    titleEmbed = `⚠ Por favor, dime que realizar hacer`
+                    descEmbed = `Uso: \`${prefix}rolereward remove <Role> <Nivel>\``
+                    return simpleEmbedField(message, ee.wrongcolor, gm.longTime, titleEmbed, descEmbed)
+                }
+                if (!args[1].includes(`@&`)) {
+                    titleEmbed = `⚠ Role Rewards`
+                    descEmbed = `Por favor escribe un rol valido`
+                    return simpleEmbedField(message, ee.wrongcolor, gm.shortTime, titleEmbed, descEmbed)
+                }
                 if (args[1]) {
                     if (isNaN(args[1])) role = message.guild.roles.cache.find(role => role.name === args[1])
                     if (!isNaN(args[1])) role = message.guild.roles.cache.get(args[1].slice(3, -1));
                     if (role == undefined) role = message.guild.roles.cache.get(args[1].slice(3, -1))
-                } else return await message.reply(new MessageEmbed()
-                    .setColor(ee.wrongcolor)
-                    .setTitle("⚠ Role Rewards")
-                    .setDescription(`Por favor escribe el rol a asignar`)
-                ).then(msg => msg.delete({ timeout: 30000 }).catch(e => console.log(gm.errorDeleteMessage.gray)));
+                } else {
+                    titleEmbed = `⚠ Role Rewards`
+                    descEmbed = `Por favor escribe el rol a asignar`
+                    return simpleEmbedField(message, ee.wrongcolor, gm.shortTime, titleEmbed, descEmbed)
+                }
                 const data = await db.exists(`${guildID}.${args[2]}`)
-                if (!role) return message.reply(new MessageEmbed()
-                    .setColor(ee.wrongcolor)
-                    .setDescription('❌ No puede encontrar este rol, intenta de nuevo'));
-                if (args[2] < 0) return message.reply(new MessageEmbed()
-                    .setColor(ee.wrongcolor)
-                    .setDescription('❌ El nivel minimo debe ser mayor a 0')
-                ).then(msg => msg.delete({ timeout: 5000 }).catch(e => console.log(gm.errorDeleteMessage.gray)));
+                if (!role) {
+                    descEmbed = '❌ No puede encontrar este rol, intenta de nuevo'
+                    return simpleEmbedDescription(message, ee.wrongcolor, gm.longTime, descEmbed)
+                }
+                if (parseInt(args[2]) < 0) {
+                    descEmbed = '❌ El nivel minimo debe ser mayor a 0'
+                    return simpleEmbedDescription(message, ee.wrongcolor, gm.shortTime, descEmbed)
+                }
                 if (data) {
                     const inputRolLVL = [{
                         lvl: args[2],
@@ -75,58 +76,53 @@ module.exports = {
                     if (rolLVL.find(e => e.roleid == role) != undefined) {
                         Object.assign(rolLVL, inputRolLVL)
                         await db.set(`${guildID}.${args[2]}`, rolLVL).then(console.log);
-                        return message.channel.send(new MessageEmbed()
-                            .setColor(ee.checkcolor)
-                            .setTitle("⚠ Role Reward")
-                            .setDescription(`El rol: ${args[1]} se ha eliminado para el nivel: ${args[2]}`)
-                        )
-                    } else return message.channel.send(new MessageEmbed()
-                        .setColor(ee.wrongcolor)
-                        .setDescription('❌ No tengo registros de ese rol con tal nivel')
-                    ).then(msg => msg.delete({ timeout: 5000 }).catch(e => console.log(gm.errorDeleteMessage.gray)));
-                } else return message.channel.send(new MessageEmbed()
-                    .setColor(ee.wrongcolor)
-                    .setDescription('❌ No tengo registros de ese nivel')
-                ).then(msg => msg.delete({ timeout: 5000 }).catch(e => console.log(gm.errorDeleteMessage.gray)));
+                        titleEmbed = `⚠ Role Reward`
+                        descEmbed = `El rol: ${args[1]} se ha eliminado para el nivel: ${args[2]}`
+                        return simpleEmbedField(message, ee.checkcolor, null, titleEmbed, descEmbed)
+                    } else {
+                        descEmbed = '❌ No tengo registros de ese rol con tal nivel'
+                        return simpleEmbedDescription(message, ee.wrongcolor, gm.shortTime, descEmbed)
+                    }
+                } else {
+                    descEmbed = '❌ No tengo registros de ese nivel'
+                    simpleEmbedDescription(message, ee.wrongcolor, gm.shortTime, descEmbed)
+                }
                 return
             }
             if (!args[0]) {
-                return message.reply(new MessageEmbed()
-                    .setColor(ee.wrongcolor)
-                    .setTitle(`⚠ Por favor, dime que realizar hacer`)
-                    .setDescription(`Uso: \`${prefix}rolereward [remove/list] <Role> <Nivel>\``)
-                ).then(msg => msg.delete({ timeout: 5000 }).catch(e => console.log(gm.errorDeleteMessage.gray)));
-
+                titleEmbed = `⚠ Por favor, dime que realizar hacer`
+                descEmbed = `Uso: \`${prefix}rolereward [remove/list] <Role> <Nivel>\``
+                return simpleEmbedField(message, ee.wrongcolor, gm.shortTime, titleEmbed, descEmbed)
             }
-            if (!args[0].includes(`@&`)) return await message.reply(new MessageEmbed()
-                .setColor(ee.wrongcolor)
-                .setTitle("⚠ Role Rewards")
-                .setDescription(`Por favor escribe un rol valido`)
-            ).then(msg => msg.delete({ timeout: 30000 }).catch(e => console.log(gm.errorDeleteMessage.gray)));
-
+            if (!args[0].includes(`@&`)) {
+                titleEmbed = `⚠ Role Rewards`
+                descEmbed = `Por favor escribe un rol valido`
+                return simpleEmbedField(message, ee.wrongcolor, gm.shortTime, titleEmbed, descEmbed)
+            }
             if (args[0]) {
                 if (isNaN(args[0])) role = message.guild.roles.cache.find(role => role.name === args[0])
                 if (!isNaN(args[0])) role = message.guild.roles.cache.get(args[0].slice(3, -1));
                 if (role == undefined) role = message.guild.roles.cache.get(args[0].slice(3, -1))
-            } else return await message.reply(new MessageEmbed()
-                .setColor(ee.wrongcolor)
-                .setTitle("⚠ Role Rewards")
-                .setDescription(`Por favor escribe el rol a asignar`)
-            ).then(msg => msg.delete({ timeout: 30000 }).catch(e => console.log(gm.errorDeleteMessage.gray)));
+            } else {
+                titleEmbed = `⚠ Role Rewards`
+                descEmbed = `Por favor escribe el rol a asignar`
+                return simpleEmbedField(message, ee.wrongcolor, gm.shortTime, titleEmbed, descEmbed)
+            }
             const data = await db.exists(`${guildID}.${args[1]}`)
-            if (!role) return message.reply(new MessageEmbed()
-                .setColor(ee.wrongcolor)
-                .setDescription('❌ No puede encontrar este rol, intenta de nuevo'));
+            if (!role) {
+                descEmbed = '❌ No puede encontrar este rol, intenta de nuevo'
+                return simpleEmbedDescription(message, ee.wrongcolor, gm.shortTime, descEmbed)
+            }
             // message.member.guild.roles.add(role);
 
-            if (!args[1]) return message.reply(new MessageEmbed()
-                .setColor(ee.wrongcolor)
-                .setDescription('❌ El nivel minimo debe ser mayor a 0')
-            ).then(msg => msg.delete({ timeout: 5000 }).catch(e => console.log(gm.errorDeleteMessage.gray)));
-            if (args[1] < 0) return message.reply(new MessageEmbed()
-                .setColor(ee.wrongcolor)
-                .setDescription('❌ El nivel minimo debe ser mayor a 0')
-            ).then(msg => msg.delete({ timeout: 5000 }).catch(e => console.log(gm.errorDeleteMessage.gray)));
+            if (!args[1]) {
+                descEmbed = '❌ El nivel minimo debe ser mayor a 0'
+                return simpleEmbedDescription(message, ee.wrongcolor, gm.shortTime, descEmbed)
+            }
+            if (parseInt(args[1]) < 0) {
+                descEmbed = '❌ El nivel minimo debe ser mayor a 0'
+                return simpleEmbedDescription(message, ee.wrongcolor, gm.shortTime, descEmbed)
+            }
             if (data) {
                 const inputRolLVL = [{
                     lvl: args[1],
@@ -141,12 +137,9 @@ module.exports = {
                     roleid: role.id
                 }).then(console.log);
             }
-            message.channel.send(new MessageEmbed()
-                .setColor(ee.checkcolor)
-                .setTitle("⚠ Role Reward")
-                .setDescription(`El rol: ${args[0]} se asignara al nivel: ${args[1]}`)
-            )
-
+            titleEmbed = `⚠ Role Reward`
+            descEmbed = `El rol: ${args[0]} se asignara al nivel: ${args[1]}`
+            simpleEmbedField(message, ee.checkcolor, null, titleEmbed, descEmbed)
 
         } catch (e) {
             console.log(String(e.stack).bgRed)

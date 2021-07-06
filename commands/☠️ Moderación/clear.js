@@ -1,5 +1,5 @@
 const { MessageEmbed } = require("discord.js");
-const { errorMessageEmbed } = require("../../handlers/functions")
+const { errorMessageEmbed, simpleEmbedDescription } = require("../../handlers/functions")
 const ee = require("../../botconfig/embed.json");
 const gm = require("../../botconfig/globalMessages.json");
 
@@ -14,14 +14,14 @@ module.exports = {
     run: async (client, message, args, user, text, prefix) => {
         try {
             const amount = args[0]
-            if (!amount) return message.reply(new MessageEmbed()
-                .setColor(ee.wrongcolor)
-                .setDescription('❌ Necesitas darme un numero de mensajes a eliminar')
-            ).then(msg => msg.delete({ timeout: 10000 }).catch(e => console.log(gm.errorDeleteMessage.gray)));
-            if (amount <= 1) return message.reply(new MessageEmbed()
-                .setColor(ee.wrongcolor)
-                .setDescription(`❌ Necesitas borrar mas de un mensaje`)
-            ).then(msg => msg.delete({ timeout: 10000 }).catch(e => console.log(gm.errorDeleteMessage.gray)));
+            if (!amount){
+                const desc = '❌ Necesitas darme un numero de mensajes a eliminar'
+                return simpleEmbedDescription(message, ee.wrongcolor, gm.longTime, desc)
+            }
+            if (amount <= 1){
+                const desc = `❌ Necesitas borrar mas de un mensaje`
+                return simpleEmbedDescription(message, ee.wrongcolor, gm.longTime, desc)
+            }
             if (amount >= 100) {
                 let aux, messageTodelete = amount
                 do {
@@ -39,10 +39,10 @@ module.exports = {
             message.channel.send(`:white_check_mark: Se han borrado ${amount} mensajes`
             ).then(msg => msg.delete({ timeout: 5000 }).catch(e => console.log(gm.errorDeleteMessage.gray)));
         } catch (e) {
-            if (e.code === 50035) return message.channel.send(new MessageEmbed()
-                .setColor(ee.wrongcolor)
-                .setDescription("❌ Necesitas darme un numero de mensajes a eliminar")
-            ).then(msg => msg.delete({ timeout: 10000 }).catch(e => console.log(gm.errorDeleteMessage.gray)));
+            if (e.code === 50035) {
+                const desc = "❌ Necesitas darme un numero de mensajes a eliminar"
+                return simpleEmbedDescription(message, ee.wrongcolor, gm.longTime, desc)
+            }
             console.log(String(e.stack).bgRed)
             errorMessageEmbed(e, message)
         }

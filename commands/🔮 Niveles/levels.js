@@ -1,5 +1,5 @@
 const { MessageEmbed } = require("discord.js");
-const { errorMessageEmbed } = require("../../handlers/functions")
+const { errorMessageEmbed, simpleEmbedField } = require("../../handlers/functions")
 const ee = require("../../botconfig/embed.json")
 const gm = require("../../botconfig/globalMessages.json")
 const settings = require("../../models/setting_schema")
@@ -18,9 +18,12 @@ module.exports = {
                 try {
                     const guildID = message.guild.id
                     let data = await settings.findOne({ _id: guildID })
-                    let status
+                    let status, titleEmbed, descEmbed
                     switch (args[0]) {
                         case "enable":
+                            status = true
+                            break;
+                        case "on":
                             status = true
                             break;
                         case "disable":
@@ -29,16 +32,20 @@ module.exports = {
                         case "d":
                             status = false
                             break;
+                        case "off":
+                            status = false
+                            break;
                         default:
                             status = true
                             break;
                     }
 
-                    if (!args[0]) return await message.reply(new MessageEmbed()
-                        .setColor(ee.color)
-                        .setTitle("⚠ Sistema de niveles")
-                        .setDescription(`El sistema de niveles esta: ${data ? data.levelSystem ? "Activado" : "Desactivado" : "Activado"}`)
-                    ).then(msg => msg.delete({ timeout: 30000 }).catch(e => console.log(gm.errorDeleteMessage.gray)));
+                    if (!args[0]) {
+                        titleEmbed = `⚠ Sistema de niveles`
+                        descEmbed = `El sistema de niveles esta: ${data ? data.levelSystem ? "Activado" : "Desactivado" : "Activado"}`
+                        return simpleEmbedField(message, ee.color, gm.slowTime, titleEmbed, descEmbed)
+                    }
+                    
                     if (data) {
                         data.levelSystem = status
                         await data.save()
@@ -49,11 +56,11 @@ module.exports = {
                         })
                         await newData.save()
                     }
-                    message.channel.send(new MessageEmbed()
-                        .setColor(ee.checkcolor)
-                        .setTitle("⚠ Sistema de niveles")
-                        .setDescription(`El sistema de niveles esta: ${status ? "Activado" : "Desactivado"} `)
-                    )
+
+                    titleEmbed = `⚠ Sistema de niveles`
+                    descEmbed = `El sistema de niveles esta: ${status ? "Activado" : "Desactivado"} `
+                    simpleEmbedField(message, ee.checkcolor, null, titleEmbed, descEmbed)
+                
                 } finally {
                     mongoose.connection.close()
                 }

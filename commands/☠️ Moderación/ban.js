@@ -1,5 +1,5 @@
 const { MessageEmbed } = require("discord.js");
-const { errorMessageEmbed } = require("../../handlers/functions")
+const { errorMessageEmbed, simpleEmbedField, simpleEmbedDescription } = require("../../handlers/functions")
 const ee = require("../../botconfig/embed.json");
 const gm = require("../../botconfig/globalMessages.json");
 module.exports = {
@@ -12,18 +12,19 @@ module.exports = {
     run: async (client, message, args, user, text, prefix) => {
         try {
             const member = message.mentions.members.first() || message.guild.members.cache.get(args[0]);
-            if (!member) return message.channel.send(new MessageEmbed()
-                .setColor(ee.wrongcolor)
-                .addField(`❌ Por favor, especifica al usuario`,`Uso: \`${prefix}ban <Tag/ID> [Razón]\``)
-            ).then(msg => msg.delete({ timeout: 10000 }).catch(e => console.log(gm.errorDeleteMessage.gray)));
-            if (member.id === message.author.id) return message.channel.send(new MessageEmbed()
-                .setColor(ee.wrongcolor)
-                .setDescription('❌ Estem, no puedes banearte a ti mismo...')
-            ).then(msg => msg.delete({ timeout: 10000 }).catch(e => console.log(gm.errorDeleteMessage.gray)));
-            if (!member.bannable) return message.channel.send(new MessageEmbed()
-                .setColor(ee.wrongcolor)
-                .setDescription('❌ No puedo banear a este usuario. Ya que es mod/admin o tiene un rol mas alto que el mio')
-            ).then(msg => msg.delete({ timeout: 10000 }).catch(e => console.log(gm.errorDeleteMessage.gray)));
+            if (!member) {
+                const title = `❌ Por favor, especifica al usuario`
+                const desc = `Uso: \`${prefix}ban <Tag/ID> [Razón]\``
+                return simpleEmbedField(message, ee.wrongcolor, gm.longTime, title, desc)
+            }
+            if (member.id === message.author.id) {
+                const desc = '❌ Estem, no puedes banearte a ti mismo...'
+                return simpleEmbedDescription(message, ee.wrongcolor, gm.longTime, desc)
+            }
+            if (!member.bannable) {
+                const desc = '❌ No puedo banear a este usuario. Ya que es mod/admin o tiene un rol mas alto que el mio'
+                return simpleEmbedDescription(message, ee.wrongcolor, gm.longTime, desc)
+            }
             let reason = !args.slice(1).join(" ") ? 'Sin especificar' : args.slice(1).join(" ");
             await member.ban({ reason: reason })
 

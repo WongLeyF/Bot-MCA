@@ -18,48 +18,42 @@ module.exports = {
                 try {
                     const guildID = message.guild.id
                     let role, data = await settingsXP.findOne({ _id: guildID })
+                    let titleEmbed = `⚠ No XP Role`, descEmbed
                     switch (args[0]) {
                         case "add":
                             if (args[1]) {
-                                if (!args[1].includes(`@&`)) return await message.reply(new MessageEmbed()
-                                    .setColor(ee.wrongcolor)
-                                    .setTitle("⚠ No XP Role")
-                                    .setDescription(`Por favor escribe un role valido`)
-                                ).then(msg => msg.delete({ timeout: 30000 }).catch(e => console.log(gm.errorDeleteMessage.gray)));
+                                if (!args[1].includes(`@&`)) {
+                                    descEmbed = `Por favor escribe un role valido`
+                                    return simpleEmbedField(message, ee.wrongcolor, gm.slowTime, titleEmbed, descEmbed)
+                                }
                                 if (isNaN(args[1])) role = await message.guild.roles.cache.find(c => c.id === args[1].slice(3, -1))
                                 if (!isNaN(args[1])) role = await message.guild.roles.cache.find(c => c.id === args[1])
                                 if (role == undefined) role = message.guild.roles.cache.find(c => c.name === args[1])
-                                if (!role) return await message.reply(new MessageEmbed()
-                                    .setColor(ee.wrongcolor)
-                                    .setTitle("⚠ No XP Role")
-                                    .setDescription(`Por favor escribe un role valido para asignar`)
-                                ).then(msg => msg.delete({ timeout: 30000 }).catch(e => console.log(gm.errorDeleteMessage.gray)));
+                                if (!role){
+                                    descEmbed = `Por favor escribe un role valido para asignar`
+                                    return simpleEmbedDescription(message, ee.wrongcolor, gm.slowTime, titleEmbed, descEmbed)
+                                } 
                                 if (data) {
                                     if (!data.noRoles.includes(role.id))
                                         data.noRoles.push(role.id)
                                     await data.save()
-                                    return message.channel.send(new MessageEmbed()
-                                        .setColor(ee.checkcolor)
-                                        .setTitle("⚠ No XP Role")
-                                        .setDescription(`Se agrego correctamente a la lista el role: ${args[1]}`)
-                                    )
+                                    descEmbed = `Se agrego correctamente a la lista el role: ${args[1]}`
+                                    return simpleEmbedDescription(message, ee.checkcolor, null, titleEmbed, descEmbed)
                                 } else {
                                     const newData = new settingsXP({
                                         _id: guildID,
                                         noRoles: [role.id]
                                     })
                                     await newData.save()
-                                    return message.channel.send(new MessageEmbed()
-                                        .setColor(ee.checkcolor)
-                                        .setTitle("⚠ No XP Role")
-                                        .setDescription(`Se agrego correctamente a la lista el role: ${args[1]}`)
-                                    )
+                                    descEmbed = `Se agrego correctamente a la lista el role: ${args[1]}`
+                                    return simpleEmbedDescription(message, ee.checkcolor, null, titleEmbed, descEmbed)
+                                    
                                 }
-                            } else return await message.reply(new MessageEmbed()
-                                .setColor(ee.color)
-                                .setTitle(`⚠ Por favor, dime que realizar`)
-                                .setDescription(`Uso: \`${prefix}noXProle <list/add/remove> <Role>\``)
-                            ).then(msg => msg.delete({ timeout: 30000 }).catch(e => console.log(gm.errorDeleteMessage.gray)));
+                            } else {
+                                titleEmbed = `⚠ Por favor, dime que realizar`
+                                descEmbed = `Uso: \`${prefix}noXProle <list/add/remove> <Role>\``
+                                return simpleEmbedField(message, ee.color, gm.longTime, titleEmbed, descEmbed)
+                            } 
                         case "remove":
                             if (args[1]) {
                                 if (isNaN(args[1])) role = await message.guild.roles.cache.find(c => c.id === args[1].slice(3, -1))
@@ -69,42 +63,36 @@ module.exports = {
                                     const newArray = []
                                     data.noRoles = newArray
                                     await data.save()
-                                    return message.channel.send(new MessageEmbed()
-                                        .setColor(ee.checkcolor)
-                                        .setTitle("⚠ No XP Role")
-                                        .setDescription(`Se borro correctamente todos los roles de la lista`)
-                                    )
+
+                                    descEmbed = `Se borro correctamente todos los roles de la lista`
+                                    return simpleEmbedDescription(message, ee.checkcolor, null, titleEmbed, descEmbed)
+                                    
                                 }
-                                if (!role) return await message.reply(new MessageEmbed()
-                                    .setColor(ee.wrongcolor)
-                                    .setTitle("⚠ No XP Role")
-                                    .setDescription(`Por favor escribe un role valido para eliminar`)
-                                ).then(msg => msg.delete({ timeout: 30000 }).catch(e => console.log(gm.errorDeleteMessage.gray)));
+                                if (!role){
+                                    descEmbed = `Por favor escribe un role valido para eliminar`
+                                    return simpleEmbedDescription(message, ee.wrongcolor, gm.longTime, titleEmbed, descEmbed)
+                                } 
                                 if (data) {
                                     if (data.noRoles.includes(role.id)) {
                                         const newArray = removeItemFromArr(data.noRoles, role.id)
                                         data.noRoles = newArray
                                         await data.save()
-                                        return message.channel.send(new MessageEmbed()
-                                            .setColor(ee.checkcolor)
-                                            .setTitle("⚠ No XP Role")
-                                            .setDescription(`Se borro correctamente de la lista el role: ${args[1]}`)
-                                        )
+
+                                        descEmbed = `Se borro correctamente de la lista el role: ${args[1]}`
+                                        return simpleEmbedDescription(message, ee.checkcolor, null, titleEmbed, descEmbed)
+
                                     } else {
 
-                                        return message.channel.send(new MessageEmbed()
-                                            .setColor(ee.wrongcolor)
-                                            .setTitle("⚠ No XP Role")
-                                            .setDescription(`No encontre ningun role que se llame asi: ${args[1]}`)
-                                        )
+                                        descEmbed = `No encontre ningun role que se llame asi: ${args[1]}`
+                                        return simpleEmbedDescription(message, ee.wrongcolor, gm.longTime, titleEmbed, descEmbed)
+
                                     }
                                 }
-                            } else return await message.reply(new MessageEmbed()
-                                .setColor(ee.color)
-                                .setTitle(`⚠ Por favor, dime que realizar`)
-                                .setDescription(`Uso: \`${prefix}noXProle <list/add/remove> <Role>\``)
-                            ).then(msg => msg.delete({ timeout: 30000 }).catch(e => console.log(gm.errorDeleteMessage.gray)));
-
+                            } else {
+                                titleEmbed = `⚠ Por favor, dime que realizar`
+                                descEmbed = `Uso: \`${prefix}noXProle <list/add/remove> <Role>\``
+                                return simpleEmbedDescription(message, ee.wrongcolor, gm.slowTime, titleEmbed, descEmbed)
+                            } 
                         case "list":
                             if (data) {
                                 role = await message.guild.roles.cache.map(c => c.id)
@@ -116,11 +104,9 @@ module.exports = {
                             }
                             break;
                         default:
-                            return await message.reply(new MessageEmbed()
-                                .setColor(ee.color)
-                                .setTitle(`⚠ Por favor, dime que realizar`)
-                                .setDescription(`Uso: \`${prefix}noXProle <list/add/remove> <Role>\``)
-                            ).then(msg => msg.delete({ timeout: 30000 }).catch(e => console.log(gm.errorDeleteMessage.gray)));
+                            titleEmbed = `⚠ Por favor, dime que realizar`
+                            descEmbed = `Uso: \`${prefix}noXProle <list/add/remove> <Role>\``
+                            return simpleEmbedDescription(message, ee.wrongcolor, gm.slowTime, titleEmbed, descEmbed)
                     }
                 } finally {
                     mongoose.connection.close()
