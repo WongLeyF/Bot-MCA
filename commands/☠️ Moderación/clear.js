@@ -14,11 +14,11 @@ module.exports = {
     run: async (client, message, args, user, text, prefix) => {
         try {
             const amount = args[0]
-            if (!amount){
+            if (!amount) {
                 const desc = '❌ Necesitas darme un numero de mensajes a eliminar'
                 return simpleEmbedDescription(message, ee.wrongcolor, gm.longTime, desc)
             }
-            if (amount <= 1){
+            if (amount <= 1) {
                 const desc = `❌ Necesitas borrar mas de un mensaje`
                 return simpleEmbedDescription(message, ee.wrongcolor, gm.longTime, desc)
             }
@@ -32,8 +32,13 @@ module.exports = {
                     })
                 } while (messageTodelete > 0);
             } else {
-                await message.channel.messages.fetch({ limit: parseInt(amount) + 1 }).then(messages => {
-                    message.channel.bulkDelete(messages)
+                await message.channel.messages.fetch({ limit: parseInt(amount) + 1 }).then(async messages => {
+                   await message.channel.bulkDelete(messages).catch(async () => {
+                       await message.channel.bulkDelete(messages, true).then(msg => {
+                            const desc = "❌ No puedo borrar mensajes de mas de 14 dias"
+                            simpleEmbedDescription(message, ee.wrongcolor, gm.slowTime, desc)
+                        })
+                    })
                 })
             }
             message.channel.send(`:white_check_mark: Se han borrado ${amount} mensajes`
