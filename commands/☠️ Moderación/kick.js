@@ -1,5 +1,5 @@
 const { MessageEmbed } = require("discord.js");
-const { errorMessageEmbed, simpleEmbedField, simpleEmbedDescription } = require("../../handlers/functions")
+const { errorMessageEmbed, simpleEmbedField, simpleEmbedDescription, getChannelLogsModeration } = require("../../handlers/functions")
 const ee = require("../../botconfig/embed.json");
 const gm = require("../../botconfig/globalMessages.json");
 
@@ -17,21 +17,22 @@ module.exports = {
             let titleEmbed = `❌ Por favor, especifica al usuario`, 
                 descEmbed = `Uso: \`${prefix}kick <Tag/ID> [Razón]\``
 
-            if (!member){
+            if (!member) {
                 return simpleEmbedField(message, ee.wrongcolor, gm.longTime, titleEmbed, descEmbed)
             }
-            if (member.id === message.author.id){
+            if (member.id === message.author.id) {
                 descEmbed = '❌ Estem, no puedes expulsarte a ti mismo...'
                 return simpleEmbedDescription(message, gm.wrongcolor, gm.longTime, descEmbed)
-            } 
+            }
             if (!member.kickable) {
                 descEmbed = '❌ No puedo expulsar a este usuario. Ya que es mod/admin o tiene un rol mas alto que el mio'
-                return simpleEmbedDescription( message, ee.wrongcolor,gm.longTime, descEmbed)
+                return simpleEmbedDescription(message, ee.wrongcolor, gm.longTime, descEmbed)
             }
 
             let reason = !args.slice(1).join(" ") ? 'Sin especificar' : args.slice(1).join(" ");
-            await member.kick( reason )
-            message.channel.send(new MessageEmbed()
+           // await member.kick( reason )
+            const channelID = await getChannelLogsModeration(message)
+            const embedLogs = new MessageEmbed()
                 .setColor(ee.color)
                 .setTitle('Miembro Expulsado')
                 .setThumbnail(member.user.displayAvatarURL())
@@ -39,10 +40,24 @@ module.exports = {
                 .addField('ID', member.id, true)
                 .addField('Expulsado por', message.author)
                 .addField('Razon', reason)
-                .setImage('https://media1.tenor.com/images/ca1bad80a757fa8b87dacd9c051f2670/tenor.gif')
                 .setFooter(ee.footertext, ee.footericon)
                 .setTimestamp()
-            );
+            if (channelID === message.channel.id) {
+                embedLogs.setImage(gm.kickMedia[Math.floor(Math.random() * gm.kickMedia.length)])
+                message.channel.send(embedLogs)
+            } else {
+                const channel = await client.channels.cache.get(channelID)
+                const embed = new MessageEmbed()
+                    .setColor(ee.color)
+                    .setTitle('Miembro Expulsado')
+                    .setThumbnail(member.user.displayAvatarURL())
+                    .addField('Usuario expulsado', member, true)
+                    .addField('Razon', reason, true)
+                    .setImage(gm.kickMedia[Math.floor(Math.random() * gm.kickMedia.length)])
+                    .setTimestamp()
+                channel.send(embedLogs)
+                message.channel.send(embed)
+            }
         } catch (e) {
             console.log(String(e.stack).bgRed)
             errorMessageEmbed(e, message)

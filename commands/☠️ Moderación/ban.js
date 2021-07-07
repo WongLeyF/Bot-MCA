@@ -1,5 +1,5 @@
 const { MessageEmbed } = require("discord.js");
-const { errorMessageEmbed, simpleEmbedField, simpleEmbedDescription } = require("../../handlers/functions")
+const { errorMessageEmbed, simpleEmbedField, simpleEmbedDescription, getChannelLogsModeration } = require("../../handlers/functions")
 const ee = require("../../botconfig/embed.json");
 const gm = require("../../botconfig/globalMessages.json");
 module.exports = {
@@ -27,8 +27,8 @@ module.exports = {
             }
             let reason = !args.slice(1).join(" ") ? 'Sin especificar' : args.slice(1).join(" ");
             await member.ban({ reason: reason })
-
-            message.channel.send(new MessageEmbed()
+            const channelID = await getChannelLogsModeration(message)
+            const embedLogs = new MessageEmbed()
                 .setColor(ee.color)
                 .setTitle('Miembro Baneado')
                 .setThumbnail(member.user.displayAvatarURL())
@@ -36,10 +36,23 @@ module.exports = {
                 .addField('ID', member.id, true)
                 .addField('Baneado por', message.author)
                 .addField('Razon', reason)
-                .setImage('https://media1.tenor.com/images/0be06cf168b1fa90572791419407f679/tenor.gif')
                 .setFooter(ee.footertext, ee.footericon)
                 .setTimestamp()
-            );
+            if (channelID === message.channel.id) {
+                embedLogs.setImage(gm.banMedia[Math.floor(Math.random() * gm.banMedia.length)])
+                message.channel.send(embedLogs)
+            } else {
+                const channel = await client.channels.cache.get(channelID)
+                const embed = new MessageEmbed().setColor(ee.color)
+                    .setTitle('Miembro Baneado')
+                    .setThumbnail(member.user.displayAvatarURL())
+                    .addField('Usuario Baneado', member, true)
+                    .addField('Razon', reason, true)
+                    .setImage(gm.banMedia[Math.floor(Math.random() * gm.banMedia.length)])
+                    .setTimestamp()
+                channel.send(embedLogs)
+                message.channel.send(embed)
+            }
         } catch (e) {
             console.log(String(e.stack).bgRed)
             errorMessageEmbed(e, message)
