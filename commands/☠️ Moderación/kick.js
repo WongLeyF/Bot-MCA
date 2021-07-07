@@ -30,7 +30,7 @@ module.exports = {
             }
 
             let reason = !args.slice(1).join(" ") ? 'Sin especificar' : args.slice(1).join(" ");
-           // await member.kick( reason )
+            await member.kick( reason )
             const channelID = await getChannelLogsModeration(message)
             const embedLogs = new MessageEmbed()
                 .setColor(ee.color)
