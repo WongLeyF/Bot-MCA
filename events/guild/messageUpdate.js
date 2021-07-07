@@ -5,7 +5,6 @@ const { getChannelLogsMessages, getUpdateMessages } = require("../../handlers/fu
 module.exports = async (client, oldMessage, newMessage) => {
     let status = await getUpdateMessages(newMessage);
     if (status == false) return;
-    console.log(status)
     if (!oldMessage.author) return;
     //if the message is not in a guild (aka in dms),if the message  author is a bot, return aka ignore the inputs
     if (!oldMessage.guild || oldMessage.author.bot) return;

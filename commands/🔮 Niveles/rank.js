@@ -38,7 +38,7 @@ module.exports = {
                     message.channel.send(attachment);
                 });
             } catch (e) {
-                console.log(e)
+                console.log(String(e.stack).bgRed)
                 if(data)rank.setBackground("COLOR", data.colorBackground)
                 rank.build().then(data => {
                     const attachment = new Discord.MessageAttachment(data, "RankCard.png");
@@ -69,7 +69,7 @@ module.exports = {
                     message.channel.send(attachment);
                 });
             } catch (e) {
-                console.log(e)
+                console.log(String(e.stack).bgRed)
                 rank.setBackground("COLOR", data.colorBackground)
                 rank.build().then(data => {
                     const attachment = new Discord.MessageAttachment(data, "RankCard.png");
