@@ -2,8 +2,8 @@
   * @INFO
   * Loading all needed File Information Parameters
 */
-const ee = require("../../botconfig/embed.json"); //Loading all embed settings like color footertext and icon ...
-const gm = require("../../botconfig/globalMessages.json");
+const ee = require("../../json/embed.json"); //Loading all embed settings like color footertext and icon ...
+const gm = require("../../json/globalMessages.json");
 const Discord = require("discord.js"); //this is the official discord.js wrapper for the Discord Api, which we use!
 const { MessageEmbed } = require("discord.js");
 const { escapeRegex, getPrefix, getMessageCount, getLevelSystem, errorMessageEmbed } = require("../../handlers/functions"); //Loading all needed functions

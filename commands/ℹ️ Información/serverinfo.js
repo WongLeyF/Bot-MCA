@@ -1,6 +1,6 @@
 const { MessageEmbed } = require("discord.js");
 const { errorMessageEmbed } = require("../../handlers/functions")
-const ee = require("../../botconfig/embed.json");
+const ee = require("../../json/embed.json");
 
 module.exports = {
   name: "Serverinfo",

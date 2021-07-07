@@ -1,8 +1,8 @@
 const { MessageEmbed } = require("discord.js");
 const { errorMessageEmbed, simpleEmbedField, simpleEmbedDescription } = require("../../handlers/functions")
 const Discord = require("discord.js");
-const ee = require("../../botconfig/embed.json");
-const gm = require("../../botconfig/globalMessages.json");
+const ee = require("../../json/embed.json");
+const gm = require("../../json/globalMessages.json");
 module.exports = {
     name: "Unban",
     description: "Desbanear miembros del servidor",

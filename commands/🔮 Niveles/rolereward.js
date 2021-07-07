@@ -1,7 +1,7 @@
 const { MessageEmbed } = require("discord.js");
 const { errorMessageEmbed, simpleEmbedField, simpleEmbedDescription } = require("../../handlers/functions")
-const ee = require("../../botconfig/embed.json")
-const gm = require("../../botconfig/globalMessages.json")
+const ee = require("../../json/embed.json")
+const gm = require("../../json/globalMessages.json")
 const { Database } = require("quickmongo");
 const db = new Database(process.env.mongoPath);
 

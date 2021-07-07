@@ -1,5 +1,5 @@
 const { MessageEmbed } = require("discord.js");
-const ee = require("../../botconfig/embed.json");
+const ee = require("../../json/embed.json");
 const { getChannelLogsMessages, getUpdateMessages } = require("../../handlers/functions");
 
 module.exports = async (client, oldMessage, newMessage) => {
