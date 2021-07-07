@@ -8,7 +8,7 @@ const settingslevelSchema = require('../../models/setting_schema')
 module.exports = {
     name: "setLVLChannel",
     aliases: ["slvlch", "setlvlch"],
-    description: "Establece un canal para recibir confesiones\nPara deshabilitar no ingreses el canal.",
+    description: "Establece un canal para recibir los mensajes por nivel\nPara deshabilitar no ingreses el canal.",
     category: "⚙ Configuración",
     cooldown: 10,
     memberpermissions: ["MANAGE_CHANNELS", "MANAGE_GUILD"],
