@@ -1,11 +1,18 @@
 {
     "errorDeleteMessage": "Couldn't Delete --> Ignore",
     "titleError": ":warning: ERROR | Algo salió mal",
+    "kickMedia": [
+        "https://media.discordapp.net/attachments/789496861907353620/860600233524461578/FB_IMG_1625124907495.jpg",
+        "https://media1.tenor.com/images/ca1bad80a757fa8b87dacd9c051f2670/tenor.gif"
+    ],
+    "banMedia": [
+        "https://media.discordapp.net/attachments/789496861907353620/860600233524461578/FB_IMG_1625124907495.jpg",
+        "https://media1.tenor.com/images/0be06cf168b1fa90572791419407f679/tenor.gif"
+    ],
     "tinyTime": 5000,
     "shortTime": 5000,
     "fastTime": 8000,
     "longTime": 10000,
     "largeTime": 20000,
     "slowTime": 30000
-
 }
