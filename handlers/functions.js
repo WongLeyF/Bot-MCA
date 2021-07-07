@@ -53,6 +53,34 @@ module.exports = {
     });
     return channelID
   },
+  //return string with the id of log messages channel 
+  getChannelLogsMessages: async function (message) {
+    const guildID = message.guild.id
+    let channelID
+    await mongo().then(async (mongoose) => {
+      try {
+        let data = await settingSchema.findOne({ _id: guildID });
+        channelID = data && data.logsMessages != "" && (data.logsMessages != undefined) ? data.logsMessages : message.channel.id
+      } finally {
+        mongoose.connection.close;
+      }
+    });
+    return channelID
+  },
+  //return string with the id of log messages channel 
+  getChannelLogsModeration: async function (message) {
+    const guildID = message.guild.id
+    let channelID
+    await mongo().then(async (mongoose) => {
+      try {
+        let data = await settingSchema.findOne({ _id: guildID });
+        channelID = data && data.logsModeration != "" && (data.logsModeration != undefined) ? data.logsModeration : message.channel.id
+      } finally {
+        mongoose.connection.close;
+      }
+    });
+    return channelID
+  },
   //return object with the user settings
   getUserSettings: async function (message, userID) {
     const guildID = message.guild.id
@@ -73,6 +101,19 @@ module.exports = {
       try {
         let data = await settingSchema.findOne({ _id: guildID });
         status = data ? data.messageCounter : null
+      } finally {
+        mongoose.connection.close;
+      }
+    });
+    return status
+  },
+  //return boolean with the status of message counter
+  getUpdateMessages: async function (message) {
+    const guildID = message.guild.id
+    await mongo().then(async (mongoose) => {
+      try {
+        let data = await settingSchema.findOne({ _id: guildID });
+        status = data ? data.updatesMessages : null
       } finally {
         mongoose.connection.close;
       }

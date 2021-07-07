@@ -13,7 +13,10 @@ const settingsSchema = mongoose.Schema({
     confessionChannel: { type: String },
     warnsChannel: { type: String },
     messageCounter: { type: Boolean },
-    levelSystem: { type: Boolean, default: false }
+    levelSystem: { type: Boolean, default: false },
+    logsMessages: { type: String},
+    logsModeration: { type: String},
+    updatesMessages: {type: Boolean, default: false}
 
 })
 
