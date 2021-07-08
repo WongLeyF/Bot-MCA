@@ -2,7 +2,7 @@ const { errorMessageEmbed, simpleEmbedDescription } = require("../../handlers/fu
 const ee = require("../../json/embed.json");
 const gm = require("../../json/globalMessages.json");
 const mongo = require('../../handlers/mongo/mongo')
-const settingslevelSchema = require('../../models/setting_schema')
+const settingslevelSchema = require('../../models/setting.model')
 
 module.exports = {
     name: "setLogsModeration",

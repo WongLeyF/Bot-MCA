@@ -2,7 +2,7 @@ const { errorMessageEmbed, simpleEmbedDescription } = require("../../handlers/fu
 const ee = require("../../json/embed.json");
 const gm = require("../../json/globalMessages.json");
 const mongo = require('../../handlers/mongo/mongo')
-const settingsPrefixSchema = require('../../models/setting_schema')
+const settingsPrefixSchema = require('../../models/setting.model')
 
 module.exports = {
   name: "setPrefix",

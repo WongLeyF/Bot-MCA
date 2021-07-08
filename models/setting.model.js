@@ -1,6 +1,6 @@
 const mongoose = require('mongoose')
 
-const settingsSchema = mongoose.Schema({
+const settings = mongoose.Schema({
 
     _id: {
         type: String,
@@ -20,4 +20,4 @@ const settingsSchema = mongoose.Schema({
 
 })
 
-module.exports = mongoose.model('settings', settingsSchema)
+module.exports = mongoose.model('settings', settings)

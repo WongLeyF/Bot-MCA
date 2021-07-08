@@ -1,7 +1,7 @@
 const mongo = require("./mongo");
-const settingSchema = require("../../models/setting_schema");
-const settingsXP = require("../../models/settingsXp");
-const userSettings = require("../../models/usersettings");
+const settingSchema = require("../../models/setting.model");
+const settingsXP = require("../../models/settingsXP.model");
+const userSettings = require("../../models/userSettings.model");
 const { removeItemFromArr } = require("../functions");
 const { MessageEmbed } = require("discord.js");
 

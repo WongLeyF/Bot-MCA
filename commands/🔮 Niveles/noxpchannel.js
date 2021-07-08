@@ -1,7 +1,7 @@
 const { MessageEmbed } = require("discord.js");
 const ee = require("../../json/embed.json")
 const gm = require("../../json/globalMessages.json")
-const settingsXP = require("../../models/settingsXp")
+const settingsXP = require("../../models/settingsXP.model")
 const mongo = require('../../handlers/mongo/mongo')
 const { removeItemFromArr, errorMessageEmbed, simpleEmbedDescription, simpleEmbedField } = require("../../handlers/functions")
 

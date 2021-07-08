@@ -1,7 +1,7 @@
 const { errorMessageEmbed, simpleEmbedField } = require("../../handlers/functions")
 const ee = require("../../json/embed.json")
 const gm = require("../../json/globalMessages.json")
-const settings = require("../../models/setting_schema")
+const settings = require("../../models/setting.model")
 const mongo = require('../../handlers/mongo/mongo')
 
 module.exports = {
