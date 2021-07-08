@@ -29,7 +29,7 @@ module.exports = async (client, message) => {
         const embed = new MessageEmbed()
             .setColor(ee.color)
             .setAuthor(message.author.tag, message.author.avatarURL({ dynamic: false, format: 'png' }))
-            .setDescription(`Mensaje eliminado en <#${channel.id}>`)
+            .setDescription(`Mensaje eliminado en <#${message.channel.id}>`)
             .setTimestamp(message.createdAt)
             .setFooter(`User ID: ${message.author.id} `)
             .addFields(
