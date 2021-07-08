@@ -2,8 +2,10 @@ const mongo = require("./mongo");
 const settingSchema = require("../../models/setting.model");
 const settingsXP = require("../../models/settingsXP.model");
 const userSettings = require("../../models/userSettings.model");
-const { removeItemFromArr } = require("../functions");
+const { removeItemFromArr, simpleEmbedDescription } = require("../functions");
 const { MessageEmbed } = require("discord.js");
+const Widgets = require("../../modules/provider");
+
 
 module.exports = {
   //return string with the id of confession channel 
@@ -193,14 +195,24 @@ module.exports = {
             break;
           case 'list':
             if (data) {
-              const role = await message.guild.roles.cache.map(c => c.id)
-              const norolesMap = data.noRoles.map(m => role.includes(m) ? "<@&" + m + ">\n\n" : "")
-              message.channel.send(new MessageEmbed()
-                .setTitle("**Roles que no reciben XP**:")
-                .setDescription(`\n${norolesMap.length > 0 ? norolesMap.join(" ") : "**Ninguno**"}`)
-              )
+              let options = new Widgets.MenuRolesXP.dropdownroles()
+              await message.guild.roles.cache.filter(f => data.noRoles.includes(f.id)).map(m => {
+                options.addrole({
+                  label: m.name,
+                  role: m.id,
+                  emoji: '📍'
+                })
+              });
+              if (options.roles.length === 0)
+                return simpleEmbedDescription(message, 'RED', 10000, '❌ No encontre nada en la lista');
+              Widgets.MenuRolesXP.dropdownroles.create({
+                message: message,
+                role: options, /*dropdownroles constructor*/
+                content: new MessageEmbed().setDescription('⚠️ **Roles que no reciben experiencia**').setColor("YELLOW"),
+                channelID: message.channel.id
+              });
               status = true
-            }
+            } else return simpleEmbedDescription(message, 'RED', 10000, '❌ No encontre nada en la lista');
             break;
           case 'remove-all':
             const newArray = []
