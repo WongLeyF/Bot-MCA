@@ -22,6 +22,7 @@ client.categories = fs.readdirSync("./commands/"); //categories
 client.cooldowns = new Discord.Collection(); //an collection for cooldown commands of each user
 client.cooldownXP = new Discord.Collection(); //an collection for cooldown XP of each user
 require("discord-xp").setURL(process.env.mongoPath);
+require('discord-buttons')(client);
 //Loading files, with the client variable like Command Handler, Event Handler, ...
 ["command", "events"].map(handler => {
     require(`./handlers/${handler}`)(client);
