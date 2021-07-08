@@ -9,4 +9,4 @@ const messageCount = mongoose.Schema({
   userId: String,
   messageCount: Number
 });
-module.exports = mongoose.model("messageCount", messageCount);
+module.exports = mongoose.model("message_count", messageCount);
