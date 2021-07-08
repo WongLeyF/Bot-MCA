@@ -81,7 +81,7 @@ module.exports = async (client, message) => {
           try { message.delete(); } catch { }
           return message.channel.send(new Discord.MessageEmbed()
             .setColor(ee.wrongcolor)
-            .setDescription(`❌ No puedes usar este comando, necesitas estos permisos: \`${command.memberpermissions.join("`, ``")}\``)
+            .setDescription(`❌ No puedes usar este comando, necesitas estos permisos: \`${command.memberpermissions.join("`, `")}\``)
           ).then(msg => msg.delete({ timeout: 10000 }).catch(e => console.log("Couldn't Delete --> Ignore".gray)));
         }
         //if the Bot has not enough permissions return error
