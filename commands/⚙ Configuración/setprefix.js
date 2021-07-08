@@ -1,8 +1,7 @@
-const { MessageEmbed } = require("discord.js");
 const { errorMessageEmbed, simpleEmbedDescription } = require("../../handlers/functions")
 const ee = require("../../json/embed.json");
 const gm = require("../../json/globalMessages.json");
-const mongo = require('../../handlers/mongo')
+const mongo = require('../../handlers/mongo/mongo')
 const settingsPrefixSchema = require('../../models/setting_schema')
 
 module.exports = {

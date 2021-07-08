@@ -1,11 +1,8 @@
-const { MessageEmbed } = require("discord.js")
-const ee = require("../../json/embed.json")
-const gm = require("../../json/globalMessages.json")
 const Levels = require("discord-xp")
 const canvacord = require("canvacord")
 const { getLeaderboardSpecific, getLeaderboard } = require("../../handlers/functions")
 const Discord = require("discord.js")
-const { getUserSettings } = require("../../handlers/functions")
+const { getUserSettings } = require("../../handlers/mongo/controllers")
 
 module.exports = {
     name: "Rank",

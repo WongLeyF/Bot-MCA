@@ -1,6 +1,7 @@
 const { MessageEmbed } = require("discord.js")
 const ee = require("../../json/embed.json");
-const { getChannelLogsMessages, getPrefix, escapeRegex, errorMessageEmbed } = require("../../handlers/functions");
+const { escapeRegex, errorMessageEmbed } = require("../../handlers/functions");
+const { getPrefix, getChannelLogsMessages } = require("../../handlers/mongo/controllers");
 
 module.exports = async (client, message) => {
     try {

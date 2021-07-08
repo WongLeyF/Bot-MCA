@@ -1,7 +1,8 @@
 const Levels = require("discord-xp");
-const { getRandomNum, getlvlsettings, getChannelLevels } = require("../../handlers/functions");
+const { getRandomNum } = require("../../handlers/functions");
 const Discord = require("discord.js"); //this is the official discord.js wrapper for the Discord Api, which we use!
 const { Database } = require("quickmongo");
+const { getlvlsettings, getChannelLevels } = require("../../handlers/mongo/controllers");
 const db = new Database(process.env.mongoPath);
 
 module.exports = async (client, message) => {

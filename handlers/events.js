@@ -1,6 +1,6 @@
 const fs = require("fs");
 const ascii = require("ascii-table");
-const mongo = require("./mongo");
+const mongo = require("./mongo/mongo");
 const { WebhookClient, MessageEmbed } = require("discord.js");
 let table = new ascii("Events");
 table.setHeading("Events", "Load status");

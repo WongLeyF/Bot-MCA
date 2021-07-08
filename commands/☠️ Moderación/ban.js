@@ -1,5 +1,6 @@
 const { MessageEmbed } = require("discord.js");
-const { errorMessageEmbed, simpleEmbedField, simpleEmbedDescription, getChannelLogsModeration } = require("../../handlers/functions")
+const { errorMessageEmbed, simpleEmbedField, simpleEmbedDescription } = require("../../handlers/functions");
+const { getChannelLogsModeration } = require("../../handlers/mongo/controllers");
 const ee = require("../../json/embed.json");
 const gm = require("../../json/globalMessages.json");
 module.exports = {

@@ -1,4 +1,4 @@
-const mongo = require("../../handlers/mongo");
+const mongo = require("../../handlers/mongo/mongo");
 const messageCountSchema = require("../../models/messageCount_schema");
 
 module.exports = async (message) => {

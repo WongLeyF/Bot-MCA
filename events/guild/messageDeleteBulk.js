@@ -1,5 +1,5 @@
 const { MessageEmbed } = require('discord.js');
-const { delay, errorMessageEmbed, getChannelLogsMessages } = require('../../handlers/functions');
+const { getChannelLogsMessages } = require('../../handlers/mongo/controllers');
 
 module.exports = async (client, messages) => {
 

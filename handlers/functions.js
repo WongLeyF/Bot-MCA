@@ -1,10 +1,6 @@
-const mongo = require("../handlers/mongo");
 const { MessageEmbed, WebhookClient } = require("discord.js")
 const ee = require("../json/embed.json")
 const gm = require("../json/globalMessages.json")
-const settingSchema = require("../models/setting_schema");
-const settingsXP = require("../models/settingsXp");
-const userSettings = require("../models/usersettings");
 const Levels = require("discord-xp");
 
 module.exports = {
@@ -25,151 +21,7 @@ module.exports = {
       console.log(String(e.stack).bgRed)
     }
   },
-  //return string with the id of confession channel 
-  getChannelConfession: async function (message) {
-    const guildID = message.guild.id
-    let channelID
-    await mongo().then(async (mongoose) => {
-      try {
-        let data = await settingSchema.findOne({ _id: guildID });
-        channelID = data ? data.confessionChannel : null
-      } finally {
-        mongoose.connection.close;
-      }
-    });
-    return channelID
-  },
-  //return string with the id of level channel 
-  getChannelLevels: async function (message) {
-    const guildID = message.guild.id
-    let channelID
-    await mongo().then(async (mongoose) => {
-      try {
-        let data = await settingSchema.findOne({ _id: guildID });
-        channelID = data && data.levelChannel != "" && (data.levelChannel != undefined) ? data.levelChannel : message.channel.id
-      } finally {
-        mongoose.connection.close;
-      }
-    });
-    return channelID
-  },
-  //return string with the id of log messages channel 
-  getChannelLogsMessages: async function (message) {
-    const guildID = message.guild.id
-    let channelID
-    await mongo().then(async (mongoose) => {
-      try {
-        let data = await settingSchema.findOne({ _id: guildID });
-        channelID = data && data.logsMessages != "" && (data.logsMessages != undefined) ? data.logsMessages : message.channel.id
-      } finally {
-        mongoose.connection.close;
-      }
-    });
-    return channelID
-  },
-  //return string with the id of log messages channel 
-  getChannelLogsModeration: async function (message) {
-    const guildID = message.guild.id
-    let channelID
-    await mongo().then(async (mongoose) => {
-      try {
-        let data = await settingSchema.findOne({ _id: guildID });
-        channelID = data && data.logsModeration != "" && (data.logsModeration != undefined) ? data.logsModeration : message.channel.id
-      } finally {
-        mongoose.connection.close;
-      }
-    });
-    return channelID
-  },
-  //return object with the user settings
-  getUserSettings: async function (message, userID) {
-    const guildID = message.guild.id
-    let userSett
-    await mongo().then(async (mongoose) => {
-      try {
-        userSett = await userSettings.findOne({ guildId: guildID, userId: userID });
-      } finally {
-        mongoose.connection.close;
-      }
-    });
-    return userSett
-  },
-  //return boolean with the status of message counter
-  getMessageCount: async function (message) {
-    const guildID = message.guild.id
-    await mongo().then(async (mongoose) => {
-      try {
-        let data = await settingSchema.findOne({ _id: guildID });
-        status = data ? data.messageCounter : null
-      } finally {
-        mongoose.connection.close;
-      }
-    });
-    return status
-  },
-  //return boolean with the status of message counter
-  getUpdateMessages: async function (message) {
-    const guildID = message.guild.id
-    await mongo().then(async (mongoose) => {
-      try {
-        let data = await settingSchema.findOne({ _id: guildID });
-        status = data ? data.updatesMessages : null
-      } finally {
-        mongoose.connection.close;
-      }
-    });
-    return status
-  },
-  //return boolean with the status of levels system
-  getLevelSystem: async function (message) {
-    const guildID = message.guild.id
-    await mongo().then(async (mongoose) => {
-      try {
-        let data = await settingSchema.findOne({ _id: guildID });
-        status = data ? data.levelSystem : null
-      } finally {
-        mongoose.connection.close;
-      }
-    });
-    return status
-  },
-  //return string with the prefix of guild
-  getPrefix: async function (message) {
-    const guildID = message.guild.id
-    await mongo().then(async (mongoose) => {
-      try {
-        let data = await settingSchema.findOne({ _id: guildID });
-        guildPrefixes = data ? data.prefix : null
-      } finally {
-        mongoose.connection.close;
-      }
-    });
-    return guildPrefixes
-  },
-  getlvlcooldown: async function (message) {
-    const guildID = message.guild.id
-    await mongo().then(async (mongoose) => {
-      try {
-        let data = await settingsXP.findOne({ _id: guildID });
-        lvlsettings = data ? data.cooldown : null
-      } finally {
-        mongoose.connection.close;
-      }
-    });
-    return lvlsettings
-  },
-  getlvlsettings: async function (message) {
-    const guildID = message.guild.id
-    await mongo().then(async (mongoose) => {
-      try {
-        let data = await settingsXP.findOne({ _id: guildID });
-        lvlsettings = data ? data : null
-      } finally {
-        mongoose.connection.close;
-      }
-    });
-    return lvlsettings
-  },
+
   getLeaderboard: async function (client, message) {
     const rawLeaderboard = await Levels.fetchLeaderboard(message.guild.id, 10); // We grab top 10 users with most xp in the current server.
     if (rawLeaderboard.length < 1) return message.reply(new MessageEmbed()
@@ -291,6 +143,7 @@ module.exports = {
       console.log(String(e.stack).bgRed)
     }
   },
+
   errorMessageEmbed: function (e, message) {
     const webhookClient = new WebhookClient(process.env.webhookID, process.env.webhookToken);
     const embed = new MessageEmbed()

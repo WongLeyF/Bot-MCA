@@ -1,9 +1,8 @@
-const { MessageEmbed } = require("discord.js");
 const { errorMessageEmbed, simpleEmbedField, simpleEmbedDescription } = require("../../handlers/functions")
 const ee = require("../../json/embed.json")
 const gm = require("../../json/globalMessages.json")
 const userSettings = require("../../models/usersettings")
-const mongo = require('../../handlers/mongo')
+const mongo = require('../../handlers/mongo/mongo')
 
 module.exports = {
     name: "RankSetting",
