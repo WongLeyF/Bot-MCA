@@ -1,3 +1,4 @@
+const { MessageEmbed } = require("discord.js");
 const { delay } = require("../../../handlers/functions");
 const { getRole, noXpRoles } = require("../../../handlers/mongo/controllers");
 
@@ -35,13 +36,18 @@ class main {
 			if (fetchMem) member = menu.guild.members.cache.get(menu.clicker.member.id);
 			await member.fetch(true);
 			const role = await getRole(menu, menu.values[0])
-
-			if (role) {
+			const command = client.commands.get('noxprole')
+			if (command.memberpermissions && !member.hasPermission(command.memberpermissions)) {
+				return menu.reply.send(new MessageEmbed()
+					.setColor('RED')
+					.setDescription(`❌ No puedes usar este comando, necesitas estos permisos: \`${command.memberpermissions.join("`, `")}\``)
+					, true).then(msg => msg.delete({ timeout: 10000 }).catch(e => console.log("Couldn't Delete --> Ignore".gray)));
+			} else if (role) {
 				if (noXpRoles(menu, role, 'remove')) {
 					await delay(2000)
 					menu.reply.send(`Acabo de eliminar el rol ${role} de la lista!`, true);
 					menu.message.delete()
-					client.commands.get('noxprole').run(client, menu, ['list'])
+					command.run(client, menu, ['list'])
 				}
 			}
 		}
