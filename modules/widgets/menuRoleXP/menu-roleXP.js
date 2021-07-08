@@ -3,30 +3,7 @@ const { delay } = require("../../../handlers/functions");
 const { getRole, noXpRoles } = require("../../../handlers/mongo/controllers");
 
 class main {
-	static async buttonclick(client, button) {
-		if (!client) throw new Error('Menu Roles: client not provided');
-		if (!button) throw new Error('Menu Roles: button not provided');
-		await button.clicker.fetch();
-		const id = button.id;
-		console.log(button)
-		if (button.id.startsWith('br')) {
-			let member;
-			const fetchMem = await button.guild.members.fetch(button.clicker.member.id, false);
-			if (fetchMem) member = button.guild.members.cache.get(button.clicker.member.id);
-			await member.fetch(true);
-			const role = id.split(':')[1];
-			console.log(button.clicker.member.roles.cache.has(role))
-			if (button.clicker.member.roles.cache.has(role)) {
-				button.clicker.member.roles.remove(role);
-				button.reply.send(`Te acabo de quitar el role <@&${role}> !`, true);
-			}
-			else {
-				button.clicker.member.roles.add(role);
-				button.reply.send(`Te acabo de agregar el role <@&${role}> !`, true);
-			}
-		}
-	}
-	static async dropclick(client, menu) {
+		static async dropclick(client, menu) {
 		if (!client) throw new Error('Menu Roles: client not provided');
 		if (!menu) throw new Error('Menu Roles: button not provided');
 		await menu.clicker.fetch();
