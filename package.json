@@ -12,6 +12,7 @@
   "dependencies": {
     "ascii-table": "0.0.9",
     "canvacord": "^5.2.0",
+    "colors": "^1.4.0",
     "discord-buttons": "^4.0.0",
     "discord-xp": "^1.1.14",
     "discord.js": "^12.5.1",
