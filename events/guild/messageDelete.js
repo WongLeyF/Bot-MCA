@@ -1,10 +1,18 @@
-const { MessageEmbed } = require("discord.js")
+const { MessageEmbed, MessageAttachment } = require("discord.js")
 const ee = require("../../json/embed.json");
-const { escapeRegex, errorMessageEmbed } = require("../../handlers/functions");
+const { escapeRegex, errorMessageEmbed, delay, downloadImageToUrl } = require("../../handlers/functions");
 const { getPrefix, getChannelLogsMessages } = require("../../handlers/mongo/controllers");
+const fs = require('fs');
 
 module.exports = async (client, message) => {
     try {
+        const fecha = new Date();
+        const rand = Math.floor(Math.random() * 999)
+        const guildName = await message.channel.guild.name.replace(/\s/g, "-")
+        const filepath = `${fecha.toISOString().slice(0, 10)}_${rand}_${guildName}`
+        fs.mkdir('.temp', { recursive: true }, (err) => {
+            if (err) throw err;
+        });
         if (message.author === null) return;
         //if the message is not in a guild (aka in dms),if the message  author is a bot, return aka ignore the inputs
         if (!message.guild || message.author.bot) return;
@@ -37,10 +45,15 @@ module.exports = async (client, message) => {
                 { name: 'Contenido', value: `${message.content == '' ? `No tenia texto el mensaje` : message.content}`, inline: false },
             );
         if (message.attachments.size > 0) {
-            message.attachments.map(m => embed.setImage(m.url))
+            const url = message.attachments.map(m => m.url)
+            await downloadImageToUrl(url[0], filepath)
+            embed.attachFiles(new MessageAttachment(`.temp/${filepath}.png`, `${filepath}.png`))
+            embed.setImage(`attachment://${filepath}.png`);
+            await delay(1000)
+            channel.send(embed).then(() => fs.unlinkSync(`.temp/${filepath}.png`))
+        } else {
+            channel.send(embed)
         }
-
-        channel.send(embed)
     } catch (e) {
         errorMessageEmbed(e, message)
     }
