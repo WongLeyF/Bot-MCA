@@ -2,6 +2,9 @@ const { MessageEmbed, WebhookClient } = require("discord.js")
 const ee = require("../json/embed.json")
 const gm = require("../json/globalMessages.json")
 const Levels = require("discord-xp");
+const https = require('https')
+const Stream = require('stream').Transform
+const fs = require('fs');
 
 module.exports = {
   //get a member lol
@@ -183,6 +186,19 @@ module.exports = {
         .setDescription(`${description}`)
       );
     }
+  },
+  downloadImageToUrl: async function (url, filename) {
+    https.request(url, function (response) {
+      let data = new Stream();
+
+      response.on('data', function (chunk) {
+        data.push(chunk);
+      });
+
+      response.on('end', function () {
+        fs.writeFileSync(`.temp/${filename}.png`, data.read());
+      });
+    }).end()
   },
   arrayMove: function (array, from, to) {
     try {
