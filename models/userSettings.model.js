@@ -8,7 +8,6 @@ const userSettings = mongoose.Schema({
   guildId: reqString,
   userId: reqString,
   colorBar: { type: String },
-  colorStatus: {type: String},
   imgRank: { type: String },
   colorBackground: { type: String }
   

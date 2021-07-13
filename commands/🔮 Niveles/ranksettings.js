@@ -6,10 +6,10 @@ const mongo = require('../../handlers/mongo/mongo')
 
 module.exports = {
     name: "RankSetting",
-    description: "Este comando te permite cambiar ciertos aspectos a la tarjeta del rango.\nPara mas info coloca solo ranksettings <img|bar|status|color>",
+    description: "Este comando te permite cambiar ciertos aspectos a la tarjeta del rango.\nPara mas info coloca solo ranksettings <img|bar|color>",
     category: "🔮 Niveles",
     cooldown: 5,
-    usage: "ranksetting <img|bar|status|color> [URL|HEX|STATUS]",
+    usage: "ranksetting <img|bar|color> [URL|HEX]",
     run: async (client, message, args, user, text, prefix) => {
         try {
             await mongo().then(async mongoose => {
@@ -63,45 +63,6 @@ module.exports = {
                                 await newData.save()
                             }
                             break;
-                        case "status":
-                            // , default: 'online', enum: ['idle', 'dnd', 'offline', 'streaming']
-                            if (!args[1]) {
-                                titleEmbed = `⚠ Info STATUS` 
-                                descEmbed = `Coloca el estado de discord, solo se se pueden asignar: online, idle, dnd, offline y streaming \n`+
-                                            ` Ejemplo del comando \`${prefix}ranksetting status online\``
-                                return simpleEmbedField(message, ee.color, gm.slowTime, titleEmbed, descEmbed)
-                            }
-                            let status = "online"
-                            switch (args[1]) {
-                                case "idle":
-                                    status = args[1]
-                                    break;
-                                case "dnd":
-                                    status = args[1]
-                                    break;
-                                case "offline":
-                                    status = args[1]
-                                    break;
-                                case "streaming":
-                                    status = args[1]
-                                    break;
-
-                                default:
-                                    status = "online"
-                                    break;
-                            }
-                            if (data) {
-                                data.colorStatus = status
-                                await data.save()
-                            } else {
-                                const newData = new userSettings({
-                                    userId: member.id,
-                                    guildId: guildID,
-                                    colorStatus: status
-                                })
-                                await newData.save()
-                            }
-                            break;
                         case "color":
                             if (!args[1]) {
                                 titleEmbed = `⚠ Info COLOR` 
@@ -130,7 +91,7 @@ module.exports = {
 
                         default:
                             titleEmbed = `⚠ Por favor, dime que realizar hacer, ${args[0] == undefined ? "" : `\`${args[0]}\``} no lo reconozco como accion`
-                            descEmbed = `Uso: \`${prefix}ranksetting <img|bar|status|color> [URL|HEX|STATUS]\``
+                            descEmbed = `Uso: \`${prefix}ranksetting ranksetting <img|bar|color> [URL|HEX]\``
                             return simpleEmbedField(message, ee.wrongcolor, null, titleEmbed, descEmbed)
                     }
 
