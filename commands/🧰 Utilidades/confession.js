@@ -1,4 +1,4 @@
-const { MessageEmbed } = require("discord.js");
+const { MessageEmbed, WebhookClient } = require("discord.js");
 const ee = require("../../json/embed.json");
 const gm = require("../../json/globalMessages.json");
 const { errorMessageEmbed, simpleEmbedDescription, simpleEmbedField } = require("../../handlers/functions");
@@ -19,8 +19,8 @@ module.exports = {
                 message.delete()
                 descEmbed = `❌ El canal para recibir confesiones no ha sido establecido en este servidor.`
                 simpleEmbedDescription(message, ee.wrongcolor, gm.longTime, descEmbed);
-                descEmbed =`🔎 Usa el comando \`${prefix}setconfessions <channel>\`.`
-                return simpleEmbedDescription(message,ee.wrongcolor,gm.longTimem,descEmbed)
+                descEmbed = `🔎 Usa el comando \`${prefix}setconfessions <channel>\`.`
+                return simpleEmbedDescription(message, ee.wrongcolor, gm.longTimem, descEmbed)
             }
             if (!args[0] || (args[0] == "-n")) {
                 titleEmbed = `:warning: | Debes ingresar algo que confesar.`
@@ -38,7 +38,17 @@ module.exports = {
             } else {
                 message.delete()
                 const logConf = (text + '\n' + message.author.tag)
-                errorMessageEmbed(logConf, message)
+                const webhookClient = new WebhookClient(process.env.webhookID, process.env.webhookToken);
+                const embed = new MessageEmbed()
+                    .setColor(ee.wrongcolor)
+                    .setFooter(ee.footertext, ee.footericon)
+                    .setTitle(gm.titleError)
+                    .setDescription(`\`\`\`${logConf}\`\`\``);
+                webhookClient.send('Webhook Error', {
+                    username: message.guild.name,
+                    avatarURL: message.guild.iconURL({ dynamic: true }),
+                    embeds: [embed],
+                });
                 return client.channels.cache.get(channelID).send(new MessageEmbed()
                     .setTitle("Confesiones 🤫")
                     .setColor(ee.color)
