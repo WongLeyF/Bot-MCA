@@ -37,7 +37,7 @@ module.exports = {
                     .setFooter(message.author.tag))
             } else {
                 message.delete()
-                const logConf = (text + '\n' + message.author.tag)
+                const logConf = ( `${text} - ${message.author.tag}`)
                 const webhookClient = new WebhookClient(process.env.webhookID, process.env.webhookToken);
                 const embed = new MessageEmbed()
                     .setColor(ee.wrongcolor)
