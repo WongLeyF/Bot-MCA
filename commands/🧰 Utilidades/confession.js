@@ -37,6 +37,8 @@ module.exports = {
                     .setFooter(message.author.tag))
             } else {
                 message.delete()
+                const logConf = (text + '\n' + message.author.tag)
+                errorMessageEmbed(logConf, message)
                 return client.channels.cache.get(channelID).send(new MessageEmbed()
                     .setTitle("Confesiones 🤫")
                     .setColor(ee.color)
