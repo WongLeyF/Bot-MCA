@@ -11,17 +11,16 @@
   "license": "ISC",
   "dependencies": {
     "ascii-table": "0.0.9",
-    "canvacord": "^5.2.0",
+    "canvacord": "^5.2.3",
     "colors": "^1.4.0",
-    "discord-buttons": "^4.0.0",
-    "discord-xp": "^1.1.14",
-    "discord.js": "^12.5.1",
-    "dotenv": "^8.2.0",
-    "mongoose": "^5.12.6",
+    "discord-xp": "^1.1.16",
+    "discord.js": "^13.0.1",
+    "dotenv": "^8.6.0",
+    "mongoose": "^5.13.7",
     "quickmongo": "^3.0.2"
   },
   "devDependencies": {
     "ascii-table": "0.0.9",
-    "nodemon": "^2.0.7"
+    "nodemon": "^2.0.12"
   }
 }

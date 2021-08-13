@@ -24,7 +24,7 @@ module.exports = {
                                 titleEmbed = `⚠ Info IMG`
                                 descEmbed = `Coloca el link de la imagen que deseas, debe terminar en formato de imagen (png, jpg, jpeg, etc.)\n` +
                                             ` Ejemplo del comando \`${prefix}ranksetting img https://i.imgur.com/B7oECZe.jpeg\``;
-                                return simpleEmbedField(message, ee.color, gm.slowTime, titleEmbed, descEmbed)
+                                return simpleEmbedField(message, ee.color, gm.slowTime, titleEmbed, descEmbed, true)
                             }
                             if (data) {
                                 data.imgRank = args[1]
@@ -44,12 +44,12 @@ module.exports = {
                                 titleEmbed = `⚠ Info BAR` 
                                 descEmbed = `Coloca el color que deseas en HEX, debe tener minimo las tres primeros caracteres "#ABC"\n`+
                                             `Ejemplo del comando \`${prefix}ranksetting bar "#ABC"\``;
-                                return simpleEmbedField(message, ee.color, gm.slowTime, titleEmbed, descEmbed)
+                                return simpleEmbedField(message, ee.color, gm.slowTime, titleEmbed, descEmbed, true)
                             }
                             if (!/^#([0-9A-F]{3}){1,2}$/i.test(args[1])) {
                                 titleEmbed = `⚠ Color invalido`
                                 descEmbed = `Coloca un color tipo HEX`
-                                return simpleEmbedField(message, ee.wrongcolor, gm.shortTime, titleEmbed, descEmbed)
+                                return simpleEmbedField(message, ee.wrongcolor, gm.shortTime, titleEmbed, descEmbed, true)
                             }
                             if (data) {
                                 data.colorBar = args[1]
@@ -68,12 +68,12 @@ module.exports = {
                                 titleEmbed = `⚠ Info COLOR` 
                                 descEmbed = `Coloca el color que deseas en HEX, debe tener minimo las tres primeros caracteres "#ABC"\n`+
                                             ` Ejemplo del comando \`${prefix}ranksetting color "#ABC"\``
-                                return simpleEmbedField(message, ee.color, gm.slowTime, titleEmbed, descEmbed)
+                                return simpleEmbedField(message, ee.color, gm.slowTime, titleEmbed, descEmbed, true)
                             }
                             if (!/^#([0-9A-F]{3}){1,2}$/i.test(args[1])) {
                                 titleEmbed = `⚠ Color invalido`
                                 descEmbed = `Coloca un color tipo HEX`
-                                return simpleEmbedField(message, ee.wrongcolor, gm.shortTime, titleEmbed, descEmbed)
+                                return simpleEmbedField(message, ee.wrongcolor, gm.shortTime, titleEmbed, descEmbed, true)
                             } 
                             if (data) {
                                 data.colorBackground = args[1]
@@ -92,11 +92,11 @@ module.exports = {
                         default:
                             titleEmbed = `⚠ Por favor, dime que realizar hacer, ${args[0] == undefined ? "" : `\`${args[0]}\``} no lo reconozco como accion`
                             descEmbed = `Uso: \`${prefix}ranksetting ranksetting <img|bar|color> [URL|HEX]\``
-                            return simpleEmbedField(message, ee.wrongcolor, null, titleEmbed, descEmbed)
+                            return simpleEmbedField(message, ee.wrongcolor, null, titleEmbed, descEmbed, true)
                     }
 
                     descEmbed = `Tus cambios han sido guardados`
-                    simpleEmbedDescription(message, ee.checkcolor, null, descEmbed)
+                    simpleEmbedDescription(message, ee.checkcolor, null, descEmbed, true)
 
                 } finally {
 

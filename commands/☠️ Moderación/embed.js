@@ -1,4 +1,4 @@
-const { MessageEmbed } = require("discord.js");
+const { MessageEmbed, Permissions } = require("discord.js");
 const ee = require("../../json/embed.json");
 const gm = require("../../json/globalMessages.json");
 const { errorMessageEmbed, simpleEmbedField } = require("../../handlers/functions")
@@ -8,7 +8,7 @@ module.exports = {
   aliases: ["say-embed"],
   cooldown: 2,
   usage: "embed <Título> && <Descripción>",
-  memberpermissions: ["VIEW_AUDIT_LOG"],
+  memberpermissions: [Permissions.FLAGS.VIEW_AUDIT_LOG],
   description: "Reenvía un mensaje enforma de Embed",
   run: async (client, message, args, user, text, prefix) => {
     try {
@@ -28,12 +28,14 @@ module.exports = {
         return simpleEmbedField(message, ee.wrongcolor, gm.longTime, titleEmbed, descEmbed)
       }
 
-      message.channel.send(new MessageEmbed()
-        .setColor(ee.color)
-        .setFooter(message.author.tag, message.author.avatarURL({ dynamic: false, format: 'png' }))
-        .setTitle(title ? title : "")
-        .setDescription(desc ? desc : "")
-      )
+      message.channel.send({
+        embeds: [new MessageEmbed()
+          .setColor(ee.color)
+          .setFooter(message.author.tag, message.author.avatarURL({ dynamic: false, format: 'png' }))
+          .setTitle(title ? title : "")
+          .setDescription(desc ? desc : "")
+        ]
+      })
       message.delete()
     } catch (e) {
       console.log(String(e.stack).bgRed)

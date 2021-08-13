@@ -2,7 +2,8 @@ const Levels = require("discord-xp");
 const { getRandomNum } = require("../../handlers/functions");
 const Discord = require("discord.js"); //this is the official discord.js wrapper for the Discord Api, which we use!
 const { Database } = require("quickmongo");
-const { getlvlsettings, getChannelLevels } = require("../../handlers/mongo/controllers");
+const { getChannelLevels } = require("../../handlers/controllers/settings.controller");
+const { getlvlsettings } = require("../../handlers/controllers/settingsXp.controllers")
 const db = new Database(process.env.mongoPath);
 
 module.exports = async (client, message) => {
@@ -41,7 +42,7 @@ module.exports = async (client, message) => {
                         const rolesid = rolerw.map(r => String(r.roleid))
                         if (rolesid[0] != 0) {
                             const role = message.guild.roles.cache.get(rolesid[0]);
-                            message.guild.member(message.member).roles.remove(role);
+                            message.guild.members.cache.get(message.member.id).roles.remove(role);
                         }
                         break;
                     }
@@ -49,18 +50,18 @@ module.exports = async (client, message) => {
                 const rolesid = rolereward.map(r => String(r.roleid))
                 if (rolesid[0] != 0) {
                     const role = message.guild.roles.cache.get(rolesid[0]);
-                    message.guild.member(message.member).roles.add(role);
+                    message.guild.members.cache.get(message.member.id).roles.add(role);
                 }
             } catch (error) {
                 return message.reply(new MessageEmbed()
                     .setColor(ee.color)
                     .setTitle("⚠ Info STATUS")
                     .setDescription(`No pude asignar el rol`)
-                ).then(msg => msg.delete({ timeout: 5000 }).catch(e => console.log(gm.errorDeleteMessage.gray)));
+                ).then(msg => setTimeout(() => msg.delete(), 5000)).catch(e => console.log(gm.errorDeleteMessage.gray));
             }
 
         }
-        client.channels.cache.get(channelID).send(`Felicidades ${member}, ahora eres mas activo y has llegado al nivel **${user.level}**.`)
+        client.channels.cache.get(channelID).send({ content: `Felicidades ${member}, ahora eres mas activo y has llegado al nivel **${user.level}**.` })
         // const rank = new canvacord.Rank()
         //     .setAvatar(member.displayAvatarURL({dynamic: false, format: 'png'}))
         //     .setCurrentXP(user.xp-Levels.xpFor(parseInt(user.level)))

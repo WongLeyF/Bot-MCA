@@ -3,13 +3,14 @@ const ee = require("../../json/embed.json")
 const gm = require("../../json/globalMessages.json")
 const settingsXP = require("../../models/settingsXP.model")
 const mongo = require('../../handlers/mongo/mongo')
+const { Permissions } = require("discord.js")
 
 module.exports = {
     name: "CooldownXP",
     description: "Muestra el cooldown por mensaje, asigna un cooldown o establecelo por defecto",
     category: "🔮 Niveles",
     cooldown: 5,
-    memberpermissions: ["MANAGE_CHANNELS", "MANAGE_GUILD"],
+    memberpermissions: [Permissions.FLAGS.MANAGE_CHANNELS, Permissions.FLAGS.MANAGE_GUILD],
     usage: "cooldownxp <tiempo en segundos>\ncooldownxp [default]\ncooldownxp",
     run: async (client, message, args, user, text, prefix) => {
         try {

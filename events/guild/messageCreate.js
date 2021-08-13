@@ -5,7 +5,7 @@
 const ee = require("../../json/embed.json"); //Loading all embed settings like color footertext and icon ...
 const Discord = require("discord.js"); //this is the official discord.js wrapper for the Discord Api, which we use!
 const { escapeRegex, errorMessageEmbed } = require("../../handlers/functions"); //Loading all needed functions
-const { getPrefix, getLevelSystem, getMessageCount } = require("../../handlers/mongo/controllers");
+const { getPrefix, getLevelSystem, getMessageCount } = require("../../handlers/controllers/settings.controller");
 const messageCount = require("../listeners/messageCounter");
 const randomXp = require("../listeners/randomXP");
 
@@ -40,13 +40,15 @@ module.exports = async (client, message) => {
     //if no cmd added return error
     if (cmd.length === 0) {
       if (matchedPrefix.includes(client.user.id))
-        return message.channel.send(new Discord.MessageEmbed()
-          .setColor(ee.color)
-          .setFooter(ee.footertext, ee.footericon)
-          .setTitle(`Eh? Me tagearon? Deja te ayudo`)
-          .addField(`Descripcion`,`Soy un bot en desarrollo, para el server Minecrafteando Alone, cuento con un sistema de niveles, confesiones, varias opciones de moderacion y algunas otras utilidades`)
-          .setDescription(`Para ver todos los comandos, escribe: \`${prefix}help\``)
-        );
+        return message.channel.send({
+          embeds: [new Discord.MessageEmbed()
+            .setColor(ee.color)
+            .setFooter(ee.footertext, ee.footericon)
+            .setTitle(`Eh? Me tagearon? Deja te ayudo`)
+            .addField(`Descripcion`, `Soy un bot en desarrollo, para el server Minecrafteando Alone, cuento con un sistema de niveles, confesiones, varias opciones de moderacion y algunas otras utilidades`)
+            .setDescription(`Para ver todos los comandos, escribe: \`${prefix}help\``)
+          ]
+        });
       return;
     }
     //get the command from the collection
@@ -65,10 +67,12 @@ module.exports = async (client, message) => {
         const expirationTime = timestamps.get(message.author.id) + cooldownAmount; //get the amount of time he needs to wait until he can run the cmd again
         if (now < expirationTime) { //if he is still on cooldonw
           const timeLeft = (expirationTime - now) / 1000; //get the lefttime
-          return message.channel.send(new Discord.MessageEmbed()
-            .setColor(ee.wrongcolor)
-            .setTitle(`:warning: Por favor espera ${timeLeft.toFixed(1)} segundo(s) para volver a usar el comando \`${command.name}\`.`)
-          ).then(msg => msg.delete({ timeout: 8000 }).catch(e => console.log("Couldn't Delete --> Ignore".gray))); //send an information message
+          return message.channel.send({
+            embeds: [new Discord.MessageEmbed()
+              .setColor(ee.wrongcolor)
+              .setTitle(`:warning: Por favor espera ${timeLeft.toFixed(1)} segundo(s) para volver a usar el comando \`${command.name}\`.`)
+            ]
+          }).then(msg => setTimeout(() => msg.delete(), 8000)).catch(() => console.log("Couldn't Delete --> Ignore".gray)); //send an information message
         }
       }
       timestamps.set(message.author.id, now); //if he is not on cooldown, set it to the cooldown
@@ -77,33 +81,40 @@ module.exports = async (client, message) => {
         //try to delete the message of the user who ran the cmd
         //try{  message.delete();   }catch{}
         //if Command has specific permission return error
-        if (command.memberpermissions && !message.member.hasPermission(command.memberpermissions)) {
+        if (command.memberpermissions && !message.member.permissions.has(command.memberpermissions)) {
           try { message.delete(); } catch { }
-          return message.channel.send(new Discord.MessageEmbed()
-            .setColor(ee.wrongcolor)
-            .setDescription(`❌ No puedes usar este comando, necesitas estos permisos: \`${command.memberpermissions.join("`, `")}\``)
-          ).then(msg => msg.delete({ timeout: 10000 }).catch(e => console.log("Couldn't Delete --> Ignore".gray)));
+          return message.channel.send({
+            embeds: [new Discord.MessageEmbed()
+              .setColor(ee.wrongcolor)
+              .setDescription(`❌ No puedes usar este comando, necesitas estos permisos: \`${command.memberpermissions.join("`, `")}\``)
+            ]
+          }).then(msg => setTimeout(() => msg.delete(), 10000)).catch(() => console.log("Couldn't Delete --> Ignore".gray));
         }
         //if the Bot has not enough permissions return error
-        let required_perms = ["ADD_REACTIONS", "PRIORITY_SPEAKER", "VIEW_CHANNEL", "SEND_MESSAGES",
-          "EMBED_LINKS", "CONNECT", "SPEAK", "DEAFEN_MEMBERS"]
-        if (!message.guild.me.hasPermission(required_perms)) {
-          return message.channel.send(new Discord.MessageEmbed()
-            .setColor(ee.wrongcolor)
-            .setTitle(":warning: | ¡No tengo los permisos necesarios! ")
-            .setDescription("Por favor, dame solo `ADMINISTRADOR`, porque lo necesito para eliminar mensajes, crear canales y ejecutar todos los comandos de administrador. \n Si no quieres dármelos, entonces esos son los permisos exactos que necesito: \n> `" + required_perms.join("`, `") + "`")
-          )
+        const permFlag = Discord.Permissions.FLAGS
+        let required_perms = [permFlag.ADD_REACTIONS, permFlag.PRIORITY_SPEAKER, permFlag.VIEW_CHANNEL, permFlag.SEND_MESSAGES,
+        permFlag.EMBED_LINKS, permFlag.CONNECT, permFlag.SPEAK, permFlag.DEAFEN_MEMBERS]
+        if (!message.guild.me.permissions.has(required_perms)) {
+          return message.channel.send({
+            embeds: [new Discord.MessageEmbed()
+              .setColor(ee.wrongcolor)
+              .setTitle(":warning: | ¡No tengo los permisos necesarios! ")
+              .setDescription("Por favor, dame solo `ADMINISTRADOR`, porque lo necesito para eliminar mensajes, crear canales y ejecutar todos los comandos de administrador. \n Si no quieres dármelos, entonces esos son los permisos exactos que necesito: \n> `" + required_perms.join("`, `") + "`")
+            ]
+          })
         }
         //run the command with the parameters:  client, message, args, user, text, prefix,
         command.run(client, message, args, message.member, args.join(" "), prefix);
       } catch (e) {
         console.log(String(e.stack).red)
-        return message.channel.send(new Discord.MessageEmbed()
-          .setColor(ee.wrongcolor)
-          .setFooter(ee.footertext, ee.footericon)
-          .setTitle(":warning: Something went wrong while, running the: `" + command.name + "` command")
-          .setDescription(`\`\`\`${e.message}\`\`\``)
-        ).then(msg => msg.delete({ timeout: 5000 }).catch(e => console.log("Couldn't Delete --> Ignore".gray)));
+        return message.channel.send({
+          embeds: [new Discord.MessageEmbed()
+            .setColor(ee.wrongcolor)
+            .setFooter(ee.footertext, ee.footericon)
+            .setTitle(":warning: Something went wrong while, running the: `" + command.name + "` command")
+            .setDescription(`\`\`\`${e.message}\`\`\``)
+          ]
+        }).then(msg => setTimeout(() => msg.delete(), 5000)).catch(e => console.log("Couldn't Delete --> Ignore".gray));
       }
     }
   } catch (e) {

@@ -2,7 +2,8 @@ const { errorMessageEmbed, simpleEmbedDescription } = require("../../handlers/fu
 const ee = require("../../json/embed.json");
 const gm = require("../../json/globalMessages.json");
 const mongo = require('../../handlers/mongo/mongo')
-const settingslevelSchema = require('../../models/setting.model')
+const settingslevelSchema = require('../../models/setting.model');
+const { Permissions } = require("discord.js");
 
 module.exports = {
     name: "setLogsMessages",
@@ -10,7 +11,7 @@ module.exports = {
     description: "Establece un canal para recibir los logs de mensajes borrado o editados\nPara deshabilitar no ingreses el canal.",
     category: "⚙ Configuración",
     cooldown: 10,
-    memberpermissions: ["MANAGE_CHANNELS", "MANAGE_GUILD"],
+    memberpermissions: [Permissions.FLAGS.MANAGE_CHANNELS, Permissions.FLAGS.MANAGE_GUILD],
     usage: "setlogsmessages [Canal]",
     run: async (client, message, args, user, text, prefix) => {
         try {
@@ -27,11 +28,11 @@ module.exports = {
                             data.logsMessages = ""
                             await data.save()
                         }
-                        return simpleEmbedDescription(message, ee.wrongcolor, gm.shortTime, descEmbed)
+                        return simpleEmbedDescription(message, ee.wrongcolor, gm.shortTime, descEmbed, true)
                     }
                     if (!channel) {
                         descEmbed = '❌ No puedo reconocer este canal'
-                        return simpleEmbedDescription(message, ee.wrongcolor, gm.shortTime, descEmbed)
+                        return simpleEmbedDescription(message, ee.wrongcolor, gm.shortTime, descEmbed, true)
                     }
                     if (data) {
                         data.logsMessages = channelID

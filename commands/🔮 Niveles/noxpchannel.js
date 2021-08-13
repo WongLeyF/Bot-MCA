@@ -1,4 +1,4 @@
-const { MessageEmbed } = require("discord.js");
+const { MessageEmbed, Permissions } = require("discord.js");
 const ee = require("../../json/embed.json")
 const gm = require("../../json/globalMessages.json")
 const settingsXP = require("../../models/settingsXP.model")
@@ -10,7 +10,7 @@ module.exports = {
     description: "Agrega canales para que no reciban exp y como tambien ver la lista de canales que no reciben exp",
     category: "🔮 Niveles",
     cooldown: 5,
-    memberpermissions: ["MANAGE_CHANNELS", "MANAGE_GUILD"],
+    memberpermissions: [Permissions.FLAGS.MANAGE_CHANNELS, Permissions.FLAGS.MANAGE_GUILD],
     usage: "noxpchannel <list/add/remove> <Canal>",
     run: async (client, message, args, user, text, prefix) => {
         try {
@@ -107,10 +107,12 @@ module.exports = {
                             if (data) {
                                 channel = await message.guild.channels.cache.map(c => c.id)
                                 const nochannelsMap = data.noChannels.map(m => channel.includes(m) ? "<#" + m + ">\n\n" : "")
-                                return message.channel.send(new MessageEmbed()
-                                    .setTitle("**Canales que no reciben XP**:")
-                                    .setDescription(`\n${nochannelsMap.length > 0 ? nochannelsMap.join(" ") : "**Ninguno**"}`)
-                                )
+                                return message.channel.send({
+                                    embeds: [new MessageEmbed()
+                                        .setTitle("**Canales que no reciben XP**:")
+                                        .setDescription(`\n${nochannelsMap.length > 0 ? nochannelsMap.join(" ") : "**Ninguno**"}`)
+                                    ]
+                                })
                             }
                             break;
                         default:

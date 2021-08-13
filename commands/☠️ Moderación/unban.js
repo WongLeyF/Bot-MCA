@@ -1,6 +1,5 @@
-const { MessageEmbed } = require("discord.js");
+const { MessageEmbed, Permissions, Constants } = require("discord.js");
 const { errorMessageEmbed, simpleEmbedField, simpleEmbedDescription } = require("../../handlers/functions")
-const Discord = require("discord.js");
 const ee = require("../../json/embed.json");
 const gm = require("../../json/globalMessages.json");
 module.exports = {
@@ -8,7 +7,7 @@ module.exports = {
     description: "Desbanear miembros del servidor",
     category: "☠️ Moderación",
     cooldown: 2,
-    memberpermissions: ["BAN_MEMBERS"],
+    memberpermissions: [Permissions.FLAGS.BAN_MEMBERS],
     usage: "unban <ID> [Razón de expulsión]",
     run: async (client, message, args, user, text, prefix) => {
         try {
@@ -25,8 +24,8 @@ module.exports = {
             simpleEmbedDescription(message, ee.color, gm.longTime, descEmbed)
 
         } catch (e) {
-            let errMs = (e.code === Discord.Constants.APIErrors.UNKNOWN_USER ?
-                'Usuario no encontrado o no existe' : e.code === Discord.Constants.APIErrors.UNKNOWN_BAN ?
+            let errMs = (e.code === Constants.APIErrors.UNKNOWN_USER ?
+                'Usuario no encontrado o no existe' : e.code === Constants.APIErrors.UNKNOWN_BAN ?
                     'Este usuario no esta en la lista de baneados' : e.code === 50035 ? 'No se puede desbanear' : `\`\`\`${e.stack}\`\`\``)
             if (errMs != e.stack) {
                 titleEmbed = `:warning: Algo salió mal`

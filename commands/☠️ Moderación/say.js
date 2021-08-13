@@ -1,4 +1,4 @@
-const { MessageEmbed } = require("discord.js");
+const { MessageEmbed, Permissions } = require("discord.js");
 const ee = require("../../json/embed.json");
 const gm = require("../../json/globalMessages.json");
 const { simpleEmbedField } = require("../../handlers/functions");
@@ -7,7 +7,7 @@ module.exports = {
   name: "Say",
   category: "☠️ Moderación",
   cooldown: 2,
-  memberpermissions: ["VIEW_AUDIT_LOG"],
+  memberpermissions: [Permissions.FLAGS.VIEW_AUDIT_LOG],
   usage: "say <texto>",
   description: "Reenvía el texto",
   run: async (client, message, args, user, text, prefix) => {
@@ -17,7 +17,7 @@ module.exports = {
         const desc = `Uso: \`${prefix}say <Tu texto>\``
         return simpleEmbedField(message, ee.wrongcolor, gm.longTime, title, desc)
       }
-      message.channel.send(text);
+      message.channel.send({ content: text });
       message.delete()
     } catch (e) {
       console.log(String(e.stack).bgRed)

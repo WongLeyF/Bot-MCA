@@ -3,13 +3,14 @@ const ee = require("../../json/embed.json")
 const gm = require("../../json/globalMessages.json")
 const settingsXP = require("../../models/settingsXP.model")
 const mongo = require('../../handlers/mongo/mongo')
+const { Permissions } = require("discord.js")
 
 module.exports = {
     name: "RangeXP",
     description: "Este comando te permite asignar el minimo y maximo de xp por mensaje, como tambien reiniciarlo a los valores por defecto y mostrar la configuracion actual.",
     category: "🔮 Niveles",
     cooldown: 5,
-    memberpermissions: ["MANAGE_CHANNELS", "MANAGE_GUILD"],
+    memberpermissions: [Permissions.FLAGS.MANAGE_CHANNELS, Permissions.FLAGS.MANAGE_GUILD],
     usage: "rangexp <min> <max>\nrangexp [default]\nrangexp",
     run: async (client, message, args, user, text, prefix) => {
         try {

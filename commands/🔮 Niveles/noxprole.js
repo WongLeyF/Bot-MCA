@@ -1,14 +1,15 @@
 const ee = require("../../json/embed.json")
 const gm = require("../../json/globalMessages.json")
-const { errorMessageEmbed, simpleEmbedDescription, simpleEmbedField } = require("../../handlers/functions");
-const { noXpRoles, getRole } = require("../../handlers/mongo/controllers");
+const { errorMessageEmbed, simpleEmbedDescription, simpleEmbedField, getRole } = require("../../handlers/functions");
+const { noXpRoles } = require("../../handlers/controllers/settingsXp.controllers");
+const { Permissions } = require("discord.js");
 
 module.exports = {
     name: "noXProle",
     description: "Agrega roles para que no reciban exp y como tambien ver la lista de reoles que no reciben exp",
     category: "🔮 Niveles",
     cooldown: 5,
-    memberpermissions: ["MANAGE_ROLES", "MANAGE_GUILD"],
+    memberpermissions: [Permissions.FLAGS.MANAGE_CHANNELS, Permissions.FLAGS.MANAGE_GUILD],
     usage: "noxprole <list/add/remove> <Role>",
     run: async (client, message, args, user, text, prefix) => {
         try {

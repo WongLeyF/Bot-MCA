@@ -1,6 +1,6 @@
-const { MessageEmbed } = require("discord.js");
+const { MessageEmbed, Permissions } = require("discord.js");
 const { errorMessageEmbed, simpleEmbedField, simpleEmbedDescription } = require("../../handlers/functions");
-const { getChannelLogsModeration } = require("../../handlers/mongo/controllers");
+const { getChannelLogsModeration } = require("../../handlers/controllers/settings.controller");
 const ee = require("../../json/embed.json");
 const gm = require("../../json/globalMessages.json");
 
@@ -9,29 +9,29 @@ module.exports = {
     description: "Expulsar miembros del servidor",
     category: "☠️ Moderación",
     cooldown: 2,
-    memberpermissions: ["KICK_MEMBERS"],
+    memberpermissions: [Permissions.FLAGS.KICK_MEMBERS],
     usage: "kick <Tag/ID> [Razón de expulsión]",
     run: async (client, message, args, user, text, prefix) => {
         try {
             const member = message.mentions.members.first() || message.guild.members.cache.get(args[0]);
-            
-            let titleEmbed = `❌ Por favor, especifica al usuario`, 
+
+            let titleEmbed = `❌ Por favor, especifica al usuario`,
                 descEmbed = `Uso: \`${prefix}kick <Tag/ID> [Razón]\``
 
             if (!member) {
-                return simpleEmbedField(message, ee.wrongcolor, gm.longTime, titleEmbed, descEmbed)
+                return simpleEmbedField(message, ee.wrongcolor, gm.longTime, titleEmbed, descEmbed, true)
             }
             if (member.id === message.author.id) {
                 descEmbed = '❌ Estem, no puedes expulsarte a ti mismo...'
-                return simpleEmbedDescription(message, gm.wrongcolor, gm.longTime, descEmbed)
+                return simpleEmbedDescription(message, gm.wrongcolor, gm.longTime, descEmbed, true)
             }
             if (!member.kickable) {
                 descEmbed = '❌ No puedo expulsar a este usuario. Ya que es mod/admin o tiene un rol mas alto que el mio'
-                return simpleEmbedDescription(message, ee.wrongcolor, gm.longTime, descEmbed)
+                return simpleEmbedDescription(message, ee.wrongcolor, gm.longTime, descEmbed, true)
             }
 
             let reason = !args.slice(1).join(" ") ? 'Sin especificar' : args.slice(1).join(" ");
-            await member.kick( reason )
+            await member.kick(reason)
             const channelID = await getChannelLogsModeration(message)
             const embedLogs = new MessageEmbed()
                 .setColor(ee.color)
@@ -45,7 +45,7 @@ module.exports = {
                 .setTimestamp()
             if (channelID === message.channel.id) {
                 embedLogs.setImage(gm.kickMedia[Math.floor(Math.random() * gm.kickMedia.length)])
-                message.channel.send(embedLogs)
+                message.channel.send({ embeds: [embedLogs] })
             } else {
                 const channel = await client.channels.cache.get(channelID)
                 const embed = new MessageEmbed()
@@ -56,8 +56,8 @@ module.exports = {
                     .addField('Razon', reason, true)
                     .setImage(gm.kickMedia[Math.floor(Math.random() * gm.kickMedia.length)])
                     .setTimestamp()
-                channel.send(embedLogs)
-                message.channel.send(embed)
+                channel.send({ embeds: [embedLogs] })
+                message.channel.send({ embeds: [embed] })
             }
         } catch (e) {
             console.log(String(e.stack).bgRed)

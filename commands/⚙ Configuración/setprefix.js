@@ -2,7 +2,8 @@ const { errorMessageEmbed, simpleEmbedDescription } = require("../../handlers/fu
 const ee = require("../../json/embed.json");
 const gm = require("../../json/globalMessages.json");
 const mongo = require('../../handlers/mongo/mongo')
-const settingsPrefixSchema = require('../../models/setting.model')
+const settingsPrefixSchema = require('../../models/setting.model');
+const { Permissions } = require("discord.js");
 
 module.exports = {
   name: "setPrefix",
@@ -10,7 +11,7 @@ module.exports = {
   description: "Cambia el prefijo del Bot",
   category: "⚙ Configuración",
   cooldown: 15,
-  memberpermissions: ["ADMINISTRATOR"],
+  memberpermissions: [ Permissions.FLAGS.ADMINISTRATOR],
   usage: "setprefix [Caracter]",
   run: async (client, message, args, user, text, prefix) => {
     try {
