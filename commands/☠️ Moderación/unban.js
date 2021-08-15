@@ -16,12 +16,11 @@ module.exports = {
             if (!args[0]) {
                 return simpleEmbedField(message, ee.wrongcolor, gm.longTime, titleEmbed, descEmbed)
             }
-            const toUnban = await client.users.fetch(args[0])
             let reason = !args.slice(1).join(" ") ? 'Sin especificar' : args.slice(1).join(" ");
-            await message.guild.members.unban(toUnban, reason)
-
-            descEmbed = `✅ **${toUnban}** ha sido desbaneado del server!`
-            simpleEmbedDescription(message, ee.color, gm.longTime, descEmbed)
+            await message.guild.members.unban(args[0], reason).then(user => {
+                descEmbed = `✅ **${user.username}** ha sido desbaneado del server!`
+                simpleEmbedDescription(message, ee.color, gm.longTime, descEmbed)
+            })
 
         } catch (e) {
             let errMs = (e.code === Constants.APIErrors.UNKNOWN_USER ?
