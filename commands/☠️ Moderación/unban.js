@@ -1,4 +1,4 @@
-const { MessageEmbed, Permissions, Constants } = require("discord.js");
+const { Constants } = require("discord.js");
 const { errorMessageEmbed, simpleEmbedField, simpleEmbedDescription } = require("../../handlers/functions")
 const ee = require("../../json/embed.json");
 const gm = require("../../json/globalMessages.json");
@@ -7,7 +7,7 @@ module.exports = {
     description: "Desbanear miembros del servidor",
     category: "☠️ Moderación",
     cooldown: 2,
-    memberpermissions: [Permissions.FLAGS.BAN_MEMBERS],
+    memberpermissions: ["BAN_MEMBERS"],
     usage: "unban <ID> [Razón de expulsión]",
     run: async (client, message, args, user, text, prefix) => {
         try {

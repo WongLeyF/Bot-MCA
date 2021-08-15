@@ -3,7 +3,7 @@ const ee = require("../../json/embed.json");
 const gm = require("../../json/globalMessages.json");
 const mongo = require('../../handlers/mongo/mongo')
 const settingslevelSchema = require('../../models/setting.model');
-const { Permissions } = require("discord.js");
+
 
 module.exports = {
     name: "setLogsMessages",
@@ -11,7 +11,7 @@ module.exports = {
     description: "Establece un canal para recibir los logs de mensajes borrado o editados\nPara deshabilitar no ingreses el canal.",
     category: "⚙ Configuración",
     cooldown: 10,
-    memberpermissions: [Permissions.FLAGS.MANAGE_CHANNELS, Permissions.FLAGS.MANAGE_GUILD],
+    memberpermissions: ["MANAGE_CHANNELS", "MANAGE_GUILD"],
     usage: "setlogsmessages [Canal]",
     run: async (client, message, args, user, text, prefix) => {
         try {

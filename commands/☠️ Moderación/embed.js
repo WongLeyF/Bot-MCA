@@ -1,4 +1,4 @@
-const { MessageEmbed, Permissions } = require("discord.js");
+const { MessageEmbed } = require("discord.js");
 const ee = require("../../json/embed.json");
 const gm = require("../../json/globalMessages.json");
 const { errorMessageEmbed, simpleEmbedField } = require("../../handlers/functions")
@@ -8,7 +8,7 @@ module.exports = {
   aliases: ["say-embed"],
   cooldown: 2,
   usage: "embed <Título> && <Descripción>",
-  memberpermissions: [Permissions.FLAGS.VIEW_AUDIT_LOG],
+  memberpermissions: ["VIEW_AUDIT_LOG"],
   description: "Reenvía un mensaje enforma de Embed",
   run: async (client, message, args, user, text, prefix) => {
     try {

@@ -1,4 +1,4 @@
-const { MessageEmbed, Permissions } = require("discord.js");
+const { MessageEmbed } = require("discord.js");
 const { errorMessageEmbed, simpleEmbedField, simpleEmbedDescription } = require("../../handlers/functions")
 const ee = require("../../json/embed.json")
 const gm = require("../../json/globalMessages.json")
@@ -11,7 +11,7 @@ module.exports = {
     description: "Asigna un rol para un nivel en especifico",
     category: "🔮 Niveles",
     cooldown: 2,
-    memberpermissions: [Permissions.FLAGS.MANAGE_ROLES],
+    memberpermissions: ["MANAGE_ROLES"],
     usage: "rolereward [remove/list] <Role> <Nivel>",
     run: async (client, message, args, user, text, prefix) => {
         try {

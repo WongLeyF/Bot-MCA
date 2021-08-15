@@ -10,7 +10,7 @@ module.exports = {
     description: "Muestra el cooldown por mensaje, asigna un cooldown o establecelo por defecto",
     category: "🔮 Niveles",
     cooldown: 5,
-    memberpermissions: [Permissions.FLAGS.MANAGE_CHANNELS, Permissions.FLAGS.MANAGE_GUILD],
+    memberpermissions: ["MANAGE_CHANNELS", "MANAGE_GUILD"],
     usage: "cooldownxp <tiempo en segundos>\ncooldownxp [default]\ncooldownxp",
     run: async (client, message, args, user, text, prefix) => {
         try {

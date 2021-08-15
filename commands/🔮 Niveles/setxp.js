@@ -1,4 +1,4 @@
-const { MessageEmbed, Permissions } = require("discord.js");
+const { MessageEmbed } = require("discord.js");
 const { errorMessageEmbed, simpleEmbedField, simpleEmbedDescription } = require("../../handlers/functions")
 const ee = require("../../json/embed.json")
 const gm = require("../../json/globalMessages.json")
@@ -9,7 +9,7 @@ module.exports = {
     description: "Permite establecer, agregar o quitar experiencia\nadd = Agrega cierta cantidad de experiencia a los actuales\n set = Establece una cantidad de xp en especifica\nsub = Quita una cantidad de experiencia",
     category: "🔮 Niveles",
     cooldown: 2,
-    memberpermissions: [Permissions.FLAGS.ADMINISTRATOR],
+    memberpermissions: ["ADMINISTRATOR"],
     usage: "setxp <add/set/sub> <mencion/ID> <nivel>",
     run: async (client, message, args, user, text, prefix) => {
         try {

@@ -3,7 +3,7 @@ const ee = require("../../json/embed.json");
 const gm = require("../../json/globalMessages.json");
 const mongo = require('../../handlers/mongo/mongo');
 const settingsMessCountSchema = require('../../models/setting.model');
-const { Permissions } = require("discord.js");
+
 
 module.exports = {
     name: "setmessagecounter",
@@ -11,7 +11,7 @@ module.exports = {
     description: "Establece si el bot contara los mensajes de cada usuario o no (default: on)",
     category: "⚙ Configuración",
     cooldown: 10,
-    memberpermissions: [Permissions.FLAGS.MANAGE_GUILD],
+    memberpermissions: ["MANAGE_GUILD"],
     usage: "setmessagecounter [on/off]",
     run: async (client, message, args, user, text, prefix) => {
         try {

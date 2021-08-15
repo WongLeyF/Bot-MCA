@@ -1,4 +1,3 @@
-const { MessageEmbed, Permissions } = require("discord.js");
 const { errorMessageEmbed, simpleEmbedDescription } = require("../../handlers/functions")
 const ee = require("../../json/embed.json");
 const gm = require("../../json/globalMessages.json");
@@ -9,7 +8,7 @@ module.exports = {
     description: "Borrar mensajes",
     category: "☠️ Moderación",
     cooldown: 2,
-    memberpermissions: [Permissions.FLAGS.MANAGE_MESSAGES],
+    memberpermissions: ["MANAGE_MESSAGES"],
     usage: "clear <# de mensajes>",
     run: async (client, message, args, user, text, prefix) => {
         try {

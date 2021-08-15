@@ -3,7 +3,7 @@ const ee = require("../../json/embed.json");
 const gm = require("../../json/globalMessages.json");
 const mongo = require('../../handlers/mongo/mongo')
 const settingslevelSchema = require('../../models/setting.model');
-const { Permissions } = require("discord.js");
+
 
 module.exports = {
     name: "setLVLChannel",
@@ -11,7 +11,7 @@ module.exports = {
     description: "Establece un canal para recibir los mensajes por nivel\nPara deshabilitar no ingreses el canal.",
     category: "⚙ Configuración",
     cooldown: 10,
-    memberpermissions: [Permissions.FLAGS.MANAGE_CHANNELS, Permissions.FLAGS.MANAGE_GUILD],
+    memberpermissions: ["MANAGE_CHANNELS", "MANAGE_GUILD"],
     usage: "setlvlchannel [Canal]",
     run: async (client, message, args, user, text, prefix) => {
         try {

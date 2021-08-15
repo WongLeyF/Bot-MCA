@@ -1,4 +1,4 @@
-const { MessageEmbed, Permissions } = require("discord.js");
+const { MessageEmbed } = require("discord.js");
 const { errorMessageEmbed, simpleEmbedField, simpleEmbedDescription } = require("../../handlers/functions")
 const ee = require("../../json/embed.json")
 const gm = require("../../json/globalMessages.json")
@@ -10,7 +10,7 @@ module.exports = {
     description: "Permite establecer, agregar o quitar niveles\nadd = Agrega cierta cantidad de niveles a los actuales\n set = Establece un nivel en especifico\nsub = Quita una cantidad de niveles",
     category: "🔮 Niveles",
     cooldown: 2,
-    memberpermissions: [Permissions.FLAGS.ADMINISTRATOR],
+    memberpermissions: ["ADMINISTRATOR"],
     usage: "setlevel <add/set/sub> <mencion/ID> <nivel>",
     run: async (client, message, args, user, text, prefix) => {
         try {

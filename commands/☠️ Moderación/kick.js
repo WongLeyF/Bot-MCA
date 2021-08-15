@@ -1,4 +1,4 @@
-const { MessageEmbed, Permissions } = require("discord.js");
+const { MessageEmbed } = require("discord.js");
 const { errorMessageEmbed, simpleEmbedField, simpleEmbedDescription } = require("../../handlers/functions");
 const { getChannelLogsModeration } = require("../../handlers/controllers/settings.controller");
 const ee = require("../../json/embed.json");
@@ -9,7 +9,7 @@ module.exports = {
     description: "Expulsar miembros del servidor",
     category: "☠️ Moderación",
     cooldown: 2,
-    memberpermissions: [Permissions.FLAGS.KICK_MEMBERS],
+    memberpermissions: ["KICK_MEMBERS"],
     usage: "kick <Tag/ID> [Razón de expulsión]",
     run: async (client, message, args, user, text, prefix) => {
         try {

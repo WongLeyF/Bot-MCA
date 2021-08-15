@@ -10,7 +10,7 @@ module.exports = {
     description: "Este comando te permite asignar el minimo y maximo de xp por mensaje, como tambien reiniciarlo a los valores por defecto y mostrar la configuracion actual.",
     category: "🔮 Niveles",
     cooldown: 5,
-    memberpermissions: [Permissions.FLAGS.MANAGE_CHANNELS, Permissions.FLAGS.MANAGE_GUILD],
+    memberpermissions: ["MANAGE_CHANNELS", "MANAGE_GUILD"],
     usage: "rangexp <min> <max>\nrangexp [default]\nrangexp",
     run: async (client, message, args, user, text, prefix) => {
         try {

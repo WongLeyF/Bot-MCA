@@ -1,4 +1,4 @@
-const { MessageEmbed, Permissions } = require("discord.js");
+const { MessageEmbed } = require("discord.js");
 const { errorMessageEmbed, simpleEmbedField, simpleEmbedDescription } = require("../../handlers/functions");
 const { getChannelLogsModeration } = require("../../handlers/controllers/settings.controller");
 const ee = require("../../json/embed.json");
@@ -8,7 +8,7 @@ module.exports = {
     description: "Banear miembros del servidor",
     category: "☠️ Moderación",
     cooldown: 2,
-    memberpermissions: [Permissions.FLAGS.BAN_MEMBERS],
+    memberpermissions: ["BAN_MEMBERS"],
     usage: "ban <Tag/ID> [Razón de expulsión]",
     run: async (client, message, args, user, text, prefix) => {
         try {

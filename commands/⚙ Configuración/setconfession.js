@@ -3,7 +3,6 @@ const ee = require("../../json/embed.json");
 const gm = require("../../json/globalMessages.json");
 const mongo = require('../../handlers/mongo/mongo')
 const settingsconfessionSchema = require('../../models/setting.model');
-const { Permissions } = require("discord.js");
 
 module.exports = {
     name: "setConfession",
@@ -11,7 +10,7 @@ module.exports = {
     description: "Establece un canal para recibir confesiones\nPara deshabilitar no ingreses el canal.",
     category: "⚙ Configuración",
     cooldown: 10,
-    memberpermissions: [Permissions.FLAGS.MANAGE_CHANNELS, Permissions.FLAGS.MANAGE_GUILD],
+    memberpermissions: ["MANAGE_CHANNELS", "MANAGE_GUILD"],
     usage: "setconfession [Canal/ID]",
     run: async (client, message, args, user, text, prefix) => {
         try {

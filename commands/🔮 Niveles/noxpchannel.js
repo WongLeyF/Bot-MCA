@@ -1,4 +1,4 @@
-const { MessageEmbed, Permissions } = require("discord.js");
+const { MessageEmbed } = require("discord.js");
 const ee = require("../../json/embed.json")
 const gm = require("../../json/globalMessages.json")
 const settingsXP = require("../../models/settingsXP.model")
@@ -10,7 +10,7 @@ module.exports = {
     description: "Agrega canales para que no reciban exp y como tambien ver la lista de canales que no reciben exp",
     category: "🔮 Niveles",
     cooldown: 5,
-    memberpermissions: [Permissions.FLAGS.MANAGE_CHANNELS, Permissions.FLAGS.MANAGE_GUILD],
+    memberpermissions: ["MANAGE_CHANNELS", "MANAGE_GUILD"],
     usage: "noxpchannel <list/add/remove> <Canal>",
     run: async (client, message, args, user, text, prefix) => {
         try {
