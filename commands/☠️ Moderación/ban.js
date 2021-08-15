@@ -27,7 +27,7 @@ module.exports = {
                 return simpleEmbedDescription(message, ee.wrongcolor, gm.longTime, desc, true)
             }
             let reason = !args.slice(1).join(" ") ? 'Sin especificar' : args.slice(1).join(" ");
-            await member.ban({ reason: reason })
+            await member.ban({ days: 1, reason: reason })
             const channelID = await getChannelLogsModeration(message)
             const embedLogs = new MessageEmbed()
                 .setColor(ee.color)
