@@ -18,7 +18,7 @@ module.exports = {
             const data = await getUserSettings(message, member.id)
             const rankpos = await getLeaderboardSpecific(client, message.guild.id, member.id)
             console.log(member.id)
-            if(!rankpos) return simpleEmbedDescription(message, ee.wrongcolor, gm.longTime, "No tienes ningun nivel registrado", true)
+            if (!rankpos) return simpleEmbedDescription(message, ee.wrongcolor, gm.longTime, "No tienes ningun nivel registrado", true)
             const status = userinfo.guild.presences.cache.get(member.id) ? userinfo.guild.presences.cache.get(member.id).status : 'offline'
             const user = await Levels.fetch(member.id, message.guild.id);
             const rank = new canvacord.Rank()

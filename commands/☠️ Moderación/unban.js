@@ -19,7 +19,7 @@ module.exports = {
             let reason = !args.slice(1).join(" ") ? 'Sin especificar' : args.slice(1).join(" ");
             await message.guild.members.unban(args[0], reason).then(user => {
                 descEmbed = `✅ **${user.username}** ha sido desbaneado del server!`
-                simpleEmbedDescription(message, ee.color, gm.longTime, descEmbed)
+                simpleEmbedDescription(message, ee.color, null, descEmbed, true)
             })
 
         } catch (e) {
