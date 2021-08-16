@@ -6,7 +6,7 @@ const settingsXP = mongoose.Schema({
         type: String,
         required: true
     },
-    min_xp: { type: Number, default: 1 },
+    min_xp: { type: Number, default: 10 },
     max_xp: { type: Number, default: 30 },
     cooldown: { type: Number, default: 60 },
     noChannels: {type: Array},

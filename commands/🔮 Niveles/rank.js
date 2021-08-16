@@ -17,7 +17,6 @@ module.exports = {
             const member = message.mentions.users.first() || message.guild.members.cache.get(args[0]);
             const data = await getUserSettings(message, member.id)
             const rankpos = await getLeaderboardSpecific(client, message.guild.id, member.id)
-            console.log(member.id)
             if (!rankpos) return simpleEmbedDescription(message, ee.wrongcolor, gm.longTime, "No tienes ningun nivel registrado", true)
             const status = userinfo.guild.presences.cache.get(member.id) ? userinfo.guild.presences.cache.get(member.id).status : 'offline'
             const user = await Levels.fetch(member.id, message.guild.id);
@@ -55,7 +54,6 @@ module.exports = {
             const status = userinfo.guild.presences.cache.get(member.id) ? userinfo.guild.presences.cache.get(member.id).status : 'offline'
             const rankpos = await getLeaderboardSpecific(client, message.guild.id, member.id)
             const user = await Levels.fetch(member.id, message.guild.id);
-            console.log(message.guild.members.cache.get(userinfo.id))
             const rank = new canvacord.Rank()
                 .setAvatar(member.displayAvatarURL({ dynamic: false, format: 'png' }))
                 .setCurrentXP(user.xp - Levels.xpFor(parseInt(user.level)))

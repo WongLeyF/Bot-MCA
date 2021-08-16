@@ -1,7 +1,6 @@
-const { errorMessageEmbed, simpleEmbedDescription } = require("../../handlers/functions")
+const { errorMessageEmbed, simpleEmbedDescription, simpleEmbedField } = require("../../handlers/functions")
 const ee = require("../../json/embed.json");
 const gm = require("../../json/globalMessages.json");
-const mongo = require('../../handlers/mongo/mongo')
 const settingsPrefixSchema = require('../../models/setting.model');
 
 
@@ -10,38 +9,35 @@ module.exports = {
   aliases: ["sp", "prefix"],
   description: "Cambia el prefijo del Bot",
   category: "⚙ Configuración",
-  cooldown: 15,
-  memberpermissions: [ "ADMINISTRATOR"],
-  usage: "setprefix [Caracter]",
+  cooldown: 10,
+  memberpermissions: ["ADMINISTRATOR"],
+  usage: "setprefix [Caracteres]",
   run: async (client, message, args, user, text, prefix) => {
     try {
-      
       if (!args[0]) {
-        const descEmbed = '❌ Dame un carácter para el prefijo'
-        return simpleEmbedDescription( message, ee.wrongcolor, gm.shortTime, descEmbed)
+        const titleEmbed = `:warning: Por favor, especifica el canal`
+        const descEmbed = `Uso: \`${prefix}setprefix [Caracter]\``
+        return simpleEmbedField(message, ee.wrongcolor, gm.longTime, titleEmbed, descEmbed)
       }
-      
-      await mongo().then(async mongoose => {
-        try {
-          const guildID = message.guild.id
-          let dataPrefix = await settingsPrefixSchema.findOne({ _id: guildID });
-          if (dataPrefix) {
-            dataPrefix.prefix = args[0]
-            await dataPrefix.save()
-          } else {
-            let newData = new settingsPrefixSchema({
-              _id: guildID,
-              prefix: args[0],
-            });
-            await newData.save()
-          }
-        } finally {
-          mongoose.connection.close()
+
+      const guildID = message.guild.id
+      settingsPrefixSchema.findOne({ _id: guildID }, (err, res) => {
+        if (err) {
+          console.log(String(err.stack).bgRed);
+          errorMessageEmbed(err, message)
+        } if (res) {
+          res.prefix = args[0]
+          res.save()
+        } else {
+          const newData = new settingsPrefixSchema({
+            _id: guildID,
+            prefix: args[0],
+          });
+          newData.save()
         }
-      })
-      
-      const descEmbed = `:white_check_mark: El prefijo para el bot ahora es: \`${args[0]}\` `
-      simpleEmbedDescription(message, ee.color, null, descEmbed)
+        const descEmbed = `:white_check_mark: El prefijo para el bot ahora es: \`${args[0]}\` `
+        simpleEmbedDescription(message, ee.color, null, descEmbed)
+      });
 
     } catch (e) {
       console.log(String(e.stack).bgRed);

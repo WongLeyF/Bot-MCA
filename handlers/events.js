@@ -26,19 +26,7 @@ module.exports = async (client) => {
       }
     }
     console.log(table.toString().cyan);
-    await mongo().then(mongoose => {
-      try {
-        const templength = 34;
-        console.log("\n")
-        console.log(`┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓`.bold.green)
-        console.log(`┃ `.bold.green + " ".repeat(-1 + templength - ` ┃ `.length) + "┃".bold.green)
-        console.log(`┃ `.bold.green + `Connected to mongo!`.bold.green + " ".repeat(-1 + templength - ` ┃ `.length - `Connected to mongo!`.length) + "┃".bold.green)
-        console.log(`┃ `.bold.green + " ".repeat(-1 + templength - ` ┃ `.length) + "┃".bold.green)
-        console.log(`┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛`.bold.green)
-      } finally {
-        mongoose.connection.close()
-      }
-    })
+    await mongo();
     try {
       const stringlength2 = 34;
       console.log("\n")
