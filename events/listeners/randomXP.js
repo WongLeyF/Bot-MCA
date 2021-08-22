@@ -1,10 +1,8 @@
 const Levels = require("discord-xp");
 const { getRandomNum } = require("../../handlers/functions");
 const Discord = require("discord.js"); //this is the official discord.js wrapper for the Discord Api, which we use!
-const { Database } = require("quickmongo");
 const { getChannelLevels } = require("../../handlers/controllers/settings.controller");
-const { getlvlsettings } = require("../../handlers/controllers/settingsXp.controllers")
-const db = new Database(process.env.mongoPath);
+const { getlvlsettings, findUpdateRoleLevels } = require("../../handlers/controllers/settingsXp.controller")
 
 module.exports = async (client, message) => {
     //if its not in the cooldownXP, set it too there
@@ -33,34 +31,32 @@ module.exports = async (client, message) => {
     if (hasLeveledUp) {
         const member = message.author;
         const user = await Levels.fetch(member.id, message.guild.id);
-        if (await db.exists(`${message.guild.id}.${user.level}`)) {
-            try {
-                const rolereward = await db.get(`${message.guild.id}.${user.level}`)
-                for (let i = user.level - 1; i >= 0; i--) {
-                    if (await db.exists(`${message.guild.id}.${i}`)) {
-                        const rolerw = await db.get(`${message.guild.id}.${i}`)
-                        const rolesid = rolerw.map(r => String(r.roleid))
-                        if (rolesid[0] != 0) {
-                            const role = message.guild.roles.cache.get(rolesid[0]);
-                            message.guild.members.cache.get(message.member.id).roles.remove(role);
-                        }
-                        break;
-                    }
-                }
-                const rolesid = rolereward.map(r => String(r.roleid))
-                if (rolesid[0] != 0) {
-                    const role = message.guild.roles.cache.get(rolesid[0]);
-                    message.guild.members.cache.get(message.member.id).roles.add(role);
-                }
-            } catch (error) {
-                return message.reply(new MessageEmbed()
-                    .setColor(ee.color)
-                    .setTitle("⚠ Info STATUS")
-                    .setDescription(`No pude asignar el rol`)
-                ).then(msg => setTimeout(() => msg.delete(), 5000)).catch(e => console.log(gm.errorDeleteMessage.gray));
-            }
 
-        }
+        findUpdateRoleLevels(message, user.level)
+        // if (await db.exists(`${message.guild.id}.${user.level}`)) {
+        //     try {
+        //         const rolereward = await db.get(`${message.guild.id}.${user.level}`)
+        //         for (let i = user.level - 1; i >= 0; i--) {
+        //             if (await db.exists(`${message.guild.id}.${i}`)) {
+        //                 const rolerw = await db.get(`${message.guild.id}.${i}`)
+        //                 const rolesid = rolerw.map(r => String(r.roleid))
+        //                 if (rolesid[0] != 0) {
+        //                     const role = message.guild.roles.cache.get(rolesid[0]);
+        //                     message.guild.members.cache.get(message.member.id).roles.remove(role);
+        //                 }
+        //                 break;
+        //             }
+        //         }
+        //         const rolesid = rolereward.map(r => String(r.roleid))
+        //         if (rolesid[0] != 0) {
+        //             const role = message.guild.roles.cache.get(rolesid[0]);
+        //             message.guild.members.cache.get(message.member.id).roles.add(role);
+        //         }
+        //     } catch (error) {
+
+        //     }
+
+        // }
         client.channels.cache.get(channelID).send({ content: `Felicidades ${member}, ahora eres mas activo y has llegado al nivel **${user.level}**.` })
         // const rank = new canvacord.Rank()
         //     .setAvatar(member.displayAvatarURL({dynamic: false, format: 'png'}))
