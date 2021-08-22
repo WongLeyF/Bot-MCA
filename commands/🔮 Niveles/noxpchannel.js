@@ -1,4 +1,4 @@
-const { MessageEmbed } = require("discord.js");
+const { MessageEmbed, MessageActionRow, MessageSelectMenu } = require("discord.js");
 const ee = require("../../json/embed.json")
 const gm = require("../../json/globalMessages.json")
 const settingsXP = require("../../models/settingsXP.model")
@@ -93,14 +93,39 @@ module.exports = {
                         }
                     case "list":
                         if (res) {
-                            channel = message.guild.channels.cache.map(c => c.id)
-                            const nochannelsMap = res.noChannels.map(m => channel.includes(m) ? "<#" + m + ">\n\n" : "")
-                            return message.channel.send({
-                                embeds: [new MessageEmbed()
-                                    .setTitle("**Canales que no reciben XP**:")
-                                    .setDescription(`\n${nochannelsMap.length > 0 ? nochannelsMap.join(" ") : "**Ninguno**"}`)
-                                ]
+
+                            //    const channels = message.guild.channels.cache.map(c => c.id)
+                            //     const nochannelsMap = res.noChannels.map(m => channels.includes(m) ? "<#" + m + ">\n\n" : "")
+                            //     return message.channel.send({
+                            //         embeds: [new MessageEmbed()
+                            //             .setTitle("**Canales que no reciben XP**:")
+                            //             .setDescription(`\n${nochannelsMap.length > 0 ? nochannelsMap.join(" ") : "**Ninguno**"}`)
+                            //         ]
+                            //     })
+                            let options = []
+                            message.guild.channels.cache.filter(f => res.noChannels.includes(f.id)).map(m => {
+                                options.push({
+                                    label: m.name,
+                                    value: m.id,
+                                    description: `Click para eliminar el canal ${message.guild.channels.cache.get(m.id).name}`,
+                                    emoji: '📝'
+                                })
+                            });
+                            if (options.length === 0)
+                                return simpleEmbedDescription(message, 'RED', 10000, '❌ No encontre nada en la lista');
+                            const row = new MessageActionRow().addComponents(
+                                new MessageSelectMenu()
+                                    .setCustomId("noxpchannel")
+                                    .setPlaceholder("Lista de canales que no reciben experiencia")
+                                    .addOptions(options)
+                            )
+                            message.channel.send({
+                                embeds: [new MessageEmbed().setDescription('📜 **Canales que no reciben experiencia**').setColor("YELLOW")],
+                                components: [row]
                             })
+                        } else {
+                            descEmbed = `Parece que eres me acabs de agregar, configura antes las demas opciones`
+                            return simpleEmbedDescription(message, ee.wrongcolor, gm.longTime, titleEmbed, descEmbed)
                         }
                         break;
                     default:

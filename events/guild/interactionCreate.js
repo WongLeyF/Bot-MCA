@@ -4,7 +4,11 @@ const gm = require("../../json/globalMessages.json");
 
 module.exports = async (client, interaction) => {
     // console.log(client.interactions)
-    let interactions = client.interactions.get(interaction.customId);
+    const args = interaction.customId.split(/ +/);
+    //creating the cmd argument by shifting the args by 1
+    const cmd = args.shift().toLowerCase();
+    let interactions = client.interactions.get(cmd);
+    console.log(interactions) 
     // console.log(interaction)
     if (interactions.memberpermissions && !interaction.member.permissions.has(interactions.memberpermissions)) {
         try { interaction.delete(); } catch { }
@@ -26,6 +30,6 @@ module.exports = async (client, interaction) => {
             ]
         })
     }
-    interactions.run(client, interaction);
+    interactions.run(client, interaction, args);
 
 }

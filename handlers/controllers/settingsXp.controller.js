@@ -98,12 +98,11 @@ module.exports = {
                 emoji: '📍'
               })
             });
-            console.log(options)
             if (options.length === 0)
               return simpleEmbedDescription(message, 'RED', 10000, '❌ No encontre nada en la lista');
             const row = new MessageActionRow().addComponents(
               new MessageSelectMenu()
-                .setCustomId("norrolexp")
+                .setCustomId("norolexp")
                 .setPlaceholder("Lista de roles que no reciben experiencia")
                 .addOptions(options)
             )

@@ -1,3 +1,4 @@
+const { MessageActionRow, MessageEmbed, MessageSelectMenu } = require("discord.js")
 const { errorMessageEmbed, simpleEmbedField, simpleEmbedDescription, getRole } = require("../../handlers/functions")
 const ee = require("../../json/embed.json")
 const gm = require("../../json/globalMessages.json")
@@ -23,18 +24,43 @@ module.exports = {
                         errorMessageEmbed(err, message)
                     }
                     if (res) {
-                        let listRoleRewards = "", temp = ""
+                        let listRoleRewards = []
+                        let options = []
+
                         for (let i in res.rolesLevel) {
                             const rolesLevelValues = res.rolesLevel[i]
                             if (rolesLevelValues.role.length > 0) {
-                                listRoleRewards = listRoleRewards + `\n\n**Nivel**: ${rolesLevelValues._id}\n**Roles**:\n ${rolesLevelValues.role.map(roleId => `<@&${roleId}>`).join('\n')}`
+                                message.guild.roles.cache.filter(f => rolesLevelValues.role.includes(f.id)).map(m => {
+                                    options.push({
+                                        label: m.name,
+                                        value: m.id,
+                                        description: `Click para eliminar el role de ${message.guild.roles.cache.get(m.id).name}`,
+                                        emoji: '🏅'
+                                    })
+                                });
+
+                                if (options.length === 0) return;
+                                const row = new MessageActionRow().addComponents(
+                                    new MessageSelectMenu()
+                                        .setCustomId(`rolereward ${i}`)
+                                        .setPlaceholder(`Roles de recompensa para nivel ${res.rolesLevel[i]._id}`)
+                                        .addOptions(options)
+                                )
+
+                                listRoleRewards.push(row)
+                                options = []
                             }
                         }
 
-                        titleEmbed = `**Role Rewards**:`
-                        descEmbed = `\n${listRoleRewards == "" ? "**No hay ningun role**" : listRoleRewards}`
-                        return simpleEmbedField(message, null, null, titleEmbed, descEmbed)
+                        if (listRoleRewards.length === 0) {
+                            return simpleEmbedDescription(message, 'RED', 10000, '❌ No encontre nada en la lista');
+                        }
 
+                        message.channel.send({
+                            embeds: [new MessageEmbed().setDescription('🏆 **Roles de recompensa por nivel**').setColor("GREEN")],
+                            components: listRoleRewards
+                        })
+                        
                     } else {
                         titleEmbed = `⚠ No hay ningun registro de este server`
                         descEmbed = `Uso: \`${prefix}rolereward [remove/list] <Role> <Nivel>\`\n`
@@ -43,17 +69,17 @@ module.exports = {
                 })
             }
 
-            const removeRoleInLevel = async () => {
-                if (isValid(args[1], args[2])) {
-                    const errorValidation = isValid(args[1], args[2])
+            const removeRoleInLevel = async (inputRole, inputLevel) => {
+                if (isValid(inputRole, inputLevel)) {
+                    const errorValidation = isValid(inputRole, inputLevel)
                     return simpleEmbedField(message, ee.color, gm.largeTime, errorValidation.titleEmbed, errorValidation.descEmbed)
                 }
-                roleData = await getRole(message, args[1])
+                roleData = await getRole(message, inputRole)
                 if (!roleData) {
                     descEmbed = '❌ No puede encontrar este rol, intenta de nuevo'
                     return simpleEmbedDescription(message, ee.wrongcolor, gm.longTime, descEmbed)
                 }
-                if (parseInt(args[2]) < 0) {
+                if (parseInt(inputLevel) < 0) {
                     descEmbed = '❌ El nivel minimo debe ser mayor a 0'
                     return simpleEmbedDescription(message, ee.wrongcolor, gm.shortTime, descEmbed)
                 }
@@ -64,14 +90,14 @@ module.exports = {
                         errorMessageEmbed(err, message)
                     }
                     if (res) {
-                        let resultOfLevel = res.rolesLevel.find(roles => roles._id === parseInt(args[2], 10))
-                        const indexOfLevel = res.rolesLevel.findIndex(roles => roles._id === parseInt(args[2], 10))
+                        let resultOfLevel = res.rolesLevel.find(roles => roles._id === parseInt(inputLevel, 10))
+                        const indexOfLevel = res.rolesLevel.findIndex(roles => roles._id === parseInt(inputLevel, 10))
                         if (resultOfLevel) {
                             const index2 = resultOfLevel.role.indexOf(roleData.id)
                             res.rolesLevel[indexOfLevel].role.splice(index2, 1)
                             res.save();
                             titleEmbed = `⚠ Role Reward`
-                            descEmbed = `El rol: ${args[1]} se ha eliminado para el nivel: ${args[2]}`
+                            descEmbed = `El rol: ${inputRole} se ha eliminado para el nivel: ${inputLevel}`
                             return simpleEmbedField(message, ee.checkcolor, null, titleEmbed, descEmbed)
                         } else {
                             descEmbed = '❌ No tengo registros de ese nivel'
@@ -163,7 +189,7 @@ module.exports = {
                     listOfRolesAndLevels()
                     break;
                 case "remove":
-                    removeRoleInLevel()
+                    removeRoleInLevel(args[1], args[2])
                     break;
 
                 default:

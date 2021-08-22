@@ -92,7 +92,7 @@ module.exports = async (client, message) => {
         }
         //if the Bot has not enough permissions return error
         let required_perms = ["ADD_REACTIONS", "PRIORITY_SPEAKER", "VIEW_CHANNEL", "SEND_MESSAGES",
-        "EMBED_LINKS", "CONNECT", "SPEAK", "DEAFEN_MEMBERS"]
+          "EMBED_LINKS", "CONNECT", "SPEAK", "DEAFEN_MEMBERS"]
         if (!message.guild.me.permissions.has(required_perms)) {
           return message.channel.send({
             embeds: [new Discord.MessageEmbed()
@@ -100,6 +100,8 @@ module.exports = async (client, message) => {
               .setTitle(":warning: | ¡No tengo los permisos necesarios! ")
               .setDescription("Por favor, dame solo `ADMINISTRADOR`, porque lo necesito para eliminar mensajes, crear canales y ejecutar todos los comandos de administrador. \n Si no quieres dármelos, entonces esos son los permisos exactos que necesito: \n> `" + required_perms.join("`, `") + "`")
             ]
+          }).catch(e => {
+            errorMessageEmbed(e, message)
           })
         }
         //run the command with the parameters:  client, message, args, user, text, prefix,
