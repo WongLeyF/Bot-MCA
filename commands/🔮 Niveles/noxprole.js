@@ -1,7 +1,7 @@
 const ee = require("../../json/embed.json")
 const gm = require("../../json/globalMessages.json")
 const { errorMessageEmbed, simpleEmbedDescription, simpleEmbedField, getRole } = require("../../handlers/functions");
-const { noXpRoles } = require("../../handlers/controllers/settingsXp.controllers");
+const { noXpRoles } = require("../../handlers/controllers/settingsXp.controller");
 
 
 module.exports = {

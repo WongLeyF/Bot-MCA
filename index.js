@@ -11,17 +11,19 @@ const client = new Discord.Client({
   restTimeOffset: 0,
   restWsBridgetimeout: 100,
   partials: ['MESSAGE', 'CHANNEL', 'REACTION'],
+  allowedMentions: { parse: ['users', 'roles'], repliedUser: true },
   intents: [Discord.Intents.FLAGS.GUILDS, Discord.Intents.FLAGS.GUILD_MESSAGES]
 });
 
 //Client variables to use everywhere
 client.commands = new Discord.Collection(); //an collection (like a digital map(database)) for all your commands
 client.aliases = new Discord.Collection(); //an collection for all your command-aliases
+client.interactions = new Discord.Collection(); //an collection for all your interactions
 client.categories = fs.readdirSync("./commands/"); //categories
 client.cooldowns = new Discord.Collection(); //an collection for cooldown commands of each user
 client.cooldownXP = new Discord.Collection(); //an collection for cooldown XP of each user
 //Loading files, with the client variable like Command Handler, Event Handler, ...
-["command", "events"].map(handler => {
+["command", "events", "interactions"].map(handler => {
     require(`./handlers/${handler}`)(client);
 });
 
