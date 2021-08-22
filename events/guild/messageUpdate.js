@@ -1,6 +1,6 @@
 const { MessageEmbed } = require("discord.js");
 const ee = require("../../json/embed.json");
-const { getChannelLogsMessages, getUpdateMessages } = require('../../handlers/mongo/controllers');
+const { getChannelLogsMessages, getUpdateMessages } = require('../../handlers/controllers/settings.controller');
 
 module.exports = async (client, oldMessage, newMessage) => {
     let status = await getUpdateMessages(newMessage);
@@ -33,5 +33,5 @@ module.exports = async (client, oldMessage, newMessage) => {
         oldMessage.attachments.map(m => embed.setImage(m.url))
     }
 
-    channel.send(embed)
+    channel.send({ embeds: [embed] })
 }

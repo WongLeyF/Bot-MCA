@@ -1,4 +1,3 @@
-const { MessageEmbed } = require("discord.js");
 const ee = require("../../json/embed.json");
 const gm = require("../../json/globalMessages.json");
 const { simpleEmbedField } = require("../../handlers/functions");
@@ -17,7 +16,7 @@ module.exports = {
         const desc = `Uso: \`${prefix}say <Tu texto>\``
         return simpleEmbedField(message, ee.wrongcolor, gm.longTime, title, desc)
       }
-      message.channel.send(text);
+      message.channel.send({ content: text });
       message.delete()
     } catch (e) {
       console.log(String(e.stack).bgRed)

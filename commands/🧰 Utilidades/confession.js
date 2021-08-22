@@ -2,7 +2,7 @@ const { MessageEmbed } = require("discord.js");
 const ee = require("../../json/embed.json");
 const gm = require("../../json/globalMessages.json");
 const { errorMessageEmbed, simpleEmbedDescription, simpleEmbedField } = require("../../handlers/functions");
-const { getChannelConfession } = require("../../handlers/mongo/controllers");
+const { getChannelConfession } = require("../../handlers/controllers/settings.controller");
 
 module.exports = {
     name: "Confession",
@@ -19,8 +19,8 @@ module.exports = {
                 message.delete()
                 descEmbed = `❌ El canal para recibir confesiones no ha sido establecido en este servidor.`
                 simpleEmbedDescription(message, ee.wrongcolor, gm.longTime, descEmbed);
-                descEmbed =`🔎 Usa el comando \`${prefix}setconfessions <channel>\`.`
-                return simpleEmbedDescription(message,ee.wrongcolor,gm.longTimem,descEmbed)
+                descEmbed = `🔎 Usa el comando \`${prefix}setconfessions <channel>\`.`
+                return simpleEmbedDescription(message, ee.wrongcolor, gm.longTimem, descEmbed)
             }
             if (!args[0] || (args[0] == "-n")) {
                 titleEmbed = `:warning: | Debes ingresar algo que confesar.`
@@ -30,17 +30,21 @@ module.exports = {
             const text = args[args.length - 1] == "-n" ? args.slice(0, -1).join(" ") : args.slice(0).join(" ")
             if (args[args.length - 1] == "-n") {
                 message.delete()
-                return client.channels.cache.get(channelID).send(new MessageEmbed()
-                    .setTitle("Confesiones 🤫")
-                    .setColor(ee.color)
-                    .setDescription(text)
-                    .setFooter(message.author.tag))
+                return client.channels.cache.get(channelID).send({
+                    embeds: [new MessageEmbed()
+                        .setTitle("Confesiones 🤫")
+                        .setColor(ee.color)
+                        .setDescription(text)
+                        .setFooter(message.author.tag)]
+                })
             } else {
                 message.delete()
-                return client.channels.cache.get(channelID).send(new MessageEmbed()
-                    .setTitle("Confesiones 🤫")
-                    .setColor(ee.color)
-                    .setDescription(text))
+                return client.channels.cache.get(channelID).send({
+                    embeds: [new MessageEmbed()
+                        .setTitle("Confesiones 🤫")
+                        .setColor(ee.color)
+                        .setDescription(text)]
+                })
             }
         } catch (e) {
             console.log(String(e.stack).bgRed);

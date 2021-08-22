@@ -28,12 +28,14 @@ module.exports = {
         return simpleEmbedField(message, ee.wrongcolor, gm.longTime, titleEmbed, descEmbed)
       }
 
-      message.channel.send(new MessageEmbed()
-        .setColor(ee.color)
-        .setFooter(message.author.tag, message.author.avatarURL({ dynamic: false, format: 'png' }))
-        .setTitle(title ? title : "")
-        .setDescription(desc ? desc : "")
-      )
+      message.channel.send({
+        embeds: [new MessageEmbed()
+          .setColor(ee.color)
+          .setFooter(message.author.tag, message.author.avatarURL({ dynamic: false, format: 'png' }))
+          .setTitle(title ? title : "")
+          .setDescription(desc ? desc : "")
+        ]
+      })
       message.delete()
     } catch (e) {
       console.log(String(e.stack).bgRed)
