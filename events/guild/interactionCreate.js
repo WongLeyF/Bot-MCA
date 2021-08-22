@@ -8,8 +8,6 @@ module.exports = async (client, interaction) => {
     //creating the cmd argument by shifting the args by 1
     const cmd = args.shift().toLowerCase();
     let interactions = client.interactions.get(cmd);
-    console.log(interactions) 
-    // console.log(interaction)
     if (interactions.memberpermissions && !interaction.member.permissions.has(interactions.memberpermissions)) {
         try { interaction.delete(); } catch { }
         return interaction.channel.send({
