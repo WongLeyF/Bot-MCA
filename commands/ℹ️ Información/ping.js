@@ -10,16 +10,20 @@ module.exports = {
   description: "Te muestra el tiempo de respuesta de " + ee.footertext,
   run: async (client, message, args, user, text, prefix) => {
     try {
-      message.channel.send(new MessageEmbed()
-        .setColor(ee.color)
-        .setFooter(ee.footertext, ee.footericon)
-        .setTitle(`🏓 Pinging....`)
-      ).then(msg => {
-        msg.edit(new MessageEmbed()
+      message.channel.send({
+        embeds: [new MessageEmbed()
           .setColor(ee.color)
           .setFooter(ee.footertext, ee.footericon)
-          .setTitle(`🏓 Ping es \`${Math.round(client.ws.ping)}ms\``)
-        );
+          .setTitle(`🏓 Pinging....`)
+        ]
+      }).then(msg => {
+        msg.edit({
+          embeds: [new MessageEmbed()
+            .setColor(ee.color)
+            .setFooter(ee.footertext, ee.footericon)
+            .setTitle(`🏓 Ping es \`${Math.round(client.ws.ping)}ms\``)
+          ]
+        });
       })
     } catch (e) {
       console.log(String(e.stack).bgRed)

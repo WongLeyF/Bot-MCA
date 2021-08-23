@@ -1,14 +1,18 @@
-const { MessageEmbed, WebhookClient } = require("discord.js")
+const { MessageEmbed, WebhookClient, Message } = require("discord.js")
 const ee = require("../json/embed.json")
 const gm = require("../json/globalMessages.json")
 const Levels = require("discord-xp");
 const https = require('https')
 const Stream = require('stream').Transform
 const fs = require('fs');
+const webHookMain = new WebhookClient({
+  id: process.env.webhookID,
+  token: process.env.webhookToken
+})
 
 module.exports = {
   //get a member lol
-  getMember: function (message, toFind = "") {
+  getMember: (message, toFind = "") => {
     try {
       toFind = toFind.toLowerCase();
       let target = message.guild.members.cache.get(toFind);
@@ -24,44 +28,53 @@ module.exports = {
       console.log(String(e.stack).bgRed)
     }
   },
+  getRole: async (message, req) => {
+    let role;
+    if (isNaN(req)) role = await message.guild.roles.cache.find(c => c.id === req.slice(3, -1))
+    if (!isNaN(req)) role = await message.guild.roles.cache.find(c => c.id === req)
+    if (role == undefined) role = message.guild.roles.cache.find(c => c.name === req)
+    return role
+  },
 
   getLeaderboard: async function (client, message) {
     const rawLeaderboard = await Levels.fetchLeaderboard(message.guild.id, 10); // We grab top 10 users with most xp in the current server.
-    if (rawLeaderboard.length < 1) return message.reply(new MessageEmbed()
+    if (rawLeaderboard.length < 1) return message.reply({embeds: [new MessageEmbed()
       .setColor(ee.wrongcolor)
       .setDescription('❌ Nadie está en el leaderboard todavía.')
-    ).then(msg => msg.delete({ timeout: 5000 }).catch(e => console.log(gm.errorDeleteMessage.gray)));
+    ]}).then(msg => setTimeout(() => msg.delete(), 5000)).catch(e => console.log(gm.errorDeleteMessage.gray));
     const embed = new MessageEmbed().setTitle("**Leaderboard**:")
     const leaderboard = await Levels.computeLeaderboard(client, rawLeaderboard, true); // We process the leaderboard.
     const lb = leaderboard.map(e => embed.addField(`**${e.position}. ${e.username}#${e.discriminator}**`, `Level: ${e.level}  -  XP: ${e.xp.toLocaleString()}`)); // We map the outputs.
     //message.channel.send(`**Leaderboard**:\n\n${lb.join("\n\n")}`);
-    message.channel.send(embed)
+    message.channel.send({ embeds: [embed] })
   },
   getLeaderboardRange: async function (client, message, init) {
     const start = parseInt(init)
     const rawLeaderboard = await Levels.fetchLeaderboard(message.guild.id, start + 10); // We grab top 10 users with most xp in the current server.
-    if (rawLeaderboard.length + 10 <= 0) return message.reply(new MessageEmbed()
-      .setColor(ee.wrongcolor)
-      .setDescription('❌ Nadie está en el leaderboard todavía.')
-    ).then(msg => msg.delete({ timeout: 5000 }).catch(e => console.log(gm.errorDeleteMessage.gray)));
+    if (rawLeaderboard.length + 10 <= 0) return message.reply({
+      embeds: [new MessageEmbed()
+        .setColor(ee.wrongcolor)
+        .setDescription('❌ Nadie está en el leaderboard todavía.')
+      ]
+    }).then(msg => setTimeout(() => msg.delete(), 5000)).catch(e => console.log(gm.errorDeleteMessage.gray));
     const leaderboard = await Levels.computeLeaderboard(client, rawLeaderboard, true); // We process the leaderboard.
     const embed = new MessageEmbed().setTitle("**Leaderboard**:")
     const lb = leaderboard.filter(e => e.position >= init).map(e => embed.addField(`**${e.position}. ${e.username}#${e.discriminator}**`, `Level: ${e.level}  -  XP: ${e.xp.toLocaleString()}`)); // We map the outputs.
     //message.channel.send(`**Leaderboard**:\n\n${lb.join("\n\n")}`);
     if (lb.length > 0) {
-      message.channel.send(embed)
+      message.channel.send({ embeds: [embed] })
     } else {
-      return message.reply(new MessageEmbed()
+      return message.reply({embeds: [new MessageEmbed()
         .setColor(ee.wrongcolor)
         .setDescription('❌ Nadie está en esta leaderboard todavía.')
-      ).then(msg => msg.delete({ timeout: 5000 }).catch(e => console.log(gm.errorDeleteMessage.gray)));
+      ]}).then(msg => setTimeout(() => msg.delete(), 5000)).catch(e => console.log(gm.errorDeleteMessage.gray));
     }
   },
   getLeaderboardSpecific: async function (client, guildID, userID) {
     const rawLeaderboard = await Levels.fetchLeaderboard(guildID, 9999);
     const leaderboard = await Levels.computeLeaderboard(client, rawLeaderboard); // We process the leaderboard.
     const lb = leaderboard.find(e => e.userID == userID);
-    return Number(lb.position ? lb.position : null)
+    return Number(lb?.position || null)
   },
   removeItemFromArr: function (arr, item) {
     return arr.filter(function (e) {
@@ -148,13 +161,12 @@ module.exports = {
   },
 
   errorMessageEmbed: function (e, message) {
-    const webhookClient = new WebhookClient(process.env.webhookID, process.env.webhookToken);
     const embed = new MessageEmbed()
       .setColor(ee.wrongcolor)
       .setFooter(ee.footertext, ee.footericon)
       .setTitle(gm.titleError)
       .setDescription(`\`\`\`${e.stack}\`\`\``);
-    webhookClient.send('Webhook Error', {
+    webHookMain.send({
       username: message.guild.name,
       avatarURL: message.guild.iconURL({ dynamic: true }),
       embeds: [embed],
@@ -162,29 +174,35 @@ module.exports = {
   },
   simpleEmbedField: function (message, color, time, title, description) {
     if (time) {
-      message.channel.send(new MessageEmbed()
-        .setColor(color)
-        .addField(`${title}`, `${description}`)
-      ).then(msg => msg.delete({ timeout: time }).catch(e => console.log(gm.errorDeleteMessage.gray)));
+      message.channel.send({
+        embeds: [new MessageEmbed()
+          .setColor(color)
+          .addField(`${title}`, `${description}`)
+        ]
+      }).then(msg => setTimeout(() => msg.delete(), time)).catch(e => console.log(gm.errorDeleteMessage.gray));
     } else {
-      message.channel.send(new MessageEmbed()
-        .setColor(color)
-        .addField(`${title}`, `${description}`)
-      );
+      message.channel.send({
+        embeds: [new MessageEmbed()
+          .setColor(color)
+          .addField(`${title}`, `${description}`)
+        ]
+      });
     }
-
   },
-  simpleEmbedDescription: function (message, color, time, description) {
+  simpleEmbedDescription: function (message, color, time = null, description, reply=false) {
+    let contain = {
+      embeds: [new MessageEmbed()
+        .setColor(color)
+        .setDescription(`${description}`)
+      ]
+    }
+    if(reply){
+      contain.reply = { messageReference: message.id }
+    }
     if (time) {
-      message.channel.send(new MessageEmbed()
-        .setColor(color)
-        .setDescription(`${description}`)
-      ).then(msg => msg.delete({ timeout: time }).catch(e => console.log(gm.errorDeleteMessage.gray)));
+      message.channel.send(contain).then(msg => setTimeout(() => msg.delete(), time)).catch(e => console.log(gm.errorDeleteMessage.gray));
     } else {
-      message.channel.send(new MessageEmbed()
-        .setColor(color)
-        .setDescription(`${description}`)
-      );
+      message.channel.send(contain);
     }
   },
   downloadImageToUrl: async function (url, filename) {
@@ -212,18 +230,25 @@ module.exports = {
       return array;
     } catch (e) {
       console.log(String(e.stack).bgRed)
-      const webhookClient = new WebhookClient(process.env.webhookID, process.env.webhookToken);
-      const embed = new MessageEmbed()
-        .setColor("RED")
-        .setTitle("Error en functions.js")
-        .setDescription(`\`\`\`${e.stack}\`\`\``)
-      webhookClient.send('Webhook Error', {
-        username: "Critical Error",
-        avatarURL: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/17/Warning.svg/520px-Warning.svg.png",
-        embeds: [embed],
-      });
+      this.webHookErrorMessage(e)
     }
-  }
+  },
+
+  webHookErrorMessage: function (e, title) {
+    const embed = new MessageEmbed()
+      .setColor(ee.wrongcolor)
+      .setFooter(ee.footertext, ee.footericon)
+      .setTitle(title)
+      .setDescription(`\`\`\`${e.stack}\`\`\``);
+    webHookMain.send({
+      username: "Critical Error",
+      avatarURL: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/17/Warning.svg/520px-Warning.svg.png",
+      embeds: [embed],
+    });
+  },
+
 }
+
+
 
 

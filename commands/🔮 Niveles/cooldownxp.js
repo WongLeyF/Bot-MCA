@@ -2,7 +2,6 @@ const { errorMessageEmbed, simpleEmbedDescription, simpleEmbedField } = require(
 const ee = require("../../json/embed.json")
 const gm = require("../../json/globalMessages.json")
 const settingsXP = require("../../models/settingsXP.model")
-const mongo = require('../../handlers/mongo/mongo')
 
 module.exports = {
     name: "CooldownXP",
@@ -13,56 +12,59 @@ module.exports = {
     usage: "cooldownxp <tiempo en segundos>\ncooldownxp [default]\ncooldownxp",
     run: async (client, message, args, user, text, prefix) => {
         try {
-            await mongo().then(async mongoose => {
-                try {
-                    const guildID = message.guild.id
-                    let data = await settingsXP.findOne({ _id: guildID })
-                    let titleEmbed, descEmbed
-                    
-                    if (args[0] == 'default') {
-                        if (data) {
-                            data.cooldown = 60
-                            await data.save()
-                        }
+            const guildID = message.guild.id
+            let titleEmbed = `⚠ Tiempo para experiencia por mensaje`
+            let descEmbed = `El tiempo de espera se asigno en: ${args[0] ? args[0] : 60} segundo(s)`
+            settingsXP.findOne({ _id: guildID }, (err, res) => {
+                if (err) {
+                    console.log(String(err.stack).bgRed);
+                    errorMessageEmbed(err, message)
+                }
+                if (res) {
+                    if (args[0] === 'default') {
+                        res.cooldown = 60
+                        res.save()
                         descEmbed = ':white_check_mark: Se han puesto en default el tiempo para conseguir experiencia por mensaje.'
                         return simpleEmbedDescription(message, ee.color, gm.shortTime, descEmbed);
                     }
-                    
                     if (!args[0]) {
-                        titleEmbed =`⚠ Tiempo para experiencia por mensaje`
-                        descEmbed = `El tiempo de espera esta asignado en: ${data ? data.cooldown : 60} segundo(s)`
+                        titleEmbed = `⚠ Tiempo para experiencia por mensaje`
+                        descEmbed = `El tiempo de espera esta asignado en: ${res.cooldown ? res.cooldown : 60} segundo(s)`
                         return simpleEmbedField(message, ee.color, gm.largeTime, titleEmbed, descEmbed)
                     }
-                    
-                    if (isNaN(args[0])) {
-                        descEmbed = '❌ No puedo asignar esto, coloca numeros'
-                        return simpleEmbedDescription(message, ee.wrongcolor, gm.shortTime, descEmbed)
-                    } 
-                    
-                    if (args[0] <= 0){
-                        descEmbed = '❌ El tiempo debe ser mayor a 0'
-                        simpleEmbedDescription(message, ee.wrongcolor, gm.shortTime, descEmbed)
+                    if (isValid(args[0])) {
+                        return simpleEmbedDescription(message, ee.wrongcolor, gm.shortTime, isValid(args[0]))
                     }
-                    
-                    if (data) {
-                        data.cooldown = args[0]
-                        await data.save()
-                    } else {
-                        const newData = new settingsXP({
-                            _id: guildID,
-                            cooldown: args[0]
-                        })
-                        await newData.save()
-                    }
-                    
-                    titleEmbed = `⚠ Tiempo para experiencia por mensaje`
-                    descEmbed = `El tiempo de espera se asigno en: ${args[0]} segundo(s)`
-                    simpleEmbedField(message, ee.checkcolor, null, titleEmbed, descEmbed)
+                    res.cooldown = args[0]
+                    res.save()
 
-                } finally {
-                    mongoose.connection.close()
+                } else {
+                    if (!args[0]) {
+                        titleEmbed = `⚠ Tiempo para experiencia por mensaje`
+                        descEmbed = `El tiempo de espera esta asignado en: 60 segundo(s)`
+                        return simpleEmbedField(message, ee.color, gm.largeTime, titleEmbed, descEmbed)
+                    }
+                    if (isValid(args[0])) {
+                        return simpleEmbedDescription(message, ee.wrongcolor, gm.shortTime, isValid(args[0]))
+                    }
+                    const newData = new settingsXP({
+                        _id: guildID,
+                        cooldown: args[0]
+                    })
+                    newData.save()
                 }
+                simpleEmbedField(message, ee.checkcolor, null, titleEmbed, descEmbed)
             })
+
+            const isValid = (value) => {
+                if (isNaN(value)) {
+                    return '❌ No puedo asignar esto, coloca numeros'
+                }
+                if (value <= 0) {
+                    return '❌ El tiempo debe ser mayor a 0'
+                }
+            }
+
         } catch (e) {
             console.log(String(e.stack).bgRed);
             errorMessageEmbed(e, message)

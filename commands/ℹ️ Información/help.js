@@ -16,7 +16,7 @@ module.exports = {
         const cmdArgs = args[0].toLowerCase()
         const cmd = client.commands.get(cmdArgs) || client.commands.get(!client.aliases.get(cmdArgs).toLowerCase() ? undefined : client.aliases.get(cmdArgs).toLowerCase());
         if (!cmd) {
-          return message.channel.send(embed.setColor(ee.wrongcolor).setDescription(`No se encontró información para el comando  **${cmdArgs}**`));
+          return message.channel.send({ embeds: [embed.setColor(ee.wrongcolor).setDescription(`No se encontró información para el comando  **${cmdArgs}**`)] });
         }
         if (cmd.name) embed.setAuthor(`Información detallada sobre: ${cmd.name.toUpperCase()}`, client.user.displayAvatarURL());
         if (cmd.name) embed.addField("**Nombre del comando**", `\`${cmd.name}\``);
@@ -29,7 +29,7 @@ module.exports = {
           embed.addField("**Uso**", `\`${prefix}${cmd.usage}\``);
           embed.setFooter("Sintaxis : <> = requerida, [] = opcional");
         }
-        return message.channel.send(embed.setColor(ee.color));
+        return message.channel.send({ embeds: [embed.setColor(ee.color)] });
       } else {
         const embed = new MessageEmbed()
           .setColor(ee.color)
@@ -62,7 +62,7 @@ module.exports = {
         } catch (e) {
           console.log(String(e.stack).red);
         }
-        message.channel.send(embed);
+        message.channel.send({ embeds: [embed] });
       }
     } catch (e) {
       console.log(String(e.stack).bgRed)

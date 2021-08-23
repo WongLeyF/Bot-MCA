@@ -2,7 +2,7 @@ const { MessageEmbed, WebhookClient } = require("discord.js");
 const ee = require("../../json/embed.json");
 const gm = require("../../json/globalMessages.json");
 const { errorMessageEmbed, simpleEmbedDescription, simpleEmbedField } = require("../../handlers/functions");
-const { getChannelConfession } = require("../../handlers/mongo/controllers");
+const { getChannelConfession } = require("../../handlers/controllers/settings.controller");
 
 module.exports = {
     name: "Confession",
@@ -30,28 +30,21 @@ module.exports = {
             const text = args[args.length - 1] == "-n" ? args.slice(0, -1).join(" ") : args.slice(0).join(" ")
             if (args[args.length - 1] == "-n") {
                 message.delete()
-                return client.channels.cache.get(channelID).send(new MessageEmbed()
-                    .setTitle("Confesiones 🤫")
-                    .setColor(ee.color)
-                    .setDescription(text)
-                    .setFooter(message.author.tag))
+                return client.channels.cache.get(channelID).send({
+                    embeds: [new MessageEmbed()
+                        .setTitle("Confesiones 🤫")
+                        .setColor(ee.color)
+                        .setDescription(text)
+                        .setFooter(message.author.tag)]
+                })
             } else {
                 message.delete()
-                const webhookClient = new WebhookClient('867496987700363285', '04wJbhrJH8QoPx43sFGS-Ia2bscpaArw6_QYC-s7j1vPqqIDjfYn5xxyDP31AHcFiNi5');
-                const embed = new MessageEmbed()
-                    .setTitle("Confesiones Log")
-                    .setColor(ee.color)
-                    .setDescription(text)
-                    .setFooter(message.author.tag)
-                webhookClient.send('  ', {
-                    username: message.guild.name,
-                    avatarURL: message.guild.iconURL({ dynamic: true }),
-                    embeds: [embed],
-                });
-                return client.channels.cache.get(channelID).send(new MessageEmbed()
-                    .setTitle("Confesiones 🤫")
-                    .setColor(ee.color)
-                    .setDescription(text))
+                return client.channels.cache.get(channelID).send({
+                    embeds: [new MessageEmbed()
+                        .setTitle("Confesiones 🤫")
+                        .setColor(ee.color)
+                        .setDescription(text)]
+                })
             }
         } catch (e) {
             console.log(String(e.stack).bgRed);
