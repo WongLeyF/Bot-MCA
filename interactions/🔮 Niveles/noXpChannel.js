@@ -5,7 +5,7 @@ const _settingsXP = require("../../models/settingsXP.model")
 
 module.exports = {
     name: "noXpChannel",
-    memberpermissions: ["MANAGE_ROLES"],
+    memberpermissions: ["MANAGE_CHANNELS", "MANAGE_GUILD"],
     run: async (client, interaction, args) => {
 
         const guildID = interaction.guild.id
