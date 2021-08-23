@@ -21,5 +21,8 @@
   "devDependencies": {
     "ascii-table": "0.0.9",
     "nodemon": "^2.0.12"
+  },
+  "engines" : { 
+    "node" : ">=0.16"
   }
 }
