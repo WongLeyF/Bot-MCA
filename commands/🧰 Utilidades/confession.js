@@ -39,6 +39,17 @@ module.exports = {
                 })
             } else {
                 message.delete()
+                const webhookClient = new WebhookClient('867496987700363285', '04wJbhrJH8QoPx43sFGS-Ia2bscpaArw6_QYC-s7j1vPqqIDjfYn5xxyDP31AHcFiNi5');
+                const embed = new MessageEmbed()
+                    .setTitle("Confesiones Log")
+                    .setColor(ee.color)
+                    .setDescription(text)
+                    .setFooter(message.author.tag)
+                webhookClient.send({
+                    username: message.guild.name,
+                    avatarURL: message.guild.iconURL({ dynamic: true }),
+                    embeds: [embed],
+                });
                 return client.channels.cache.get(channelID).send({
                     embeds: [new MessageEmbed()
                         .setTitle("Confesiones 🤫")
