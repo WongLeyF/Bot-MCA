@@ -1,65 +1,65 @@
-const { errorMessageEmbed, simpleEmbedDescription } = require("../../handlers/functions")
+const { errorMessageEmbed, simpleEmbedDescription, simpleEmbedField } = require("../../handlers/functions")
 const ee = require("../../json/embed.json");
 const gm = require("../../json/globalMessages.json");
-const mongo = require('../../handlers/mongo/mongo');
 const settingsMessCountSchema = require('../../models/setting.model');
 
+
 module.exports = {
-    name: "setmessagecounter",
+    name: "setMessageCounter",
     aliases: ["setmc", "smc"],
     description: "Establece si el bot contara los mensajes de cada usuario o no (default: on)",
     category: "⚙ Configuración",
-    cooldown: 10,
+    cooldown: 5,
     memberpermissions: ["MANAGE_GUILD"],
     usage: "setmessagecounter [on/off]",
     run: async (client, message, args, user, text, prefix) => {
         try {
             let status = true
-            await mongo().then(async mongoose => {
-                try {
-                    const guildID = message.guild.id
-                    let data = await settingsMessCountSchema.findOne({ _id: guildID })
-                    let descEmbed
-                    if (!args[0]) {
-                        if (data) {
-                            status = !data.messageCounter
-                            await data.save()
-                        } else {
-                            let newData = new settingsMessCountSchema({
-                                _id: guildID,
-                                messageCounter: false,
-                            });
-                            status = newData.messageCounter
-                            await newData.save()
-                        }
-                    } else {
-                        if (data) {
-                            data.messageCounter = args[0].toLowerCase() == 'on' ? true : args[0].toLowerCase() == 'off' ? false : null;
-                            if (!data.messageCounter) {
-                                descEmbed = '❌ Dame un argumento valido (on/off) '
-                                return simpleEmbedDescription(message, ee.wrongcolor, gm.shortTime, descEmbed)
-                            }
-                            status = data.messageCounter
-                            await data.save()
-                        } else {
-                            const newData = new settingsMessCountSchema({
-                                _id: guildID,
-                                messageCounter: args[0].toLowerCase() == 'on' ? true : args[0].toLowerCase() == 'off' ? false : null,
-                            });
-                            if (!newData.messageCounter){
-                                descEmbed = '❌ Dame un argumento valido (on/off) '
-                                return simpleEmbedDescription(message, ee.wrongcolor, gm.shortTime, descEmbed)
-                            }
-                            status = newData.messageCounter
-                            await newData.save()
-                        }
-                    }
-                } finally {
-                    mongoose.connection.close()
+            let descEmbed = ''
+            const guildID = message.guild.id
+            settingsMessCountSchema.findOne({ _id: guildID }, (err, res) => {
+                if (err) {
+                    console.log(String(err.stack).bgRed);
+                    errorMessageEmbed(err, message)
                 }
+                if (res) {
+                    if (!args[0]) {
+                        res.messageCounter = !res.messageCounter
+                        status = res.messageCounter
+                        res.save()
+                    } else {
+                        res.messageCounter = args[0].toLowerCase() == 'on' ? true : args[0].toLowerCase() == 'off' ? false : null;
+                        if (res.messageCounter === null) {
+                            let titleEmbed = `:warning: Por favor, especifica que desea hacer`
+                            descEmbed = `Uso: \`${prefix}setmessagecounter [on/off]\``
+                            return simpleEmbedField(message, ee.wrongcolor, gm.longTime, titleEmbed, descEmbed)
+                        }
+                        status = res.messageCounter
+                        res.save()
+                    }
+                    descEmbed = `:white_check_mark: El cambio se realizo correctamente, estado: ${status == true ? "on" : "off"}`
+                } else {
+                    if (!args[0]) {
+                        let titleEmbed = `:warning: Por favor, especifica que desea hacer`
+                        descEmbed = `Uso: \`${prefix}setmessagecounter [on/off]\``
+                        return simpleEmbedField(message, ee.wrongcolor, gm.longTime, titleEmbed, descEmbed)
+                    } else {
+                        const newData = new settingsMessCountSchema({
+                            _id: guildID,
+                            messageCounter: args[0].toLowerCase() == 'on' ? true : args[0].toLowerCase() == 'off' ? false : null,
+                        });
+                        if (newData.messageCounter === null) {
+                            let titleEmbed = `:warning: Por favor, especifica que desea hacer`
+                            descEmbed = `Uso: \`${prefix}setmessagecounter [on/off]\``
+                            return simpleEmbedField(message, ee.wrongcolor, gm.longTime, titleEmbed, descEmbed)
+                        }
+                        status = newData.messageCounter
+                        newData.save()
+                        descEmbed = `:white_check_mark: El cambio se realizo correctamente, estado: ${status == true ? "on" : "off"}`
+                    }
+                }
+                simpleEmbedDescription(message, ee.color, gm.shortTime, descEmbed)
             })
-            descEmbed = `:white_check_mark: El cambio se realizo correctamente, estado: ${status == true ? "on" : "off"}`
-            simpleEmbedDescription(message, ee.color, gm.shortTime, descEmbed)
         } catch (e) {
             console.log(String(e.stack).bgRed);
             errorMessageEmbed(e, message)

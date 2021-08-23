@@ -1,8 +1,10 @@
 const Levels = require("discord-xp")
-const canvacord = require("canvacord")
-const { getLeaderboardSpecific, getLeaderboard } = require("../../handlers/functions")
 const Discord = require("discord.js")
-const { getUserSettings } = require("../../handlers/mongo/controllers")
+const canvacord = require("canvacord")
+const gm = require("../../json/globalMessages.json")
+const ee = require("../../json/embed.json")
+const { getLeaderboardSpecific, simpleEmbedDescription } = require("../../handlers/functions")
+const { getUserSettings } = require("../../handlers/controllers/userSetings.controller")
 
 module.exports = {
     name: "Rank",
@@ -15,6 +17,7 @@ module.exports = {
             const member = message.mentions.users.first() || message.guild.members.cache.get(args[0]);
             const data = await getUserSettings(message, member.id)
             const rankpos = await getLeaderboardSpecific(client, message.guild.id, member.id)
+            if (!rankpos) return simpleEmbedDescription(message, ee.wrongcolor, gm.longTime, "No tienes ningun nivel registrado", true)
             const status = userinfo.guild.presences.cache.get(member.id) ? userinfo.guild.presences.cache.get(member.id).status : 'offline'
             const user = await Levels.fetch(member.id, message.guild.id);
             const rank = new canvacord.Rank()
@@ -25,7 +28,7 @@ module.exports = {
                 .setRank(rankpos)
                 .setStatus(status)
                 .setProgressBar("#FFFFFF", "COLOR")
-                .setUsername(member.username, message.guild.member(message.member).displayHexColor)
+                .setUsername(member.username, message.guild.members.cache.get(userinfo.id).displayHexColor)
                 .setDiscriminator(member.discriminator);
 
             if (data) {
@@ -35,13 +38,13 @@ module.exports = {
             }
             rank.build().then(data => {
                 const attachment = new Discord.MessageAttachment(data, "RankCard.png");
-                message.channel.send(attachment);
+                message.channel.send({ files: [attachment] });
             }).catch(e => {
                 if (e.code === 'ENOENT') {
                     rank.setBackground("COLOR", data.colorBackground ? data.colorBackground : '#2A2E35')
                     rank.build().then(data => {
                         const attachment = new Discord.MessageAttachment(data, "RankCard.png");
-                        message.channel.send(attachment);
+                        message.channel.send({ files: [attachment] });
                     });
                 }
             });
@@ -59,7 +62,7 @@ module.exports = {
                 .setRank(rankpos)
                 .setStatus(status)
                 .setProgressBar("#FFFFFF", "COLOR")
-                .setUsername(member.username, message.guild.member(message.member).displayHexColor)
+                .setUsername(member.username, message.guild.members.cache.get(userinfo.id).displayHexColor)
                 .setDiscriminator(member.discriminator);
             if (data) {
                 if (data.colorBackground) rank.setBackground("COLOR", data.colorBackground)
@@ -68,13 +71,13 @@ module.exports = {
             }
             rank.build().then(data => {
                 const attachment = new Discord.MessageAttachment(data, "RankCard.png");
-                message.channel.send(attachment);
+                message.channel.send({ files: [attachment] });
             }).catch(e => {
                 if (e.code === 'ENOENT') {
                     rank.setBackground("COLOR", data.colorBackground ? data.colorBackground : '#2A2E35')
                     rank.build().then(data => {
                         const attachment = new Discord.MessageAttachment(data, "RankCard.png");
-                        message.channel.send(attachment);
+                        message.channel.send({ files: [attachment] });
                     });
                 }
             });

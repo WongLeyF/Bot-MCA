@@ -47,7 +47,7 @@ module.exports = {
                         descEmbed = `❌ No pude realizar la operacion, intentalo de nuevo`
                         return simpleEmbedDescription(message, ee.wrongcolor, shortTime, descEmbed)
                     }
-                    
+
                 case 'set':
                     if (await Levels.setXp(member.id, message.guild.id, args[2])) {
                         descEmbed = `La nueva experiencia de ${member} es: ${args[2]}`
@@ -56,7 +56,7 @@ module.exports = {
                         descEmbed = `❌ No pude realizar la operacion, intentalo de nuevo`
                         return simpleEmbedDescription(message, ee.wrongcolor, shortTime, descEmbed)
                     }
-                    
+
                 case 'sub':
                     if (await Levels.subtractXp(member.id, message.guild.id, args[2])) {
                         descEmbed = `Se restaron a ${member} esta cantidad de xp: ${args[2]}`
@@ -65,7 +65,7 @@ module.exports = {
                         descEmbed = `❌ No pude realizar la operacion, intentalo de nuevo`
                         return simpleEmbedDescription(message, ee.wrongcolor, shortTime, descEmbed)
                     }
-                    
+
                 default:
                     titleEmbed = `⚠ Por favor, dime que realizar hacer, \`${args[0]}\` no lo reconozco como accion`
                     descEmbed = `Uso: \`${prefix}setxp <add/set/sub> <mencion/ID> <nivel>\``

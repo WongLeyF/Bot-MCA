@@ -1,7 +1,7 @@
 const { MessageEmbed, MessageAttachment } = require("discord.js")
 const ee = require("../../json/embed.json");
 const { escapeRegex, errorMessageEmbed, delay, downloadImageToUrl } = require("../../handlers/functions");
-const { getPrefix, getChannelLogsMessages } = require("../../handlers/mongo/controllers");
+const { getPrefix, getChannelLogsMessages } = require("../../handlers/controllers/settings.controller")
 const fs = require('fs');
 
 module.exports = async (client, message) => {
@@ -47,12 +47,11 @@ module.exports = async (client, message) => {
         if (message.attachments.size > 0) {
             const url = message.attachments.map(m => m.url)
             await downloadImageToUrl(url[0], filepath)
-            embed.attachFiles(new MessageAttachment(`.temp/${filepath}.png`, `${filepath}.png`))
             embed.setImage(`attachment://${filepath}.png`);
             await delay(1000)
-            channel.send(embed).then(() => fs.unlinkSync(`.temp/${filepath}.png`))
+            channel.send({ embeds: [embed], files: [new MessageAttachment(`.temp/${filepath}.png`, `${filepath}.png`)] }).then(() => fs.unlinkSync(`.temp/${filepath}.png`))
         } else {
-            channel.send(embed)
+            channel.send({ embeds: [embed] })
         }
     } catch (e) {
         errorMessageEmbed(e, message)
