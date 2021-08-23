@@ -32,9 +32,9 @@ try {
   //login into the bot
   client.login(process.env.token);
 
-  // process.on('SIGINT', function () {
-  //   console.log(`You have been disconnected at ${new Date()}.`.red)
-  // });
+  process.on('SIGINT', function () {
+    console.log(`You have been disconnected at ${new Date()}.`.red)
+  });
 } catch (e) {
   webHookErrorMessage(e, "Error en index.js")
 }
