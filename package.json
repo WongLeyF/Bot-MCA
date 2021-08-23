@@ -10,6 +10,7 @@
   "author": "Mrkemey",
   "license": "ISC",
   "dependencies": {
+    "ascii-table": "0.0.9",
     "canvacord": "^5.2.3",
     "colors": "^1.4.0",
     "discord-xp": "^1.1.16",
@@ -18,7 +19,6 @@
     "mongoose": "^5.13.7"
   },
   "devDependencies": {
-    "ascii-table": "^0.0.9",
     "nodemon": "^2.0.12"
   },
   "engines": {
