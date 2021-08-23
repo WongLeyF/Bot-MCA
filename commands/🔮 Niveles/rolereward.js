@@ -55,12 +55,35 @@ module.exports = {
                         if (listRoleRewards.length === 0) {
                             return simpleEmbedDescription(message, 'RED', 10000, '❌ No encontre nada en la lista');
                         }
+                        if (listRoleRewards.length > 5) {
+                            let indexOfTemp = 0;
+                            let lengthArray = listRoleRewards.length
+                            let tempArray = []
+                            do {
+                                if (lengthArray > 5) {
+                                    tempArray = listRoleRewards.slice(indexOfTemp, indexOfTemp+5);
+                                    indexOfTemp += 5
+                                    lengthArray -= 5
+                                    message.channel.send({
+                                        embeds: [new MessageEmbed().setDescription('🏆 **Roles de recompensa por nivel**').setColor("GREEN")],
+                                        components: tempArray
+                                    })
+                                }else{
+                                    tempArray = listRoleRewards.slice(listRoleRewards.length-lengthArray, listRoleRewards.length+1);
+                                    message.channel.send({
+                                        embeds: [new MessageEmbed().setDescription('🏆 **Roles de recompensa por nivel**').setColor("GREEN")],
+                                        components: tempArray
+                                    })
+                                    break;
+                                }
+                            } while (lengthArray >= 0);
+                        } else {
+                            message.channel.send({
+                                embeds: [new MessageEmbed().setDescription('🏆 **Roles de recompensa por nivel**').setColor("GREEN")],
+                                components: listRoleRewards
+                            })
+                        }
 
-                        message.channel.send({
-                            embeds: [new MessageEmbed().setDescription('🏆 **Roles de recompensa por nivel**').setColor("GREEN")],
-                            components: listRoleRewards
-                        })
-                        
                     } else {
                         titleEmbed = `⚠ No hay ningun registro de este server`
                         descEmbed = `Uso: \`${prefix}rolereward [remove/list] <Role> <Nivel>\`\n`
