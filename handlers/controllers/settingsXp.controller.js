@@ -6,7 +6,7 @@ module.exports = {
   getlvlcooldown: async (message) => {
     const guildID = message.guild.id
     const result = _settingsXp.findOne({ _id: guildID });
-    return result.cooldown
+    return result?.cooldown
   },
 
   getlvlsettings: async (message) => {
