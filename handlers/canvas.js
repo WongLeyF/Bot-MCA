@@ -49,7 +49,7 @@ module.exports = {
             ctx.drawImage(await rowLeaderboard(client, rawArrayLb[key]), 2, y, 700, 80)
             y = y + 85
         }
-        const attach = new MessageAttachment(canvas.toBuffer(), 'test.png')
+        const attach = new MessageAttachment(canvas.toBuffer(), 'guild-lb.png')
         message.channel.send({ files: [attach] })
 
     }
