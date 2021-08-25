@@ -1,10 +1,11 @@
-const { MessageEmbed, WebhookClient, Message } = require("discord.js")
+const { MessageEmbed, WebhookClient, Message, MessageAttachment } = require("discord.js")
 const ee = require("../json/embed.json")
 const gm = require("../json/globalMessages.json")
 const Levels = require("discord-xp");
 const https = require('https')
 const Stream = require('stream').Transform
 const fs = require('fs');
+const { leaderboardCanvas } = require("./canvas");
 const webHookMain = new WebhookClient({
   id: process.env.webhookID,
   token: process.env.webhookToken
@@ -44,11 +45,11 @@ module.exports = {
     ]}).then(msg => setTimeout(() => msg.delete(), 5000)).catch(e => console.log(gm.errorDeleteMessage.gray));
     const embed = new MessageEmbed().setTitle("**Leaderboard**:")
     const leaderboard = await Levels.computeLeaderboard(client, rawLeaderboard, true); // We process the leaderboard.
-    const lb = leaderboard.map(e => embed.addField(`**${e.position}. ${e.username}#${e.discriminator}**`, `Level: ${e.level}  -  XP: ${e.xp.toLocaleString()}`)); // We map the outputs.
     //message.channel.send(`**Leaderboard**:\n\n${lb.join("\n\n")}`);
-    message.channel.send({ embeds: [embed] })
+    leaderboardCanvas(client, message, leaderboard) 
   },
   getLeaderboardRange: async function (client, message, init) {
+
     const start = parseInt(init)
     const rawLeaderboard = await Levels.fetchLeaderboard(message.guild.id, start + 10); // We grab top 10 users with most xp in the current server.
     if (rawLeaderboard.length + 10 <= 0) return message.reply({
@@ -58,11 +59,11 @@ module.exports = {
       ]
     }).then(msg => setTimeout(() => msg.delete(), 5000)).catch(e => console.log(gm.errorDeleteMessage.gray));
     const leaderboard = await Levels.computeLeaderboard(client, rawLeaderboard, true); // We process the leaderboard.
-    const embed = new MessageEmbed().setTitle("**Leaderboard**:")
-    const lb = leaderboard.filter(e => e.position >= init).map(e => embed.addField(`**${e.position}. ${e.username}#${e.discriminator}**`, `Level: ${e.level}  -  XP: ${e.xp.toLocaleString()}`)); // We map the outputs.
+    const lb = leaderboard.filter(e => e.position >= init); // We map the outputs.
+    
     //message.channel.send(`**Leaderboard**:\n\n${lb.join("\n\n")}`);
     if (lb.length > 0) {
-      message.channel.send({ embeds: [embed] })
+      leaderboardCanvas(client, message, lb) 
     } else {
       return message.reply({embeds: [new MessageEmbed()
         .setColor(ee.wrongcolor)
