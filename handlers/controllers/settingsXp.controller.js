@@ -100,16 +100,47 @@ module.exports = {
             });
             if (options.length === 0)
               return simpleEmbedDescription(message, 'RED', 10000, '❌ No encontre nada en la lista');
-            const row = new MessageActionRow().addComponents(
-              new MessageSelectMenu()
-                .setCustomId("norolexp")
-                .setPlaceholder("Lista de roles que no reciben experiencia")
-                .addOptions(options)
-            )
-            message.channel.send({
-              embeds: [new MessageEmbed().setDescription('⚠️ **Roles que no reciben experiencia**').setColor("YELLOW")],
-              components: [row]
-            })
+            if (options.length > 25) {
+              let row = []
+              const sliceLength = 25; // Partir en arreglo de 3
+              for (let i = 0; i < options.length; i += sliceLength) {
+                let slice = options.slice(i, i + sliceLength);
+                row.push(slice);
+              }
+              let indexRow = 0
+              const rows = row.map(op => new MessageActionRow().addComponents(
+                new MessageSelectMenu()
+                  .setCustomId(`norolexp ${indexRow++}`)
+                  .setPlaceholder("Lista de roles que no reciben experiencia")
+                  .addOptions(op)
+              ))
+              if (rows > 5) {
+                const sliceLength = 5; // Partir en arreglo de 3
+                for (let i = 0; i < rows.length; i += sliceLength) {
+                  let slice = rows.slice(i, i + sliceLength);
+                  message.channel.send({
+                    embeds: [new MessageEmbed().setDescription('⚠️ **Roles que no reciben experiencia**').setColor("YELLOW")],
+                    components: slice
+                  })
+                }
+              } else {
+                message.channel.send({
+                  embeds: [new MessageEmbed().setDescription('⚠️ **Roles que no reciben experiencia**').setColor("YELLOW")],
+                  components: rows
+                })
+              }
+            } else {
+              const row = new MessageActionRow().addComponents(
+                new MessageSelectMenu()
+                  .setCustomId("norolexp")
+                  .setPlaceholder("Lista de roles que no reciben experiencia")
+                  .addOptions(options)
+              )
+              message.channel.send({
+                embeds: [new MessageEmbed().setDescription('⚠️ **Roles que no reciben experiencia**').setColor("YELLOW")],
+                components: [row]
+              })
+            }
             status = true
           } else return simpleEmbedDescription(message, 'RED', 10000, '❌ No encontre nada en la lista');
           break;
