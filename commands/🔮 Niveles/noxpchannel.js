@@ -113,18 +113,50 @@ module.exports = {
                             });
                             if (options.length === 0)
                                 return simpleEmbedDescription(message, 'RED', 10000, '❌ No encontre nada en la lista');
-                            const row = new MessageActionRow().addComponents(
-                                new MessageSelectMenu()
-                                    .setCustomId("noxpchannel")
-                                    .setPlaceholder("Lista de canales que no reciben experiencia")
-                                    .addOptions(options)
-                            )
-                            message.channel.send({
-                                embeds: [new MessageEmbed().setDescription('📜 **Canales que no reciben experiencia**').setColor("YELLOW")],
-                                components: [row]
-                            })
+                            if (options.length > 25) {
+                                let row = []
+                                const sliceLength = 25; // Partir en arreglo de 3
+                                for (let i = 0; i < options.length; i += sliceLength) {
+                                    let slice = options.slice(i, i + sliceLength);
+                                    row.push(slice);
+                                }
+                                let indexRow = 0
+                                const rows = row.map(op =>
+                                    new MessageActionRow().addComponents(
+                                        new MessageSelectMenu()
+                                            .setCustomId(`noxpchannel ${indexRow++}`)
+                                            .setPlaceholder("Lista de canales que no reciben experiencia")
+                                            .addOptions(op)
+                                    ))
+                                if (rows > 5) {
+                                    const sliceLength = 5; // Partir en arreglo de 3
+                                    for (let i = 0; i < rows.length; i += sliceLength) {
+                                        let slice = rows.slice(i, i + sliceLength);
+                                        message.channel.send({
+                                            embeds: [new MessageEmbed().setDescription('📜 **Canales que no reciben experiencia**').setColor("YELLOW")],
+                                            components: slice
+                                        })
+                                    }
+                                } else {
+                                    message.channel.send({
+                                        embeds: [new MessageEmbed().setDescription('📜 **Canales que no reciben experiencia**').setColor("YELLOW")],
+                                        components: rows
+                                    })
+                                }
+                            } else {
+                                const row = new MessageActionRow().addComponents(
+                                    new MessageSelectMenu()
+                                        .setCustomId("noxpchannel")
+                                        .setPlaceholder("Lista de canales que no reciben experiencia")
+                                        .addOptions(options)
+                                )
+                                message.channel.send({
+                                    embeds: [new MessageEmbed().setDescription('📜 **Canales que no reciben experiencia**').setColor("YELLOW")],
+                                    components: [row]
+                                })
+                            }
                         } else {
-                            descEmbed = `Parece que eres me acabs de agregar, configura antes las demas opciones`
+                            descEmbed = `Parece que me acabas de agregar, configura antes las demas opciones`
                             return simpleEmbedDescription(message, ee.wrongcolor, gm.longTime, titleEmbed, descEmbed)
                         }
                         break;
