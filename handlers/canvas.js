@@ -19,7 +19,7 @@ const rowLeaderboard = async function (client, {
         ctx.drawImage(avatar, 20, 5, canvas.height - 10, canvas.height - 10)
         ctx.drawImage(bgr, 2, 0, canvas.width, canvas.height)
         ctx.fillStyle = "#ffffff"
-        ctx.font = 'small-caps bold 25px cursive'
+        ctx.font = 'sans bold 25px cursive'
         let text = `${position} • `
         let x = canvas.height - 30 + ctx.measureText(text).width
         ctx.fillText(text, canvas.height + 25, 46)
@@ -27,7 +27,7 @@ const rowLeaderboard = async function (client, {
         text = `${username}#${discriminator}`
         ctx.fillText(text, x, 46)
         x = x + 10 + ctx.measureText(text).width
-        ctx.font = 'small-caps bold 18px cursive'
+        ctx.font = 'sans bold 18px cursive'
         text = ` • LVL:${level}`
         ctx.fillText(text, x, 30)
         text = ` • XP:${xp.toLocaleString()}`
