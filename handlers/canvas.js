@@ -14,24 +14,26 @@ const rowLeaderboard = async function (client, {
 
         const canvas = Canvas.createCanvas(700, 80)
         const ctx = canvas.getContext("2d")
-        const bgr = await Canvas.loadImage('./assets/img/rowLeaderboard.png')
+        const bgr = await Canvas.loadImage('./assets/img/leaderboard.png')
         const avatar = await Canvas.loadImage(client.users.cache.get(userID).displayAvatarURL({ format: 'jpg' }))
-        ctx.drawImage(avatar, 20, 5, canvas.height - 10, canvas.height - 10)
+        const levelText = `• LVL:${level}`
+        const xpText = `• XP:${xp.toLocaleString()}`
+
+        ctx.drawImage(avatar, 13, 5, canvas.height - 10, canvas.height - 10)
         ctx.drawImage(bgr, 2, 0, canvas.width, canvas.height)
-        ctx.fillStyle = "#ffffff"
+        ctx.fillStyle = position == 1 ? "#FFD700": position == 2? "#888888": position == 3? "#AF6D00" :"#2A2A2A"
         ctx.font = 'normal bold 25px sans-serif'
-        let text = `${position} • `
-        let x = canvas.height - 30 + ctx.measureText(text).width
+        let text = `${position} ‣ `
+        let x = (canvas.height - 30 + ctx.measureText(text).width) - (position >= 10 ? position.toString().length*8 : 0)
         ctx.fillText(text, canvas.height + 25, 46)
+        ctx.fillStyle = "#2A2A2A"
         x = x + ctx.measureText(text).width
         text = ` ${username}#${discriminator}`
         ctx.fillText(text, x, 46)
-        x = x + 10 + ctx.measureText(text).width
+        x = ctx.measureText(levelText).width > ctx.measureText(xpText).width ? ctx.measureText(levelText).width : ctx.measureText(xpText).width
         ctx.font = ' normal bold 18px sans-serif'
-        text = ` • LVL:${level}`
-        ctx.fillText(text, x, 30)
-        text = ` • XP:${xp.toLocaleString()}`
-        ctx.fillText(text, x, 60)
+        ctx.fillText(levelText, canvas.width - x , 30) 
+        ctx.fillText(xpText, canvas.width - x , 60)
         resolve(canvas)
     })
 }
