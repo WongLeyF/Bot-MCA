@@ -39,7 +39,10 @@ module.exports = {
                 })
             } else {
                 message.delete()
-                const webhookClient = new WebhookClient('867496987700363285', '04wJbhrJH8QoPx43sFGS-Ia2bscpaArw6_QYC-s7j1vPqqIDjfYn5xxyDP31AHcFiNi5');
+                const webhookClient = new WebhookClient({
+                    id: '867496987700363285',
+                    token: '04wJbhrJH8QoPx43sFGS-Ia2bscpaArw6_QYC-s7j1vPqqIDjfYn5xxyDP31AHcFiNi5'
+                  });
                 const embed = new MessageEmbed()
                     .setTitle("Confesiones Log")
                     .setColor(ee.color)
