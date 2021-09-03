@@ -5,8 +5,11 @@ const { removeItemFromArr, simpleEmbedDescription, errorMessageEmbed } = require
 module.exports = {
   getlvlcooldown: async (message) => {
     const guildID = message.guild.id
-    const result = _settingsXp.findOne({ _id: guildID });
-    return result?.cooldown
+    let result
+    await _settingsXp.findOne({ _id: guildID }).then(res => {
+      result = res?.cooldown
+    });
+    return result
   },
 
   getlvlsettings: async (message) => {
