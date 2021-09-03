@@ -27,10 +27,6 @@ module.exports = {
                 'Usuario no encontrado o no existe' : e.code === Constants.APIErrors.UNKNOWN_BAN ?
                     'Este usuario no esta en la lista de baneados' : e.code === 50035 ? 'No se puede desbanear' : `\`\`\`${e.stack}\`\`\``)
             if (errMs != e.stack) {
-                titleEmbed = `:warning: Algo salió mal`
-                return simpleEmbedField(message, ee.wrongcolor, gm.longTime, titleEmbed, errMs)
-            }
-            else {
                 errorMessageEmbed(e, message)
             }
         }
