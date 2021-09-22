@@ -39,9 +39,11 @@ module.exports = {
           const index = res.rolesLevel.findIndex(roles => roles._id === parseInt(level, 10))
           if (index === -1) return;
           for (let i = 0; i < index; i++) {
+            console.log(message.guild.members.cache.get(message.member.id).roles)
+            console.log(res.rolesLevel[i].role)
             message.guild.members.cache.get(message.member.id).roles.remove(res.rolesLevel[i].role)
           }
-          message.guild.members.cache.get(message.member.id).roles.set(res.rolesLevel[index].role);
+          message.guild.members.cache.get(message.member.id).roles.add(res.rolesLevel[index].role);
         } catch (e) {
           errorMessageEmbed(e, message)
           return message.reply(new MessageEmbed()
