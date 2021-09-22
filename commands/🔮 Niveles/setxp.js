@@ -2,7 +2,7 @@ const { MessageEmbed } = require("discord.js");
 const { errorMessageEmbed, simpleEmbedField, simpleEmbedDescription } = require("../../handlers/functions")
 const ee = require("../../json/embed.json")
 const gm = require("../../json/globalMessages.json")
-const Levels = require("discord-xp");
+const {appendXp, setXp, subtractXp} = require("discord-xp");
 
 module.exports = {
     name: "setXP",
@@ -40,30 +40,30 @@ module.exports = {
 
             switch (args[0]) {
                 case 'add':
-                    if (await Levels.appendXp(member.id, message.guild.id, args[2])) {
+                    if (await appendXp(member.id, message.guild.id, args[2])) {
                         descEmbed = `Se agregaron a ${member} esta cantidad de xp: ${args[2]}`
                         return simpleEmbedDescription(message, ee.color, null, descEmbed)
                     } else {
                         descEmbed = `❌ No pude realizar la operacion, intentalo de nuevo`
-                        return simpleEmbedDescription(message, ee.wrongcolor, shortTime, descEmbed)
+                        return simpleEmbedDescription(message, ee.wrongcolor, gm.shortTime, descEmbed)
                     }
 
                 case 'set':
-                    if (await Levels.setXp(member.id, message.guild.id, args[2])) {
+                    if (await setXp(member.id, message.guild.id, args[2])) {
                         descEmbed = `La nueva experiencia de ${member} es: ${args[2]}`
                         return simpleEmbedDescription(message, ee.color, null, descEmbed)
                     } else {
                         descEmbed = `❌ No pude realizar la operacion, intentalo de nuevo`
-                        return simpleEmbedDescription(message, ee.wrongcolor, shortTime, descEmbed)
+                        return simpleEmbedDescription(message, ee.wrongcolor, gm.shortTime, descEmbed)
                     }
 
                 case 'sub':
-                    if (await Levels.subtractXp(member.id, message.guild.id, args[2])) {
+                    if (await subtractXp(member.id, message.guild.id, args[2])) {
                         descEmbed = `Se restaron a ${member} esta cantidad de xp: ${args[2]}`
                         return simpleEmbedDescription(message, ee.color, null, descEmbed)
                     } else {
                         descEmbed = `❌ No pude realizar la operacion, intentalo de nuevo`
-                        return simpleEmbedDescription(message, ee.wrongcolor, shortTime, descEmbed)
+                        return simpleEmbedDescription(message, ee.wrongcolor, gm.shortTime, descEmbed)
                     }
 
                 default:

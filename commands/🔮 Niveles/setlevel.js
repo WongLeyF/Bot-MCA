@@ -47,7 +47,7 @@ module.exports = {
                         return simpleEmbedDescription(message, ee.color, null, descEmbed)
                     } else {
                         descEmbed = `❌ No pude realizar la operacion, intentalo de nuevo`
-                        return simpleEmbedDescription(message, ee.wrongcolor, shortTime, descEmbed)
+                        return simpleEmbedDescription(message, ee.wrongcolor, gm.shortTime, descEmbed)
                     }
 
                 case 'set':
@@ -56,7 +56,7 @@ module.exports = {
                         return simpleEmbedDescription(message, ee.color, null, descEmbed)
                     } else {
                         descEmbed = `❌ No pude realizar la operacion, intentalo de nuevo`
-                        return simpleEmbedDescription(message, ee.wrongcolor, shortTime, descEmbed)
+                        return simpleEmbedDescription(message, ee.wrongcolor, gm.shortTime, descEmbed)
                     }
 
                 case 'sub':
@@ -65,7 +65,7 @@ module.exports = {
                         return simpleEmbedDescription(message, ee.color, null, descEmbed)
                     } else {
                         descEmbed = `❌ No pude realizar la operacion, intentalo de nuevo`
-                        return simpleEmbedDescription(message, ee.wrongcolor, shortTime, descEmbed)
+                        return simpleEmbedDescription(message, ee.wrongcolor, gm.shortTime, descEmbed)
                     }
 
                 default:
