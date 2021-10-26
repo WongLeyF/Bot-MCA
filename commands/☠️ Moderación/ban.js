@@ -12,7 +12,7 @@ module.exports = {
     usage: "ban <Tag/ID> [Razón de expulsión]",
     run: async (client, message, args, user, text, prefix) => {
         try {
-            const member = message.mentions.members.first() || message.guild.members.cache.get(args[0]);
+            const member = message.mentions.members.first() || await message.guild.members.cache.get(args[0]);
             if (!member) {
                 const title = `❌ Por favor, especifica al usuario`
                 const desc = `Uso: \`${prefix}ban <Tag/ID> [Razón]\``

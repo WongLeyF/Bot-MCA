@@ -33,7 +33,7 @@ module.exports = async (client, message) => {
         }
         const channelID = await getChannelLogsMessages(message)
         if (channelID === message.channel.id) return;
-        const channel = client.channels.cache.get(channelID)
+        const channel = await client.channels.cache.get(channelID)
 
         const embed = new MessageEmbed()
             .setColor(ee.color)
