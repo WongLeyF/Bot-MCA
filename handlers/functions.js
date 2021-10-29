@@ -36,7 +36,13 @@ module.exports = {
     if (role == undefined) role = message.guild.roles.cache.find(c => c.name === req)
     return role
   },
-
+  getChannel: async (message, req) => {
+    let channel;
+    if (isNaN(req)) channel = await message.guild.channels.cache.find(c => c.id === req.slice(2, -1))
+    if (!isNaN(req)) channel = await message.guild.channels.cache.find(c => c.id === req)
+    if (channel == undefined) channel = message.guild.channels.cache.find(c => c.name === req)
+    return channel
+  },
   getLeaderboard: async function (client, message) {
     const rawLeaderboard = await Levels.fetchLeaderboard(message.guild.id, 10); // We grab top 10 users with most xp in the current server.
     if (rawLeaderboard.length < 1) return message.reply({embeds: [new MessageEmbed()
@@ -159,6 +165,16 @@ module.exports = {
     } catch (e) {
       console.log(String(e.stack).bgRed)
     }
+  },
+
+  errorMessage: function (message, description) {
+    message.channel.send({
+      embeds: [new MessageEmbed()
+        .setColor(ee.wrongcolor)
+        .setTitle(gm.titleError)
+        .setDescription(description)
+      ]
+    });
   },
 
   errorMessageEmbed: function (e, message) {

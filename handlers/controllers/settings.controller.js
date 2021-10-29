@@ -5,7 +5,7 @@ module.exports = {
     getChannelConfession: async (message) => {
         const guildID = message.guild.id
         let result
-        await settingSchema.findOne({ _id: guildID }).then( res => {
+        await settingSchema.findOne({ _id: guildID }, { confessionChannel: 1 }).then( res => {
             result = res?.confessionChannel
         });
         return result
@@ -13,7 +13,7 @@ module.exports = {
     //return string with the id of level channel 
     getChannelLevels: async (message) => {
         const guildID = message.guild.id
-        await settingSchema.findOne({ _id: guildID }).then( res => {
+        await settingSchema.findOne({ _id: guildID }, { levelChannel: 1 }).then( res => {
             result = res?.levelChannel
         });
         return result ? result : message.channel.id
@@ -22,7 +22,7 @@ module.exports = {
     getChannelLogsMessages: async (message) => {
         const guildID = message.guild.id
         let result
-        await settingSchema.findOne({ _id: guildID }).then( res => {
+        await settingSchema.findOne({ _id: guildID }, { logsMessages: 1 }).then( res => {
             result = res?.logsMessages
         });
         return result
@@ -31,7 +31,7 @@ module.exports = {
     getChannelLogsModeration: async (message) => {
         const guildID = message.guild.id
         let result
-        await settingSchema.findOne({ _id: guildID }).then( res => {
+        await settingSchema.findOne({ _id: guildID }, { logsMessages: 1 }).then( res => {
             result = res?.logsMessages
         });
         return result
@@ -40,7 +40,7 @@ module.exports = {
     getMessageCount: async (message) => {
         const guildID = message.guild.id
         let result
-        await settingSchema.findOne({ _id: guildID }).then( res => {
+        await settingSchema.findOne({ _id: guildID }, { messageCounter: 1 }).then( res => {
             result = res?.messageCounter ? true : false
         });
         return result
@@ -49,7 +49,7 @@ module.exports = {
     getUpdateMessages: async (message) => {
         const guildID = message.guild.id
         let result
-        await settingSchema.findOne({ _id: guildID }).then( res => {
+        await settingSchema.findOne({ _id: guildID }, { updatesMessages: 1 }).then( res => {
             result = res?.updatesMessages ? true : false
         });
         return result
@@ -58,7 +58,7 @@ module.exports = {
     getLevelSystem: async (message) => {
         const guildID = message.guild.id
         let result
-        await settingSchema.findOne({ _id: guildID }).then( res => {
+        await settingSchema.findOne({ _id: guildID }, { levelSystem: 1 }).then( res => {
             result = res?.levelSystem ? true : false
         });
         return result
@@ -67,7 +67,7 @@ module.exports = {
     getPrefix: async (message) => {
         const guildID = message.guild.id
         let result
-        await await settingSchema.findOne({ _id: guildID }).then( res => {
+        await await settingSchema.findOne({ _id: guildID }, { prefix: 1 }).then( res => {
             result = res?.prefix
         });
         return result
