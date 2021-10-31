@@ -222,6 +222,19 @@ module.exports = {
       message.channel.send(contain);
     }
   },
+  simpleMessage: function (message, description, reply=true) {
+    let contain = {
+      embeds: [new MessageEmbed()
+        .setColor(ee.checkcolor)
+        .setDescription(`${description}`)
+      ]
+    }
+    if(reply){
+      contain.reply = { messageReference: message.id }
+    }
+    message.channel.send(contain);
+  },
+
   downloadImageToUrl: async function (url, filename) {
     https.request(url, function (response) {
       let data = new Stream();

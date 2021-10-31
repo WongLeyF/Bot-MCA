@@ -16,7 +16,20 @@ const settings = mongoose.Schema({
     levelSystem: { type: Boolean, default: false },
     logsMessages: { type: String},
     logsModeration: { type: String},
-    updatesMessages: {type: Boolean, default: false}
+    updatesMessages: {type: Boolean, default: false},
+    reactionMenus: [{
+        _id: { type: Number,
+            unique: true
+        },
+        name: { type: String },
+        placeholder: { type: String },
+        title: { type: Boolean, default: true },
+        reactionRoles: [{
+            emoji: { type: String },
+            role: { type: String },
+            description: { type: String },
+        }],
+    }],
 
 })
 
