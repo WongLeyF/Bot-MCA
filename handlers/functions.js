@@ -36,7 +36,13 @@ module.exports = {
     if (role == undefined) role = message.guild.roles.cache.find(c => c.name === req)
     return role
   },
-
+  getChannel: async (message, req) => {
+    let channel;
+    if (isNaN(req)) channel = await message.guild.channels.cache.find(c => c.id === req.slice(2, -1))
+    if (!isNaN(req)) channel = await message.guild.channels.cache.find(c => c.id === req)
+    if (channel == undefined) channel = message.guild.channels.cache.find(c => c.name === req)
+    return channel
+  },
   getLeaderboard: async function (client, message) {
     const rawLeaderboard = await Levels.fetchLeaderboard(message.guild.id, 10); // We grab top 10 users with most xp in the current server.
     if (rawLeaderboard.length < 1) return message.reply({embeds: [new MessageEmbed()
@@ -161,6 +167,16 @@ module.exports = {
     }
   },
 
+  errorMessage: function (message, description) {
+    message.channel.send({
+      embeds: [new MessageEmbed()
+        .setColor(ee.wrongcolor)
+        .setTitle(gm.titleError)
+        .setDescription(description)
+      ]
+    });
+  },
+
   errorMessageEmbed: function (e, message) {
     const embed = new MessageEmbed()
       .setColor(ee.wrongcolor)
@@ -206,6 +222,19 @@ module.exports = {
       message.channel.send(contain);
     }
   },
+  simpleMessage: function (message, description, reply=true) {
+    let contain = {
+      embeds: [new MessageEmbed()
+        .setColor(ee.checkcolor)
+        .setDescription(`${description}`)
+      ]
+    }
+    if(reply){
+      contain.reply = { messageReference: message.id }
+    }
+    message.channel.send(contain);
+  },
+
   downloadImageToUrl: async function (url, filename) {
     https.request(url, function (response) {
       let data = new Stream();
